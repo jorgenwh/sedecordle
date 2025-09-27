@@ -75,6 +75,36 @@ sedecordle/
 
 ## Firebase Configuration
 
+### Environment Variables Setup
+
+Since this is an open-source project, Firebase configuration is stored in environment variables:
+
+1. **Local Development**:
+   - Copy `.env.example` to `.env`
+   - Fill in your Firebase project configuration
+   - Never commit `.env` to the repository
+
+2. **GitHub Actions**:
+   - Add Firebase config as repository secrets:
+     - `VITE_FIREBASE_API_KEY`
+     - `VITE_FIREBASE_AUTH_DOMAIN`
+     - `VITE_FIREBASE_PROJECT_ID`
+     - `VITE_FIREBASE_STORAGE_BUCKET`
+     - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+     - `VITE_FIREBASE_APP_ID`
+   - Add `FIREBASE_SERVICE_ACCOUNT` (JSON content from Firebase Console)
+
+3. **Firebase Hosting**:
+   - Environment variables are built into the app during deployment
+   - GitHub Actions handles this automatically
+
+### Getting Firebase Configuration
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Go to Project Settings → General
+4. Scroll to "Your apps" → Web app
+5. Copy the configuration values
+
 ### Firestore Data Structure
 
 ```typescript
