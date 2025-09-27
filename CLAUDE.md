@@ -50,17 +50,26 @@ Sedecordle is a word-guessing game inspired by Wordle, where players must solve 
 
 ```
 sedecordle/
+├── .github/
+│   └── workflows/      # CI/CD pipelines
 ├── src/
-│   ├── App.tsx
+│   ├── app.tsx
 │   ├── main.tsx
-│   └── vite-env.d.ts
+│   ├── vite-env.d.ts
+│   └── index.css
 ├── index.html
 ├── package.json
 ├── tsconfig.json
+├── tsconfig.node.json
 ├── vite.config.ts
 ├── tailwind.config.js
-├── firebase.json
-├── firestore.rules
+├── postcss.config.js
+├── eslint.config.js
+├── .prettierrc
+├── .gitignore
+├── run-checks.sh       # Local code quality checks
+├── firebase.json       # (to be added)
+├── firestore.rules     # (to be added)
 └── CLAUDE.md
 ```
 
@@ -89,10 +98,15 @@ sedecordle/
 ## Development Commands
 
 ```bash
+npm install        # Install dependencies
 npm run dev        # Start development server
 npm run build      # Build for production
 npm run preview    # Preview production build
+npm run format     # Format code with Prettier
+npm run lint       # Check code with ESLint
+npm run lint:fix   # Fix ESLint issues
 npm run deploy     # Deploy to Firebase Hosting
+./run-checks.sh    # Run all code quality checks
 ```
 
 ## Code Guidelines
@@ -108,3 +122,42 @@ npm run deploy     # Deploy to Firebase Hosting
 - **No dead code**: Don't add unused functions or features "for the future"
 - **Consistency**: Follow existing patterns, structures, and naming conventions throughout the codebase
 - **File naming**: All lowercase with dash separation (e.g., `image-cache.tsx`, `game-engine.ts`, not `imageCache.tsx` or `GameEngine.ts`)
+- **Documentation**: Update CLAUDE.md when making significant changes to the project structure, architecture, or development workflow
+
+## CI/CD & Branch Protection
+
+### GitHub Branch Protection Rules (main branch)
+- Direct pushes to `main` are disabled
+- Pull requests required before merging
+- Required status checks must pass before merging:
+  - Code formatting check
+  - ESLint check
+  - TypeScript build check
+
+### GitHub Actions Workflows
+
+#### Pull Request Workflow (`.github/workflows/pr-checks.yml`)
+Runs on all pull requests targeting `main`:
+- Checks code formatting (Prettier)
+- Runs ESLint
+- Builds the project (TypeScript check)
+
+#### Deployment Workflow (`.github/workflows/deploy.yml`)
+Runs when changes are merged to `main`:
+1. **Check Job**: Validates code quality
+   - Code formatting
+   - ESLint
+   - Build
+2. **Deploy Job**: Deploys to Firebase Hosting
+   - Builds production bundle
+   - Deploys to Firebase
+
+### Setting Up Branch Protection
+To enable branch protection on GitHub:
+1. Go to Settings → Branches
+2. Add rule for `main` branch
+3. Enable:
+   - Require pull request before merging
+   - Require status checks to pass
+   - Select required checks: `format`, `lint`, `build`
+   - Disable direct pushes
