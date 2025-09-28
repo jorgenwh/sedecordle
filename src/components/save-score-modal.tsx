@@ -50,20 +50,22 @@ export const SaveScoreModal = ({
                 (gameState.endTime! - gameState.startTime!) / 1000,
             )
 
-            const boardsSolved = gameState.guesses.map((guess, guessIndex) => {
-                const solvedAtThisGuess: number[] = []
-                gameState.targetWords.forEach((target, boardIndex) => {
-                    if (
-                        guess === target &&
-                        !gameState.guesses
-                            .slice(0, guessIndex)
-                            .includes(target)
-                    ) {
-                        solvedAtThisGuess.push(boardIndex)
-                    }
+            const boardsSolved = gameState.guesses
+                .map((guess, guessIndex) => {
+                    const solvedAtThisGuess: number[] = []
+                    gameState.targetWords.forEach((target, boardIndex) => {
+                        if (
+                            guess === target &&
+                            !gameState.guesses
+                                .slice(0, guessIndex)
+                                .includes(target)
+                        ) {
+                            solvedAtThisGuess.push(boardIndex)
+                        }
+                    })
+                    return solvedAtThisGuess
                 })
-                return solvedAtThisGuess
-            }).flat()
+                .flat()
 
             await saveScore({
                 playerName: playerName.trim(),

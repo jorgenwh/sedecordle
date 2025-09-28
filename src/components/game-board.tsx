@@ -23,7 +23,8 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
 
         // Count letters in target and mark greens
         for (let i = 0; i < target.length; i++) {
-            targetLetterCount[target[i]] = (targetLetterCount[target[i]] || 0) + 1
+            targetLetterCount[target[i]] =
+                (targetLetterCount[target[i]] || 0) + 1
             if (guess[i] === target[i]) {
                 guessColors[i] = 'green'
                 targetLetterCount[guess[i]]--
@@ -53,7 +54,8 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
 
         // For solved boards, only show the guesses up to when it was solved
         const rowsToShow = isSolved
-            ? guesses.findIndex(guess => guess === targetWords[boardIndex]) + 1
+            ? guesses.findIndex((guess) => guess === targetWords[boardIndex]) +
+              1
             : Math.min(21, guesses.length + 1)
 
         return (
@@ -62,35 +64,30 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                     <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
                 <div className="grid grid-rows-6 gap-1 p-2 bg-black border border-gray-800 rounded">
-                    {[...Array(rowsToShow)].map(
-                        (_, rowIndex) => (
-                            <div
-                                key={rowIndex}
-                                className="grid grid-cols-5 gap-1"
-                            >
-                                {[...Array(5)].map((_, colIndex) => {
-                                    const isCurrentRow =
-                                        rowIndex === guesses.length && !isSolved
-                                    const letter = isCurrentRow
-                                        ? currentGuess[colIndex] || ''
-                                        : guesses[rowIndex]?.[colIndex] || ''
+                    {[...Array(rowsToShow)].map((_, rowIndex) => (
+                        <div key={rowIndex} className="grid grid-cols-5 gap-1">
+                            {[...Array(5)].map((_, colIndex) => {
+                                const isCurrentRow =
+                                    rowIndex === guesses.length && !isSolved
+                                const letter = isCurrentRow
+                                    ? currentGuess[colIndex] || ''
+                                    : guesses[rowIndex]?.[colIndex] || ''
 
-                                    return (
-                                        <div
-                                            key={colIndex}
-                                            className={`
+                                return (
+                                    <div
+                                        key={colIndex}
+                                        className={`
                                             w-10 h-10 flex items-center justify-center m-px
                                             text-2xl font-bold text-white border rounded
                                             ${isCurrentRow ? 'border-gray-600' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
-                                        >
-                                            {letter.toUpperCase()}
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        ),
-                    )}
+                                    >
+                                        {letter.toUpperCase()}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    ))}
                 </div>
             </div>
         )

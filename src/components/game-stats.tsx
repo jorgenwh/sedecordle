@@ -15,7 +15,9 @@ export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
         }
 
         const interval = setInterval(() => {
-            const elapsed = Math.floor((Date.now() - gameState.startTime!) / 1000)
+            const elapsed = Math.floor(
+                (Date.now() - gameState.startTime!) / 1000,
+            )
             setElapsedTime(elapsed)
         }, 1000)
 
