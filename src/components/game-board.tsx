@@ -1,12 +1,4 @@
-export interface GameState {
-    targetWords: string[]
-    guesses: string[]
-    currentGuess: string
-    gameStatus: 'playing' | 'won' | 'lost'
-    solvedBoards: Set<number>
-    startTime: number | null
-    endTime: number | null
-}
+import { GameState } from '../types/game'
 
 interface GameBoardProps {
     gameState: GameState

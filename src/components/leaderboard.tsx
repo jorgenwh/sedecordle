@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore'
-import { db, Score } from '../config/firebase'
+import { getTopScores, formatTime } from '../services/leaderboard'
+import { Score } from '../types/game'
 
 interface LeaderboardProps {
     isOpen: boolean
@@ -17,33 +17,31 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
         }
     }, [isOpen])
 
+    useEffect(() => {
+        const handleEscKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose()
+            }
+        }
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscKey)
+            return () => {
+                document.removeEventListener('keydown', handleEscKey)
+            }
+        }
+    }, [isOpen, onClose])
+
     const loadScores = async () => {
         try {
             setLoading(true)
-            const scoresRef = collection(db, 'scores')
-            const q = query(
-                scoresRef,
-                orderBy('attempts', 'asc'),
-                orderBy('timeSeconds', 'asc'),
-                limit(50),
-            )
-            const snapshot = await getDocs(q)
-            const scoreData = snapshot.docs.map((doc) => ({
-                ...doc.data(),
-                completedAt: doc.data().completedAt.toDate(),
-            })) as Score[]
+            const scoreData = await getTopScores(100)
             setScores(scoreData)
         } catch (error) {
             console.error('Error loading scores:', error)
         } finally {
             setLoading(false)
         }
-    }
-
-    const formatTime = (seconds: number): string => {
-        const mins = Math.floor(seconds / 60)
-        const secs = seconds % 60
-        return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
     if (!isOpen) return null

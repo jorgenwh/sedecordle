@@ -12,11 +12,3 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 export const db = getFirestore(app)
-
-export interface Score {
-    playerName: string
-    attempts: number
-    timeSeconds: number
-    completedAt: Date
-    boards: number[]
-}
