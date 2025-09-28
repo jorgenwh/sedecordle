@@ -17,23 +17,25 @@ if [ ! -d "node_modules" ]; then
     fi
 fi
 
-# Run formatter with auto-fix
+# Check formatting (without auto-fix, matching CI)
 echo -n "Checking code formatting ..."
-if npm run format > /dev/null 2>&1; then
+if npm run format:check > /dev/null 2>&1; then
     echo -e " ${GREEN}[PASSED]${NC}"
 else
     echo -e " ${RED}[FAILED]${NC}"
-    npm run format
+    echo "Run 'npm run format' to fix formatting issues"
+    npm run format:check
     exit 1
 fi
 
-# Run linter with auto-fix
+# Run linter (without auto-fix, matching CI)
 echo -n "Running ESLint ..."
-if npm run lint:fix > /dev/null 2>&1; then
+if npm run lint > /dev/null 2>&1; then
     echo -e " ${GREEN}[PASSED]${NC}"
 else
     echo -e " ${RED}[FAILED]${NC}"
-    npm run lint:fix
+    echo "Run 'npm run lint:fix' to fix linting issues"
+    npm run lint
     exit 1
 fi
 

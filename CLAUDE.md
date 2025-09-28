@@ -158,6 +158,24 @@ npm run deploy     # Deploy to Firebase Hosting
 - **File naming**: All lowercase with dash separation (e.g., `image-cache.tsx`, `game-engine.ts`, not `imageCache.tsx` or `GameEngine.ts`)
 - **Documentation**: Update CLAUDE.md when making significant changes to the project structure, architecture, or development workflow
 
+## Git Usage Guidelines
+
+**IMPORTANT: Never perform git operations that modify the repository**
+
+- **NEVER** run the following git commands:
+  - `git add`
+  - `git commit`
+  - `git push`
+  - `git pull`
+  - `git fetch`
+  - `git checkout`
+- **Allowed** git commands (for inspection only):
+  - `git status`
+  - `git log`
+  - `git diff`
+  - `git branch`
+  - `git show`
+
 ## CI/CD & Branch Protection
 
 ### GitHub Branch Protection Rules (main branch)

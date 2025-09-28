@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(npm install)",
-      "Bash(./run-checks.sh:*)"
+      "Bash(./run-checks.sh:*)",
+      "Bash(npm run format:check:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run format:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
