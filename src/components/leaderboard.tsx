@@ -35,7 +35,7 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
     const loadScores = async () => {
         try {
             setLoading(true)
-            const scoreData = await getTopScores(100)
+            const scoreData = await getTopScores(10)
             setScores(scoreData)
         } catch (error) {
             console.error('Error loading scores:', error)
@@ -47,8 +47,8 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-gray-900 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-black rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-bold text-white">
                         Leaderboard
@@ -65,10 +65,6 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
                     {loading ? (
                         <div className="text-center text-gray-400 py-8">
                             Loading scores...
-                        </div>
-                    ) : scores.length === 0 ? (
-                        <div className="text-center text-gray-400 py-8">
-                            No scores yet. Be the first!
                         </div>
                     ) : (
                         <table className="w-full">
@@ -92,30 +88,41 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {scores.map((score, index) => (
-                                    <tr
-                                        key={index}
-                                        className="border-b border-gray-800"
-                                    >
-                                        <td className="py-2 text-gray-400">
-                                            {index + 1}
-                                        </td>
-                                        <td className="py-2 text-white">
-                                            {score.playerName}
-                                        </td>
-                                        <td className="py-2 text-center text-white">
-                                            {score.attempts}/21
-                                        </td>
-                                        <td className="py-2 text-center text-white">
-                                            {formatTime(score.timeSeconds)}
-                                        </td>
-                                        <td className="py-2 text-right text-gray-400">
-                                            {new Date(
-                                                score.completedAt,
-                                            ).toLocaleDateString()}
-                                        </td>
-                                    </tr>
-                                ))}
+                                {Array.from({ length: 10 }).map((_, index) => {
+                                    const score = scores[index]
+                                    return (
+                                        <tr
+                                            key={index}
+                                            className="border-b border-gray-800"
+                                        >
+                                            <td className="py-2 text-gray-400">
+                                                {index + 1}
+                                            </td>
+                                            <td className="py-2 text-white">
+                                                {score ? score.playerName : '-'}
+                                            </td>
+                                            <td className="py-2 text-center text-white">
+                                                {score
+                                                    ? `${score.attempts}/21`
+                                                    : '-'}
+                                            </td>
+                                            <td className="py-2 text-center text-white">
+                                                {score
+                                                    ? formatTime(
+                                                          score.timeSeconds,
+                                                      )
+                                                    : '-'}
+                                            </td>
+                                            <td className="py-2 text-right text-gray-400">
+                                                {score
+                                                    ? new Date(
+                                                          score.completedAt,
+                                                      ).toLocaleDateString()
+                                                    : '-'}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </table>
                     )}

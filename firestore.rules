@@ -9,7 +9,7 @@ service cloud.firestore {
 
       // Anyone can create a new score entry
       allow create: if request.resource.data.keys().hasAll([
-        'playerName', 'attempts', 'timeSeconds', 'completedAt', 'boards', 'targetWords'
+        'playerName', 'attempts', 'timeSeconds', 'completedAt', 'targetWords'
       ]) &&
       request.resource.data.playerName is string &&
       request.resource.data.playerName.size() > 0 &&
@@ -21,8 +21,6 @@ service cloud.firestore {
       request.resource.data.timeSeconds > 0 &&
       request.resource.data.timeSeconds < 86400 && // Less than 24 hours
       request.resource.data.completedAt is timestamp &&
-      request.resource.data.boards is list &&
-      request.resource.data.boards.size() == 16 &&
       request.resource.data.targetWords is list &&
       request.resource.data.targetWords.size() == 16;
 

@@ -40,8 +40,15 @@ export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
     }
 
     return (
-        <div className="flex justify-center items-center w-full px-4 py-3 bg-black">
-            <div className="flex justify-center items-center gap-8 max-w-lg">
+        <div className="flex justify-between items-center w-full px-4 py-3 bg-black">
+            <button
+                onClick={onShowLeaderboard}
+                className="text-gray-400 hover:text-white"
+                title="Leaderboard"
+            >
+                🏆
+            </button>
+            <div className="flex justify-center items-center gap-8">
                 <div>
                     <span className="text-gray-400">Boards: </span>
                     <span className="text-white font-semibold">
@@ -60,14 +67,8 @@ export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
                         {gameState.startTime ? displayTime() : '0:00'}
                     </span>
                 </div>
-                <button
-                    onClick={onShowLeaderboard}
-                    className="text-gray-400 hover:text-white"
-                    title="Leaderboard"
-                >
-                    📊
-                </button>
             </div>
+            <div className="w-6"></div>
         </div>
     )
 }
