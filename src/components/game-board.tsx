@@ -16,12 +16,35 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
 
         const guess = guesses[guessIndex]
         const target = targetWords[boardIndex]
-        const guessLetter = guess[letterIndex]
-        const targetLetter = target[letterIndex]
 
-        if (guessLetter === targetLetter) return 'bg-green-600 border-green-600'
-        if (target.includes(guessLetter))
-            return 'bg-yellow-600 border-yellow-600'
+        // First pass: mark all correct positions (green)
+        const targetLetterCount: { [key: string]: number } = {}
+        const guessColors: string[] = new Array(5).fill('')
+
+        // Count letters in target and mark greens
+        for (let i = 0; i < target.length; i++) {
+            targetLetterCount[target[i]] = (targetLetterCount[target[i]] || 0) + 1
+            if (guess[i] === target[i]) {
+                guessColors[i] = 'green'
+                targetLetterCount[guess[i]]--
+            }
+        }
+
+        // Second pass: mark yellows (present but wrong position)
+        for (let i = 0; i < guess.length; i++) {
+            if (guessColors[i] === '') {
+                if (targetLetterCount[guess[i]] > 0) {
+                    guessColors[i] = 'yellow'
+                    targetLetterCount[guess[i]]--
+                } else {
+                    guessColors[i] = 'gray'
+                }
+            }
+        }
+
+        const color = guessColors[letterIndex]
+        if (color === 'green') return 'bg-green-600 border-green-600'
+        if (color === 'yellow') return 'bg-yellow-600 border-yellow-600'
         return 'bg-gray-700 border-gray-700'
     }
 
