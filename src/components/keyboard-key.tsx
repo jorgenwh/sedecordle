@@ -4,15 +4,9 @@ interface KeyboardKeyProps {
     keyValue: string
     onClick: () => void
     boardStatus?: LetterBoardStatus
-    solvedBoards: Set<number>
 }
 
-const KeyboardKey = ({
-    keyValue,
-    onClick,
-    boardStatus,
-    solvedBoards,
-}: KeyboardKeyProps) => {
+const KeyboardKey = ({ keyValue, onClick, boardStatus }: KeyboardKeyProps) => {
     const isSpecialKey = keyValue === 'ENTER' || keyValue === 'BACKSPACE'
     const displayValue = keyValue === 'BACKSPACE' ? '⌫' : keyValue
 
@@ -22,18 +16,17 @@ const KeyboardKey = ({
         if (boardStatus) {
             const status = boardStatus.boardStatuses.get(boardIndex)
             if (status === 'correct') {
-                // Use muted green if board is solved
-                return solvedBoards.has(boardIndex)
-                    ? 'bg-green-900'
-                    : 'bg-green-600'
+                // Always use bright green for correct letters
+                return 'bg-green-600'
             } else if (status === 'present') {
-                // Use muted yellow if board is solved
-                return solvedBoards.has(boardIndex)
-                    ? 'bg-yellow-900'
-                    : 'bg-yellow-600'
+                // Always use bright yellow for present letters
+                return 'bg-yellow-600'
+            } else if (status === 'absent') {
+                // Letter was used but is not in this board's word
+                return 'bg-gray-900'
             }
-            // If letter has been used but no status for this board, it's absent
-            return 'bg-gray-900'
+            // No status for this board (e.g., already solved) - keep default color
+            return 'bg-gray-700'
         }
 
         // Default color - letter hasn't been used yet
