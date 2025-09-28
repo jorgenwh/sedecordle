@@ -143,6 +143,9 @@ npm run deploy     # Deploy to Firebase Hosting
 
 - **Indentation**: Use 4 spaces per indent level for all files
 - **Empty lines**: Never include indents or spaces in empty lines
+- **Function style**: Always use arrow functions (`=>`) for all function definitions
+  - Example: `const myFunc = (num: number): boolean => { return true; }`
+- **TypeScript**: Avoid boilerplate types like `React.FC` when possible
 - **Code quality**: Focus heavily on readability and maintainability
 - **Comments**: Be extremely conservative with comments. Code should be self-explanatory. Only add comments when code is unavoidably complex
 - **Code placement**: Before writing code, consider:
