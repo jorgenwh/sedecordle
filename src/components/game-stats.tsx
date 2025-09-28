@@ -38,7 +38,7 @@ export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
     }
 
     return (
-        <div className="flex justify-between items-center w-full max-w-lg px-4 py-2 text-sm">
+        <div className="flex justify-center items-center w-full px-4 py-3 bg-gray-800">
             <div className="flex-1 text-left">
                 <span className="text-gray-400">Boards: </span>
                 <span className="text-white font-semibold">

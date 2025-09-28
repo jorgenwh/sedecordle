@@ -61,12 +61,12 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                 {isSolved && (
                     <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
-                <div className="grid grid-rows-6 gap-0.5 p-1 bg-gray-800 rounded">
+                <div className="grid grid-rows-6 gap-1 p-2 bg-gray-800 rounded">
                     {[...Array(rowsToShow)].map(
                         (_, rowIndex) => (
                             <div
                                 key={rowIndex}
-                                className="grid grid-cols-5 gap-0.5"
+                                className="grid grid-cols-5 gap-1"
                             >
                                 {[...Array(5)].map((_, colIndex) => {
                                     const isCurrentRow =
@@ -79,8 +79,8 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                                         <div
                                             key={colIndex}
                                             className={`
-                                            w-7 h-7 flex items-center justify-center
-                                            text-xs font-bold text-white border
+                                            w-10 h-10 flex items-center justify-center
+                                            text-sm font-bold text-white border rounded
                                             ${isCurrentRow ? 'border-gray-500' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
                                         >
@@ -97,7 +97,7 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
     }
 
     return (
-        <div className="grid grid-cols-4 gap-2 p-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-4 gap-3 p-6 max-w-6xl mx-auto">
             {targetWords.map((_, index) => renderBoard(index))}
         </div>
     )
