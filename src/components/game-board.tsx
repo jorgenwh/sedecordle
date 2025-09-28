@@ -28,17 +28,18 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
     const renderBoard = (boardIndex: number) => {
         const isSolved = solvedBoards.has(boardIndex)
 
+        // For solved boards, only show the guesses up to when it was solved
+        const rowsToShow = isSolved
+            ? guesses.findIndex(guess => guess === targetWords[boardIndex]) + 1
+            : Math.min(21, guesses.length + 1)
+
         return (
             <div key={boardIndex} className="relative">
                 {isSolved && (
-                    <div className="absolute inset-0 bg-green-900 bg-opacity-20 z-10 pointer-events-none rounded">
-                        <div className="absolute top-1 right-1 bg-green-600 text-white text-xs px-1 rounded">
-                            ✓
-                        </div>
-                    </div>
+                    <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
                 <div className="grid grid-rows-6 gap-0.5 p-1 bg-gray-800 rounded">
-                    {[...Array(Math.min(21, guesses.length + 1))].map(
+                    {[...Array(rowsToShow)].map(
                         (_, rowIndex) => (
                             <div
                                 key={rowIndex}
@@ -46,7 +47,7 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                             >
                                 {[...Array(5)].map((_, colIndex) => {
                                     const isCurrentRow =
-                                        rowIndex === guesses.length
+                                        rowIndex === guesses.length && !isSolved
                                     const letter = isCurrentRow
                                         ? currentGuess[colIndex] || ''
                                         : guesses[rowIndex]?.[colIndex] || ''
