@@ -10,7 +10,6 @@ interface KeyboardProps {
 
 const Keyboard = ({
     onKeyPress,
-    usedLetters,
     letterBoardStatus,
     solvedBoards,
 }: KeyboardProps) => {
@@ -29,7 +28,6 @@ const Keyboard = ({
                             key={key}
                             keyValue={key}
                             onClick={() => onKeyPress(key)}
-                            letterStatus={usedLetters.get(key)}
                             boardStatus={letterBoardStatus.get(key)}
                             solvedBoards={solvedBoards}
                         />

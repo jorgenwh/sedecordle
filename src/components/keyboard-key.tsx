@@ -1,9 +1,8 @@
-import { LetterBoardStatus, UsedLetterStatus } from '../types/game'
+import { LetterBoardStatus } from '../types/game'
 
 interface KeyboardKeyProps {
     keyValue: string
     onClick: () => void
-    letterStatus?: UsedLetterStatus
     boardStatus?: LetterBoardStatus
     solvedBoards: Set<number>
 }
@@ -11,7 +10,6 @@ interface KeyboardKeyProps {
 const KeyboardKey = ({
     keyValue,
     onClick,
-    letterStatus,
     boardStatus,
     solvedBoards,
 }: KeyboardKeyProps) => {
@@ -20,29 +18,26 @@ const KeyboardKey = ({
 
     // Get the color for each board section
     const getBoardSectionColor = (boardIndex: number): string => {
-        // If board is solved, use a very muted color
-        if (solvedBoards.has(boardIndex)) {
-            return 'bg-gray-900'
-        }
-
         // If we have board-specific status for this letter
         if (boardStatus) {
             const status = boardStatus.boardStatuses.get(boardIndex)
             if (status === 'correct') {
-                return 'bg-green-600'
+                // Use muted green if board is solved
+                return solvedBoards.has(boardIndex)
+                    ? 'bg-green-900'
+                    : 'bg-green-600'
             } else if (status === 'present') {
-                return 'bg-yellow-600'
+                // Use muted yellow if board is solved
+                return solvedBoards.has(boardIndex)
+                    ? 'bg-yellow-900'
+                    : 'bg-yellow-600'
             }
+            // If letter has been used but no status for this board, it's absent
+            return 'bg-gray-900'
         }
 
-        // Default color - slightly lighter if letter hasn't been used yet
-        if (!letterStatus) {
-            return 'bg-gray-700'
-        } else if (letterStatus === 'absent') {
-            return 'bg-gray-900'
-        } else {
-            return 'bg-gray-700'
-        }
+        // Default color - letter hasn't been used yet
+        return 'bg-gray-700'
     }
 
     if (isSpecialKey) {
