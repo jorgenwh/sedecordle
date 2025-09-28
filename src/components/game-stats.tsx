@@ -38,32 +38,34 @@ export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
     }
 
     return (
-        <div className="flex justify-center items-center w-full px-4 py-3 bg-gray-800">
-            <div className="flex-1 text-left">
-                <span className="text-gray-400">Boards: </span>
-                <span className="text-white font-semibold">
-                    {gameState.solvedBoards.size}/16
-                </span>
+        <div className="flex justify-center items-center w-full px-4 py-3 bg-black">
+            <div className="flex justify-center items-center gap-8 max-w-lg">
+                <div>
+                    <span className="text-gray-400">Boards: </span>
+                    <span className="text-white font-semibold">
+                        {gameState.solvedBoards.size}/16
+                    </span>
+                </div>
+                <div>
+                    <span className="text-gray-400">Guesses: </span>
+                    <span className="text-white font-semibold">
+                        {gameState.guesses.length}/21
+                    </span>
+                </div>
+                <div>
+                    <span className="text-gray-400">Time: </span>
+                    <span className="text-white font-semibold">
+                        {gameState.startTime ? displayTime() : '0:00'}
+                    </span>
+                </div>
+                <button
+                    onClick={onShowLeaderboard}
+                    className="text-gray-400 hover:text-white"
+                    title="Leaderboard"
+                >
+                    📊
+                </button>
             </div>
-            <div className="flex-1 text-center">
-                <span className="text-gray-400">Guesses: </span>
-                <span className="text-white font-semibold">
-                    {gameState.guesses.length}/21
-                </span>
-            </div>
-            <div className="flex-1 text-right">
-                <span className="text-gray-400">Time: </span>
-                <span className="text-white font-semibold">
-                    {gameState.startTime ? displayTime() : '0:00'}
-                </span>
-            </div>
-            <button
-                onClick={onShowLeaderboard}
-                className="ml-4 text-gray-400 hover:text-white"
-                title="Leaderboard"
-            >
-                📊
-            </button>
         </div>
     )
 }

@@ -23,7 +23,7 @@ const Keyboard = ({ onKeyPress, usedLetters }: KeyboardProps) => {
     }
 
     return (
-        <div className="flex flex-col gap-1 p-3 bg-gray-900">
+        <div className="flex flex-col gap-1 p-3 bg-black">
             {rows.map((row, rowIndex) => (
                 <div key={rowIndex} className="flex justify-center gap-1">
                     {row.map((key) => (
