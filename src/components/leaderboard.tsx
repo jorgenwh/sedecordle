@@ -102,10 +102,16 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
                                                 {score ? score.playerName : '-'}
                                             </td>
                                             <td className="py-2 text-center text-white">
-                                                {score ? `${score.attempts}/21` : '-'}
+                                                {score
+                                                    ? `${score.attempts}/21`
+                                                    : '-'}
                                             </td>
                                             <td className="py-2 text-center text-white">
-                                                {score ? formatTime(score.timeSeconds) : '-'}
+                                                {score
+                                                    ? formatTime(
+                                                          score.timeSeconds,
+                                                      )
+                                                    : '-'}
                                             </td>
                                             <td className="py-2 text-right text-gray-400">
                                                 {score
