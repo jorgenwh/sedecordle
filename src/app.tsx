@@ -47,7 +47,7 @@ export function App() {
 
     return (
         <div className="h-screen bg-black text-white flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto pb-52">
+            <div className="flex-1 overflow-y-auto pb-64">
                 <GameMessage message={message} />
                 <GameBoard gameState={gameState} />
             </div>
@@ -73,7 +73,8 @@ export function App() {
 
             <SaveScoreModal
                 isOpen={showSaveScore}
-                onClose={() => {
+                onClose={() => setShowSaveScore(false)}
+                onSaveSuccess={() => {
                     setShowSaveScore(false)
                     setShowLeaderboard(true)
                 }}

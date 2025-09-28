@@ -5,12 +5,14 @@ import { GameState } from '../types/game'
 interface SaveScoreModalProps {
     isOpen: boolean
     onClose: () => void
+    onSaveSuccess: () => void
     gameState: GameState
 }
 
 export const SaveScoreModal = ({
     isOpen,
     onClose,
+    onSaveSuccess,
     gameState,
 }: SaveScoreModalProps) => {
     const [playerName, setPlayerName] = useState('')
@@ -58,7 +60,7 @@ export const SaveScoreModal = ({
                 targetWords: gameState.targetWords,
             })
 
-            onClose()
+            onSaveSuccess()
         } catch (err) {
             setError('Failed to save score. Please try again.')
             console.error('Error saving score:', err)
