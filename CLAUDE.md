@@ -147,6 +147,7 @@ npm run deploy     # Deploy to Firebase Hosting
   - Example: `const myFunc = (num: number): boolean => { return true; }`
 - **TypeScript**: Avoid boilerplate types like `React.FC` when possible
 - **Code quality**: Focus heavily on readability and maintainability
+- **Modularity**: Keep components small and focused. Break down large components into smaller sub-components. Keep logic and styling close to where it's used. Avoid heavy, monolithic files
 - **Comments**: Be extremely conservative with comments. Code should be self-explanatory. Only add comments when code is unavoidably complex
 - **Code placement**: Before writing code, consider:
   1. Is this the correct location for this code?
