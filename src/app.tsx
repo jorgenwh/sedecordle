@@ -51,7 +51,7 @@ export function App() {
                 <GameBoard gameState={gameState} />
             </div>
             <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-20">
-                <div className="border-b border-gray-800">
+                <div>
                     <GameStats
                         gameState={gameState}
                         onShowLeaderboard={() => setShowLeaderboard(true)}
