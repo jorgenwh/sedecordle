@@ -25,7 +25,7 @@ export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
     }
 }
 
-export const getTopScores = async (limitCount = 100): Promise<Score[]> => {
+export const getTopScores = async (limitCount = 10): Promise<Score[]> => {
     try {
         const scoresQuery = query(
             collection(db, COLLECTION_NAME),
@@ -45,7 +45,6 @@ export const getTopScores = async (limitCount = 100): Promise<Score[]> => {
                 attempts: data.attempts,
                 timeSeconds: data.timeSeconds,
                 completedAt: data.completedAt.toDate(),
-                boards: data.boards,
                 targetWords: data.targetWords,
             })
         })

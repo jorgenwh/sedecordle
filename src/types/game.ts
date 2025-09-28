@@ -16,6 +16,5 @@ export interface Score {
     attempts: number
     timeSeconds: number
     completedAt: Date
-    boards: number[]
     targetWords: string[]
 }
