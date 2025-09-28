@@ -143,7 +143,11 @@ npm run deploy     # Deploy to Firebase Hosting
 
 - **Indentation**: Use 4 spaces per indent level for all files
 - **Empty lines**: Never include indents or spaces in empty lines
+- **Function style**: Always use arrow functions (`=>`) for all function definitions
+  - Example: `const myFunc = (num: number): boolean => { return true; }`
+- **TypeScript**: Avoid boilerplate types like `React.FC` when possible
 - **Code quality**: Focus heavily on readability and maintainability
+- **Modularity**: Keep components small and focused. Break down large components into smaller sub-components. Keep logic and styling close to where it's used. Avoid heavy, monolithic files
 - **Comments**: Be extremely conservative with comments. Code should be self-explanatory. Only add comments when code is unavoidably complex
 - **Code placement**: Before writing code, consider:
   1. Is this the correct location for this code?
@@ -153,6 +157,24 @@ npm run deploy     # Deploy to Firebase Hosting
 - **Consistency**: Follow existing patterns, structures, and naming conventions throughout the codebase
 - **File naming**: All lowercase with dash separation (e.g., `image-cache.tsx`, `game-engine.ts`, not `imageCache.tsx` or `GameEngine.ts`)
 - **Documentation**: Update CLAUDE.md when making significant changes to the project structure, architecture, or development workflow
+
+## Git Usage Guidelines
+
+**IMPORTANT: Never perform git operations that modify the repository**
+
+- **NEVER** run the following git commands:
+  - `git add`
+  - `git commit`
+  - `git push`
+  - `git pull`
+  - `git fetch`
+  - `git checkout`
+- **Allowed** git commands (for inspection only):
+  - `git status`
+  - `git log`
+  - `git diff`
+  - `git branch`
+  - `git show`
 
 ## CI/CD & Branch Protection
 

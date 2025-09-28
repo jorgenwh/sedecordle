@@ -28,7 +28,8 @@ export default [
             'react/react-in-jsx-scope': 'off',
             'semi': ['error', 'never'],
             'quotes': ['error', 'single'],
-            'indent': ['error', 4],
+            'indent': 'off',
+            '@typescript-eslint/indent': 'off',
             'no-undef': 'off',
         },
         settings: {
