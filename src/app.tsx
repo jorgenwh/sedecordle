@@ -16,6 +16,7 @@ export function App() {
         isLoading,
         gameState,
         usedLetters,
+        letterBoardStatus,
         message,
         initializeGame,
         submitGuess,
@@ -60,6 +61,8 @@ export function App() {
                 <Keyboard
                     onKeyPress={handleKeyPress}
                     usedLetters={usedLetters}
+                    letterBoardStatus={letterBoardStatus}
+                    solvedBoards={gameState.solvedBoards}
                 />
             </div>
 

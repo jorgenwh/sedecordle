@@ -10,6 +10,10 @@ export interface GameState {
 
 export type UsedLetterStatus = 'correct' | 'present' | 'absent'
 
+export interface LetterBoardStatus {
+    boardStatuses: Map<number, UsedLetterStatus>
+}
+
 export interface Score {
     id?: string
     playerName: string
