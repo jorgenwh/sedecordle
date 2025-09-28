@@ -77,7 +77,7 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                                     <div
                                         key={colIndex}
                                         className={`
-                                            w-10 h-10 flex items-center justify-center m-px
+                                            w-12 h-10 flex items-center justify-center m-px
                                             text-2xl font-bold text-white border rounded
                                             ${isCurrentRow ? 'border-gray-600' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}

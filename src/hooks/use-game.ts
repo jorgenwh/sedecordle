@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { getRandomWords, isValidWord } from '../utils/words'
-import { GameState, UsedLetterStatus } from '../types/game'
+import { GameState, UsedLetterStatus, LetterBoardStatus } from '../types/game'
 
 export const useGame = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -15,6 +15,9 @@ export const useGame = () => {
     })
     const [usedLetters, setUsedLetters] = useState<
         Map<string, UsedLetterStatus>
+    >(new Map())
+    const [letterBoardStatus, setLetterBoardStatus] = useState<
+        Map<string, LetterBoardStatus>
     >(new Map())
     const [message, setMessage] = useState('')
 
@@ -33,40 +36,92 @@ export const useGame = () => {
             endTime: null,
         })
         setUsedLetters(new Map())
+        setLetterBoardStatus(new Map())
         setMessage('')
         setIsLoading(false)
     }
 
     const updateUsedLetters = useCallback(
-        (guess: string, targetWords: string[]) => {
+        (guess: string, targetWords: string[], solvedBoards: Set<number>) => {
             const newUsedLetters = new Map(usedLetters)
+            const newLetterBoardStatus = new Map(letterBoardStatus)
 
-            for (let i = 0; i < guess.length; i++) {
-                const letter = guess[i]
-                let status: UsedLetterStatus = 'absent'
+            // Process each letter in the guess
+            for (const letter of guess) {
+                let overallStatus: UsedLetterStatus = 'absent'
+                const boardStatuses = new Map<number, UsedLetterStatus>()
 
-                for (const target of targetWords) {
-                    if (target[i] === letter) {
-                        status = 'correct'
-                        break
-                    } else if (target.includes(letter) && status === 'absent') {
-                        status = 'present'
+                // Check each board for this letter
+                for (
+                    let boardIndex = 0;
+                    boardIndex < targetWords.length;
+                    boardIndex++
+                ) {
+                    if (solvedBoards.has(boardIndex)) continue
+
+                    const target = targetWords[boardIndex]
+                    let boardStatus: UsedLetterStatus = 'absent'
+
+                    // Check if letter is in correct position
+                    for (let pos = 0; pos < target.length; pos++) {
+                        if (target[pos] === letter) {
+                            if (guess[pos] === letter) {
+                                boardStatus = 'correct'
+                                overallStatus = 'correct'
+                                break
+                            } else if (boardStatus === 'absent') {
+                                boardStatus = 'present'
+                                if (overallStatus === 'absent') {
+                                    overallStatus = 'present'
+                                }
+                            }
+                        }
+                    }
+
+                    if (boardStatus !== 'absent') {
+                        boardStatuses.set(boardIndex, boardStatus)
                     }
                 }
 
+                // Update overall letter status
                 const currentStatus = newUsedLetters.get(letter)
                 if (
                     !currentStatus ||
-                    (currentStatus === 'absent' && status !== 'absent') ||
-                    (currentStatus === 'present' && status === 'correct')
+                    (currentStatus === 'absent' &&
+                        overallStatus !== 'absent') ||
+                    (currentStatus === 'present' && overallStatus === 'correct')
                 ) {
-                    newUsedLetters.set(letter, status)
+                    newUsedLetters.set(letter, overallStatus)
+                }
+
+                // Update or merge board-specific statuses
+                const existingBoardStatus = newLetterBoardStatus.get(letter)
+                if (existingBoardStatus) {
+                    // Merge with existing board statuses
+                    boardStatuses.forEach((status, boardIndex) => {
+                        const existing =
+                            existingBoardStatus.boardStatuses.get(boardIndex)
+                        if (
+                            !existing ||
+                            (existing === 'present' && status === 'correct')
+                        ) {
+                            existingBoardStatus.boardStatuses.set(
+                                boardIndex,
+                                status,
+                            )
+                        }
+                    })
+                } else if (boardStatuses.size > 0) {
+                    newLetterBoardStatus.set(letter, {
+                        boardStatuses: boardStatuses,
+                    })
                 }
             }
 
             setUsedLetters(newUsedLetters)
+            setLetterBoardStatus(newLetterBoardStatus)
         },
-        [usedLetters],
+        [usedLetters, letterBoardStatus],
     )
 
     const submitGuess = useCallback(() => {
@@ -88,6 +143,7 @@ export const useGame = () => {
         updateUsedLetters(
             gameState.currentGuess.toUpperCase(),
             gameState.targetWords,
+            newSolvedBoards,
         )
 
         const startTime = gameState.startTime || Date.now()
@@ -151,6 +207,7 @@ export const useGame = () => {
         isLoading,
         gameState,
         usedLetters,
+        letterBoardStatus,
         message,
         initializeGame,
         submitGuess,
