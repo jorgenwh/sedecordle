@@ -12,7 +12,7 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
         guessIndex: number,
         letterIndex: number,
     ): string => {
-        if (guessIndex >= guesses.length) return 'bg-gray-800 border-gray-600'
+        if (guessIndex >= guesses.length) return 'bg-black border-gray-800'
 
         const guess = guesses[guessIndex]
         const target = targetWords[boardIndex]
@@ -45,7 +45,7 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
         const color = guessColors[letterIndex]
         if (color === 'green') return 'bg-green-600 border-green-600'
         if (color === 'yellow') return 'bg-yellow-600 border-yellow-600'
-        return 'bg-gray-700 border-gray-700'
+        return 'bg-gray-800 border-gray-800'
     }
 
     const renderBoard = (boardIndex: number) => {
@@ -61,7 +61,7 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                 {isSolved && (
                     <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
-                <div className="grid grid-rows-6 gap-1 p-2 bg-gray-800 rounded">
+                <div className="grid grid-rows-6 gap-1 p-2 bg-black border border-gray-800 rounded">
                     {[...Array(rowsToShow)].map(
                         (_, rowIndex) => (
                             <div
@@ -79,9 +79,9 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                                         <div
                                             key={colIndex}
                                             className={`
-                                            w-10 h-10 flex items-center justify-center
-                                            text-sm font-bold text-white border rounded
-                                            ${isCurrentRow ? 'border-gray-500' : getCellColor(boardIndex, rowIndex, colIndex)}
+                                            w-10 h-10 flex items-center justify-center m-px
+                                            text-2xl font-bold text-white border rounded
+                                            ${isCurrentRow ? 'border-gray-600' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
                                         >
                                             {letter.toUpperCase()}

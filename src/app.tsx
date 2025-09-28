@@ -45,13 +45,13 @@ export function App() {
     }
 
     return (
-        <div className="h-screen bg-gray-900 text-white flex flex-col overflow-hidden">
+        <div className="h-screen bg-black text-white flex flex-col overflow-hidden">
             <div className="flex-1 overflow-y-auto pb-52">
                 <GameMessage message={message} />
                 <GameBoard gameState={gameState} />
             </div>
-            <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 z-20">
-                <div className="border-b border-gray-700">
+            <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-20">
+                <div className="border-b border-gray-800">
                     <GameStats
                         gameState={gameState}
                         onShowLeaderboard={() => setShowLeaderboard(true)}
