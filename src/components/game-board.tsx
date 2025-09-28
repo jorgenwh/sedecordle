@@ -1,12 +1,4 @@
-export interface GameState {
-    targetWords: string[]
-    guesses: string[]
-    currentGuess: string
-    gameStatus: 'playing' | 'won' | 'lost'
-    solvedBoards: Set<number>
-    startTime: number | null
-    endTime: number | null
-}
+import { GameState } from '../types/game'
 
 interface GameBoardProps {
     gameState: GameState
@@ -20,68 +12,89 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
         guessIndex: number,
         letterIndex: number,
     ): string => {
-        if (guessIndex >= guesses.length) return 'bg-gray-800 border-gray-600'
+        if (guessIndex >= guesses.length) return 'bg-black border-gray-800'
 
         const guess = guesses[guessIndex]
         const target = targetWords[boardIndex]
-        const guessLetter = guess[letterIndex]
-        const targetLetter = target[letterIndex]
 
-        if (guessLetter === targetLetter) return 'bg-green-600 border-green-600'
-        if (target.includes(guessLetter))
-            return 'bg-yellow-600 border-yellow-600'
-        return 'bg-gray-700 border-gray-700'
+        // First pass: mark all correct positions (green)
+        const targetLetterCount: { [key: string]: number } = {}
+        const guessColors: string[] = new Array(5).fill('')
+
+        // Count letters in target and mark greens
+        for (let i = 0; i < target.length; i++) {
+            targetLetterCount[target[i]] =
+                (targetLetterCount[target[i]] || 0) + 1
+            if (guess[i] === target[i]) {
+                guessColors[i] = 'green'
+                targetLetterCount[guess[i]]--
+            }
+        }
+
+        // Second pass: mark yellows (present but wrong position)
+        for (let i = 0; i < guess.length; i++) {
+            if (guessColors[i] === '') {
+                if (targetLetterCount[guess[i]] > 0) {
+                    guessColors[i] = 'yellow'
+                    targetLetterCount[guess[i]]--
+                } else {
+                    guessColors[i] = 'gray'
+                }
+            }
+        }
+
+        const color = guessColors[letterIndex]
+        if (color === 'green') return 'bg-green-600 border-green-600'
+        if (color === 'yellow') return 'bg-yellow-600 border-yellow-600'
+        return 'bg-gray-800 border-gray-800'
     }
 
     const renderBoard = (boardIndex: number) => {
         const isSolved = solvedBoards.has(boardIndex)
 
+        // For solved boards, only show the guesses up to when it was solved
+        const rowsToShow = isSolved
+            ? guesses.findIndex((guess) => guess === targetWords[boardIndex]) +
+              1
+            : Math.min(21, guesses.length + 1)
+
         return (
             <div key={boardIndex} className="relative">
                 {isSolved && (
-                    <div className="absolute inset-0 bg-green-900 bg-opacity-20 z-10 pointer-events-none rounded">
-                        <div className="absolute top-1 right-1 bg-green-600 text-white text-xs px-1 rounded">
-                            ✓
-                        </div>
-                    </div>
+                    <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
-                <div className="grid grid-rows-6 gap-0.5 p-1 bg-gray-800 rounded">
-                    {[...Array(Math.min(21, guesses.length + 1))].map(
-                        (_, rowIndex) => (
-                            <div
-                                key={rowIndex}
-                                className="grid grid-cols-5 gap-0.5"
-                            >
-                                {[...Array(5)].map((_, colIndex) => {
-                                    const isCurrentRow =
-                                        rowIndex === guesses.length
-                                    const letter = isCurrentRow
-                                        ? currentGuess[colIndex] || ''
-                                        : guesses[rowIndex]?.[colIndex] || ''
+                <div className="grid grid-rows-6 gap-1 p-2 bg-black border border-gray-800 rounded">
+                    {[...Array(rowsToShow)].map((_, rowIndex) => (
+                        <div key={rowIndex} className="grid grid-cols-5 gap-1">
+                            {[...Array(5)].map((_, colIndex) => {
+                                const isCurrentRow =
+                                    rowIndex === guesses.length && !isSolved
+                                const letter = isCurrentRow
+                                    ? currentGuess[colIndex] || ''
+                                    : guesses[rowIndex]?.[colIndex] || ''
 
-                                    return (
-                                        <div
-                                            key={colIndex}
-                                            className={`
-                                            w-7 h-7 flex items-center justify-center
-                                            text-xs font-bold text-white border
-                                            ${isCurrentRow ? 'border-gray-500' : getCellColor(boardIndex, rowIndex, colIndex)}
+                                return (
+                                    <div
+                                        key={colIndex}
+                                        className={`
+                                            w-10 h-10 flex items-center justify-center m-px
+                                            text-2xl font-bold text-white border rounded
+                                            ${isCurrentRow ? 'border-gray-600' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
-                                        >
-                                            {letter.toUpperCase()}
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        ),
-                    )}
+                                    >
+                                        {letter.toUpperCase()}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    ))}
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="grid grid-cols-4 gap-2 p-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-4 gap-3 p-6 max-w-6xl mx-auto">
             {targetWords.map((_, index) => renderBoard(index))}
         </div>
     )

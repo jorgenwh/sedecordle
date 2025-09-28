@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react'
 import { getRandomWords, isValidWord } from '../utils/words'
-import { GameState } from '../components/game-board'
-
-export type UsedLetterStatus = 'correct' | 'present' | 'absent'
+import { GameState, UsedLetterStatus } from '../types/game'
 
 export const useGame = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -75,8 +73,6 @@ export const useGame = () => {
         if (gameState.currentGuess.length !== 5) return false
 
         if (!isValidWord(gameState.currentGuess)) {
-            setMessage('Not a valid word!')
-            setTimeout(() => setMessage(''), 2000)
             return false
         }
 
