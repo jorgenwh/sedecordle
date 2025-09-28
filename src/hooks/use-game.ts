@@ -106,8 +106,8 @@ export const useGame = () => {
             gameStatus: allSolved
                 ? 'won'
                 : newGuesses.length >= 21
-                    ? 'lost'
-                    : 'playing',
+                  ? 'lost'
+                  : 'playing',
             startTime,
             endTime: gameOver ? Date.now() : null,
         })
