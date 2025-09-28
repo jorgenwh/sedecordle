@@ -78,9 +78,8 @@ export const useGame = () => {
                         }
                     }
 
-                    if (boardStatus !== 'absent') {
-                        boardStatuses.set(boardIndex, boardStatus)
-                    }
+                    // Store the status for this board (including absent)
+                    boardStatuses.set(boardIndex, boardStatus)
                 }
 
                 // Update overall letter status
@@ -103,7 +102,8 @@ export const useGame = () => {
                             existingBoardStatus.boardStatuses.get(boardIndex)
                         if (
                             !existing ||
-                            (existing === 'present' && status === 'correct')
+                            status === 'correct' ||
+                            (existing === 'absent' && status === 'present')
                         ) {
                             existingBoardStatus.boardStatuses.set(
                                 boardIndex,
@@ -143,7 +143,7 @@ export const useGame = () => {
         updateUsedLetters(
             gameState.currentGuess.toUpperCase(),
             gameState.targetWords,
-            newSolvedBoards,
+            gameState.solvedBoards,
         )
 
         const startTime = gameState.startTime || Date.now()
