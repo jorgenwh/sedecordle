@@ -12,7 +12,8 @@
       "Bash(git push:*)",
       "Bash(cat:*)",
       "Bash(tree:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git show-branch:*)"
     ],
     "deny": [],
     "ask": []

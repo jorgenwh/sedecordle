@@ -4,33 +4,53 @@ interface KeyboardKeyProps {
     keyValue: string
     onClick: () => void
     boardStatus?: LetterBoardStatus
+    solvedBoards: Set<number>
 }
 
-const KeyboardKey = ({ keyValue, onClick, boardStatus }: KeyboardKeyProps) => {
+const KeyboardKey = ({
+    keyValue,
+    onClick,
+    boardStatus,
+    solvedBoards,
+}: KeyboardKeyProps) => {
     const isSpecialKey = keyValue === 'ENTER' || keyValue === 'BACKSPACE'
     const displayValue = keyValue === 'BACKSPACE' ? '⌫' : keyValue
 
     // Get the color for each board section
     const getBoardSectionColor = (boardIndex: number): string => {
-        // If we have board-specific status for this letter
-        if (boardStatus) {
-            const status = boardStatus.boardStatuses.get(boardIndex)
-            if (status === 'correct') {
-                // Always use bright green for correct letters
-                return 'bg-green-600'
-            } else if (status === 'present') {
-                // Always use bright yellow for present letters
-                return 'bg-yellow-600'
-            } else if (status === 'absent') {
-                // Letter was used but is not in this board's word
-                return 'bg-gray-900'
-            }
-            // No status for this board (e.g., already solved) - keep default color
+        if (!boardStatus) {
             return 'bg-gray-700'
         }
 
-        // Default color - letter hasn't been used yet
-        return 'bg-gray-700'
+        const boardIsSolved = solvedBoards.has(boardIndex)
+
+        if (boardIsSolved) {
+            if (boardStatus) {
+                const status = boardStatus.boardStatuses.get(boardIndex)
+                if (status === 'correct') {
+                    return 'bg-green-600'
+                } else if (status === 'present') {
+                    return 'bg-green-600'
+                } else {
+                    return 'bg-gray-900'
+                }
+            } else {
+                return 'bg-gray-700'
+            }
+        } else {
+            if (boardStatus) {
+                const status = boardStatus.boardStatuses.get(boardIndex)
+                if (status === 'correct') {
+                    return 'bg-green-600'
+                } else if (status === 'present') {
+                    return 'bg-yellow-600'
+                } else {
+                    return 'bg-gray-900'
+                }
+            } else {
+                return 'bg-gray-700'
+            }
+        }
     }
 
     if (isSpecialKey) {

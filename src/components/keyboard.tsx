@@ -5,9 +5,14 @@ interface KeyboardProps {
     onKeyPress: (key: string) => void
     usedLetters: Map<string, 'correct' | 'present' | 'absent'>
     letterBoardStatus: Map<string, LetterBoardStatus>
+    solvedBoards: Set<number>
 }
 
-const Keyboard = ({ onKeyPress, letterBoardStatus }: KeyboardProps) => {
+const Keyboard = ({
+    onKeyPress,
+    letterBoardStatus,
+    solvedBoards,
+}: KeyboardProps) => {
     const rows = [
         ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
         ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
@@ -24,6 +29,7 @@ const Keyboard = ({ onKeyPress, letterBoardStatus }: KeyboardProps) => {
                             keyValue={key}
                             onClick={() => onKeyPress(key)}
                             boardStatus={letterBoardStatus.get(key)}
+                            solvedBoards={solvedBoards}
                         />
                     ))}
                 </div>
