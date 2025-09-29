@@ -62,6 +62,7 @@ export function App() {
                     onKeyPress={handleKeyPress}
                     usedLetters={usedLetters}
                     letterBoardStatus={letterBoardStatus}
+                    solvedBoards={gameState.solvedBoards}
                 />
             </div>
 
