@@ -18,26 +18,39 @@ const KeyboardKey = ({
 
     // Get the color for each board section
     const getBoardSectionColor = (boardIndex: number): string => {
-        // If we have board-specific status for this letter
-        if (boardStatus) {
-            const status = boardStatus.boardStatuses.get(boardIndex)
-            if (status === 'correct') {
-                // Use muted green if board is solved
-                return solvedBoards.has(boardIndex)
-                    ? 'bg-green-900'
-                    : 'bg-green-600'
-            } else if (status === 'present') {
-                // Use muted yellow if board is solved
-                return solvedBoards.has(boardIndex)
-                    ? 'bg-yellow-900'
-                    : 'bg-yellow-600'
-            }
-            // If letter has been used but no status for this board, it's absent
-            return 'bg-gray-900'
+        if (!boardStatus) {
+            return 'bg-gray-700'
         }
 
-        // Default color - letter hasn't been used yet
-        return 'bg-gray-700'
+        const boardIsSolved = solvedBoards.has(boardIndex)
+
+        if (boardIsSolved) {
+            if (boardStatus) {
+                const status = boardStatus.boardStatuses.get(boardIndex)
+                if (status === 'correct') {
+                    return 'bg-green-600'
+                } else if (status === 'present') {
+                    return 'bg-green-600'
+                } else {
+                    return 'bg-gray-900'
+                }
+            } else {
+                return 'bg-gray-700'
+            }
+        } else {
+            if (boardStatus) {
+                const status = boardStatus.boardStatuses.get(boardIndex)
+                if (status === 'correct') {
+                    return 'bg-green-600'
+                } else if (status === 'present') {
+                    return 'bg-yellow-600'
+                } else {
+                    return 'bg-gray-900'
+                }
+            } else {
+                return 'bg-gray-700'
+            }
+        }
     }
 
     if (isSpecialKey) {

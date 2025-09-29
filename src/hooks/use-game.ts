@@ -134,17 +134,17 @@ export const useGame = () => {
         const newGuesses = [...gameState.guesses, gameState.currentGuess]
         const newSolvedBoards = new Set(gameState.solvedBoards)
 
+        updateUsedLetters(
+            gameState.currentGuess.toUpperCase(),
+            gameState.targetWords,
+            gameState.solvedBoards,
+        )
+
         gameState.targetWords.forEach((target, index) => {
             if (target === gameState.currentGuess.toUpperCase()) {
                 newSolvedBoards.add(index)
             }
         })
-
-        updateUsedLetters(
-            gameState.currentGuess.toUpperCase(),
-            gameState.targetWords,
-            newSolvedBoards,
-        )
 
         const startTime = gameState.startTime || Date.now()
         const allSolved = newSolvedBoards.size === 16
