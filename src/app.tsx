@@ -12,6 +12,7 @@ import { useKeyboardHandler } from './hooks/use-keyboard-handler'
 export function App() {
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
+    const [hasPromptedSave, setHasPromptedSave] = useState(false)
     const {
         isLoading,
         gameState,
@@ -36,10 +37,11 @@ export function App() {
     }, [])
 
     useEffect(() => {
-        if (gameState.gameStatus === 'won' && !showSaveScore) {
+        if (gameState.gameStatus === 'won' && !hasPromptedSave) {
             setShowSaveScore(true)
+            setHasPromptedSave(true)
         }
-    }, [gameState.gameStatus, showSaveScore])
+    }, [gameState.gameStatus, hasPromptedSave])
 
     if (isLoading) {
         return <LoadingScreen />

@@ -78,9 +78,18 @@ export const SaveScoreModal = ({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-                <h2 className="text-2xl font-bold text-white mb-4">
-                    🎉 Congratulations!
-                </h2>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-white">
+                        🎉 Congratulations!
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        disabled={isSaving}
+                        className="text-gray-400 hover:text-white text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        ×
+                    </button>
+                </div>
                 <p className="text-gray-300 mb-6">
                     You solved all 16 boards in {gameState.guesses.length}{' '}
                     guesses and {minutes}:{seconds.toString().padStart(2, '0')}!
