@@ -20,9 +20,9 @@ export const useGame = () => {
         Map<string, LetterBoardStatus>
     >(new Map())
     const [message, setMessage] = useState('')
-    const [flashType, setFlashType] = useState<
-        'correct' | 'incorrect' | null
-    >(null)
+    const [flashType, setFlashType] = useState<'correct' | 'incorrect' | null>(
+        null,
+    )
 
     const initializeGame = async () => {
         setIsLoading(true)

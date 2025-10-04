@@ -1,215 +1,162 @@
-# Sedecordle - Project Documentation
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Overview
-Sedecordle is a word-guessing game inspired by Wordle, where players must solve 16 independent 5-letter word puzzles simultaneously using only 21 total guesses. Each guess is applied to all 16 boards at once, providing feedback for each board independently.
-
-## Game Rules
-- **Objective**: Guess all 16 different 5-letter words within 21 attempts
-- **Gameplay**:
-  - Each guess is a valid 5-letter word
-  - The same guess is applied to all 16 boards simultaneously
-  - Each board provides independent color-coded feedback:
-    - 🟩 Green: Correct letter in correct position
-    - 🟨 Yellow: Correct letter in wrong position
-    - ⬜ Gray: Letter not in the word
-- **Constraints**:
-  - All 16 target words must be unique (no duplicates)
-  - Players have exactly 21 guesses to solve all boards
-  - Win condition: All 16 words correctly guessed
-  - Loss condition: 21 guesses used without solving all words
-- **Timing**: Games are timed from first guess to completion for leaderboard ranking
-
-## User Interface Requirements
-- **Layout**: 4x4 grid of Wordle boards (16 total)
-- **Each Board**:
-  - 21 rows × 5 columns for letter input
-  - Visual indication when a board is solved (shows "G" or similar marker)
-- **Interactive Keyboard**:
-  - QWERTY layout at the bottom of the interface
-  - Enter and Backspace functionality
-- **Visual Feedback**:
-  - Color-coded letters based on correctness (green/yellow/gray)
-- **Timer**: Display elapsed time from first guess to completion
-- **Leaderboard**: Separate view showing top scores (sorted by fewest attempts, then fastest time)
-- **Score Saving**: Modal for players to enter their name after winning
+Sedecordle is a word-guessing game where players solve 16 independent 5-letter word puzzles simultaneously using only 21 total guesses. Each guess applies to all 16 boards at once, with independent color-coded feedback per board.
 
 ## Technology Stack
-
-### Frontend
-- **Framework**: React with TypeScript
-- **Build Tool**: Vite
+- **Frontend**: React 18 + TypeScript + Vite
 - **Styling**: Tailwind CSS
-- **Hosting**: Firebase Hosting
-
-### Backend (Serverless)
-- **Database**: Firebase Firestore (direct client access)
-- **Authentication**: None (anonymous play)
-- **Architecture**: Client-side only, no server/backend needed
-
-## Project Structure
-
-```
-sedecordle/
-├── .github/
-│   └── workflows/      # CI/CD pipelines
-├── src/
-│   ├── app.tsx
-│   ├── main.tsx
-│   ├── vite-env.d.ts
-│   └── index.css
-├── index.html
-├── package.json
-├── tsconfig.json
-├── tsconfig.node.json
-├── vite.config.ts
-├── tailwind.config.js
-├── postcss.config.js
-├── eslint.config.js
-├── .prettierrc
-├── .gitignore
-├── run-checks.sh       # Local code quality checks
-├── firebase.json       # (to be added)
-├── firestore.rules     # (to be added)
-└── CLAUDE.md
-```
-
-## Firebase Configuration
-
-### Environment Variables Setup
-
-Since this is an open-source project, Firebase configuration is stored in environment variables:
-
-1. **Local Development**:
-   - Copy `.env.example` to `.env`
-   - Fill in your Firebase project configuration
-   - Never commit `.env` to the repository
-
-2. **GitHub Actions**:
-   - Add Firebase config as repository secrets:
-     - `VITE_FIREBASE_API_KEY`
-     - `VITE_FIREBASE_AUTH_DOMAIN`
-     - `VITE_FIREBASE_PROJECT_ID`
-     - `VITE_FIREBASE_STORAGE_BUCKET`
-     - `VITE_FIREBASE_MESSAGING_SENDER_ID`
-     - `VITE_FIREBASE_APP_ID`
-   - Add `FIREBASE_SERVICE_ACCOUNT` (JSON content from Firebase Console)
-
-3. **Firebase Hosting**:
-   - Environment variables are built into the app during deployment
-   - GitHub Actions handles this automatically
-
-### Getting Firebase Configuration
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select your project
-3. Go to Project Settings → General
-4. Scroll to "Your apps" → Web app
-5. Copy the configuration values
-
-### Firestore Data Structure
-
-```typescript
-// Collection: scores
-{
-  id: auto-generated,
-  playerName: string,
-  attempts: number,        // 1-21
-  timeSeconds: number,     // Time in seconds to complete
-  completedAt: timestamp,
-  boards: number[]        // Which guess # solved each board (1-21)
-}
-```
-
-### Firestore Security Rules
-- Allow anonymous reads for leaderboard
-- Allow anonymous writes for score submission
-- Validate score data structure and ranges
-- Prevent modification of existing scores
+- **Database**: Firebase Firestore (direct client access, no backend)
+- **Deployment**: Firebase Hosting via GitHub Actions
 
 ## Development Commands
 
 ```bash
-npm install        # Install dependencies
-npm run dev        # Start development server
-npm run build      # Build for production
-npm run preview    # Preview production build
-npm run format     # Format code with Prettier
-npm run lint       # Check code with ESLint
-npm run lint:fix   # Fix ESLint issues
-npm run deploy     # Deploy to Firebase Hosting
-./run-checks.sh    # Run all code quality checks
+npm install           # Install dependencies
+npm run dev           # Start dev server (http://localhost:5173)
+npm run build         # Production build (includes TypeScript check)
+npm run preview       # Preview production build
+npm run format        # Format code with Prettier
+npm run format:check  # Check formatting (used in CI)
+npm run lint          # Lint with ESLint
+npm run lint:fix      # Fix ESLint issues
+npm run deploy        # Build and deploy to Firebase
+./run-checks.sh       # Run all quality checks (format, lint, build)
 ```
 
-## Code Guidelines
+## Project Structure
 
-- **Indentation**: Use 4 spaces per indent level for all files
-- **Empty lines**: Never include indents or spaces in empty lines
-- **Function style**: Always use arrow functions (`=>`) for all function definitions
-  - Example: `const myFunc = (num: number): boolean => { return true; }`
-- **TypeScript**: Avoid boilerplate types like `React.FC` when possible
-- **Code quality**: Focus heavily on readability and maintainability
-- **Modularity**: Keep components small and focused. Break down large components into smaller sub-components. Keep logic and styling close to where it's used. Avoid heavy, monolithic files
-- **Comments**: Be extremely conservative with comments. Code should be self-explanatory. Only add comments when code is unavoidably complex
-- **Code placement**: Before writing code, consider:
-  1. Is this the correct location for this code?
-  2. Check existing patterns in the repository for similar functionality
-  3. Can this code be written more clearly?
-- **No dead code**: Don't add unused functions or features "for the future"
-- **Consistency**: Follow existing patterns, structures, and naming conventions throughout the codebase
-- **File naming**: All lowercase with dash separation (e.g., `image-cache.tsx`, `game-engine.ts`, not `imageCache.tsx` or `GameEngine.ts`)
-- **Documentation**: Update CLAUDE.md when making significant changes to the project structure, architecture, or development workflow
+```
+src/
+├── components/       # React components
+│   ├── game-board.tsx
+│   ├── keyboard.tsx
+│   ├── keyboard-key.tsx
+│   ├── leaderboard.tsx
+│   ├── save-score-modal.tsx
+│   ├── game-stats.tsx
+│   ├── game-message.tsx
+│   └── loading-screen.tsx
+├── hooks/           # Custom React hooks
+│   ├── use-game.ts         # Core game logic
+│   └── use-keyboard-handler.ts
+├── services/        # External service integrations
+│   └── leaderboard.ts      # Firebase Firestore operations
+├── utils/           # Utility functions
+│   └── words.ts            # Word validation and selection
+├── types/           # TypeScript type definitions
+│   └── game.ts
+├── data/            # Static data files
+│   ├── wordle_words_la.txt  # Answer words (~2300 words)
+│   └── wordle_words_ta.txt  # Additional valid guesses (~10000 words)
+├── config/          # Configuration
+│   └── firebase.ts         # Firebase initialization
+├── app.tsx          # Main app component
+├── main.tsx         # React entry point
+└── index.css        # Global styles
+```
 
-## Git Usage Guidelines
+## Core Architecture
 
-**IMPORTANT: Never perform git operations that modify the repository**
+### Game State Management (`src/hooks/use-game.ts`)
+The `useGame` hook is the central game engine managing:
+- **Target words**: 16 random 5-letter words selected from `wordle_words_la.txt`
+- **Guesses**: Array of all submitted guesses (max 21)
+- **Current guess**: The word being typed (max 5 letters)
+- **Solved boards**: Set of board indices that have been solved
+- **Game status**: 'playing' | 'won' | 'lost'
+- **Timing**: Start and end timestamps for leaderboard
 
-- **NEVER** run the following git commands:
-  - `git add`
-  - `git commit`
-  - `git push`
-  - `git pull`
-  - `git fetch`
-  - `git checkout`
-- **Allowed** git commands (for inspection only):
-  - `git status`
-  - `git log`
-  - `git diff`
-  - `git branch`
-  - `git show`
+### Letter Status Tracking
+Two-tier system for keyboard color indication:
+1. **Overall letter status** (`usedLetters` Map):
+   - `correct` (green): Letter is in correct position on at least one unsolved board
+   - `present` (yellow): Letter exists in at least one unsolved board but wrong position
+   - `absent` (gray): Letter not in any unsolved board
 
-## CI/CD & Branch Protection
+2. **Board-specific status** (`letterBoardStatus` Map):
+   - Each letter tracks its status per board
+   - Used to show which boards have each letter correct/present/absent
+   - Enables per-board color indication in keyboard
 
-### GitHub Branch Protection Rules (main branch)
-- Direct pushes to `main` are disabled
-- Pull requests required before merging
-- Required status checks must pass before merging:
-  - Code formatting check
-  - ESLint check
-  - TypeScript build check
+### Word Validation System
+- **Answer words** (`wordle_words_la.txt`): ~2300 common 5-letter words used as target answers
+- **Valid guesses** (`wordle_words_la.txt` + `wordle_words_ta.txt`): ~12000 total valid words
+- Players can guess any valid word, but only LA words are selected as targets
+
+### Firebase Integration
+- **Firestore collection**: `leaderboard`
+- **Client-side only**: No backend, direct Firestore access from browser
+- **Security rules**: Allow read/create, deny update/delete
+- **Score sorting**: Primary by attempts (asc), secondary by time (asc)
+
+## Code Style Guidelines
+
+### Formatting & Structure
+- **Indentation**: 4 spaces (enforced by Prettier)
+- **Empty lines**: No indentation on blank lines
+- **Quotes**: Single quotes
+- **Semicolons**: Never use semicolons
+- **File naming**: Lowercase with dashes (`game-board.tsx`, not `GameBoard.tsx`)
+
+### TypeScript & React
+- **Functions**: Always use arrow functions: `const myFunc = () => {}`
+- **React components**: Export directly, avoid `React.FC` boilerplate
+- **Type definitions**: Define in `src/types/` directory
+- **Strict mode**: Enabled with strict TypeScript checks
+
+### Code Quality Principles
+- **Modularity**: Small, focused components and functions
+- **Readability**: Self-documenting code, minimal comments
+- **No dead code**: Don't add unused "future" features
+- **Consistency**: Follow existing patterns in the codebase
+- **Before adding code**:
+  1. Is this the right location?
+  2. Does similar functionality exist?
+  3. Can this be clearer?
+
+## Environment Variables
+
+### Local Development
+1. Copy `.env.example` to `.env`
+2. Add Firebase config values (from Firebase Console → Project Settings → Web App)
+3. `.env` is gitignored - never commit
+
+### GitHub Actions (Required Secrets)
+Firebase configuration:
+- `VITE_FIREBASE_API_KEY`
+- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`
+- `VITE_FIREBASE_APP_ID`
+
+Deployment:
+- `FIREBASE_SERVICE_ACCOUNT` (JSON from Firebase Console → Project Settings → Service Accounts)
+
+## CI/CD
+
+### Branch Protection (`main` branch)
+- Direct pushes disabled
+- Pull requests required
+- Required status checks: format, lint, build
 
 ### GitHub Actions Workflows
+**PR Checks** (`.github/workflows/pr-checks.yml`):
+- Runs on all PRs to `main`
+- Validates: formatting, linting, build
 
-#### Pull Request Workflow (`.github/workflows/pr-checks.yml`)
-Runs on all pull requests targeting `main`:
-- Checks code formatting (Prettier)
-- Runs ESLint
-- Builds the project (TypeScript check)
+**Deploy** (`.github/workflows/deploy.yml`):
+- Runs on push to `main`
+- Two jobs: checks (quality gates) → deploy (Firebase Hosting)
 
-#### Deployment Workflow (`.github/workflows/deploy.yml`)
-Runs when changes are merged to `main`:
-1. **Check Job**: Validates code quality
-   - Code formatting
-   - ESLint
-   - Build
-2. **Deploy Job**: Deploys to Firebase Hosting
-   - Builds production bundle
-   - Deploys to Firebase
+## Git Guidelines
+**IMPORTANT: Never perform git operations that modify the repository**
 
-### Setting Up Branch Protection
-To enable branch protection on GitHub:
-1. Go to Settings → Branches
-2. Add rule for `main` branch
-3. Enable:
-   - Require pull request before merging
-   - Require status checks to pass
-   - Select required checks: `format`, `lint`, `build`
-   - Disable direct pushes
+Allowed (inspection only):
+- `git status`, `git log`, `git diff`, `git branch`, `git show`
+
+Never use:
+- `git add`, `git commit`, `git push`, `git pull`, `git fetch`, `git checkout`
