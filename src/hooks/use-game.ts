@@ -20,6 +20,9 @@ export const useGame = () => {
         Map<string, LetterBoardStatus>
     >(new Map())
     const [message, setMessage] = useState('')
+    const [flashType, setFlashType] = useState<'correct' | 'incorrect' | null>(
+        null,
+    )
 
     const initializeGame = async () => {
         setIsLoading(true)
@@ -38,6 +41,7 @@ export const useGame = () => {
         setUsedLetters(new Map())
         setLetterBoardStatus(new Map())
         setMessage('')
+        setFlashType(null)
         setIsLoading(false)
     }
 
@@ -133,6 +137,7 @@ export const useGame = () => {
 
         const newGuesses = [...gameState.guesses, gameState.currentGuess]
         const newSolvedBoards = new Set(gameState.solvedBoards)
+        const previousSolvedCount = gameState.solvedBoards.size
 
         updateUsedLetters(
             gameState.currentGuess.toUpperCase(),
@@ -145,6 +150,8 @@ export const useGame = () => {
                 newSolvedBoards.add(index)
             }
         })
+
+        const solvedAnyBoard = newSolvedBoards.size > previousSolvedCount
 
         updateUsedLetters(
             gameState.currentGuess.toUpperCase(),
@@ -174,10 +181,15 @@ export const useGame = () => {
             setMessage(
                 `🎉 Congratulations! You solved all 16 boards in ${newGuesses.length} guesses!`,
             )
+            setFlashType('correct')
         } else if (newGuesses.length >= 21) {
             setMessage(
                 `Game Over! You solved ${newSolvedBoards.size}/16 boards.`,
             )
+        } else if (solvedAnyBoard) {
+            setFlashType('correct')
+        } else {
+            setFlashType('incorrect')
         }
 
         return true
@@ -209,16 +221,22 @@ export const useGame = () => {
         })
     }, [])
 
+    const clearFlash = useCallback(() => {
+        setFlashType(null)
+    }, [])
+
     return {
         isLoading,
         gameState,
         usedLetters,
         letterBoardStatus,
         message,
+        flashType,
         initializeGame,
         submitGuess,
         updateCurrentGuess,
         deleteLastLetter,
         addLetter,
+        clearFlash,
     }
 }

@@ -6,6 +6,7 @@ import Leaderboard from './components/leaderboard'
 import { GameMessage } from './components/game-message'
 import { SaveScoreModal } from './components/save-score-modal'
 import { GameStats } from './components/game-stats'
+import { ScreenFlash } from './components/screen-flash'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
 
@@ -19,10 +20,12 @@ export function App() {
         usedLetters,
         letterBoardStatus,
         message,
+        flashType,
         initializeGame,
         submitGuess,
         deleteLastLetter,
         addLetter,
+        clearFlash,
     } = useGame()
 
     const handleKeyPress = useKeyboardHandler(
@@ -82,6 +85,8 @@ export function App() {
                 }}
                 gameState={gameState}
             />
+
+            <ScreenFlash type={flashType} onComplete={clearFlash} />
         </div>
     )
 }
