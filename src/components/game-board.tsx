@@ -63,31 +63,36 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                 {isSolved && (
                     <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
-                <div className="grid grid-rows-6 gap-1 p-2 bg-black border border-gray-800 rounded">
-                    {[...Array(rowsToShow)].map((_, rowIndex) => (
-                        <div key={rowIndex} className="grid grid-cols-5 gap-1">
-                            {[...Array(5)].map((_, colIndex) => {
-                                const isCurrentRow =
-                                    rowIndex === guesses.length && !isSolved
-                                const letter = isCurrentRow
-                                    ? currentGuess[colIndex] || ''
-                                    : guesses[rowIndex]?.[colIndex] || ''
+                <div className="flex flex-col p-2 bg-black border border-gray-800 rounded">
+                    {[...Array(rowsToShow)].map((_, rowIndex) => {
+                        const isCurrentRow =
+                            rowIndex === guesses.length && !isSolved
+                        return (
+                            <div
+                                key={rowIndex}
+                                className={`grid grid-cols-5 gap-1 ${rowIndex < rowsToShow - 1 ? (isCurrentRow ? 'mb-1' : 'mb-0.5') : ''}`}
+                            >
+                                {[...Array(5)].map((_, colIndex) => {
+                                    const letter = isCurrentRow
+                                        ? currentGuess[colIndex] || ''
+                                        : guesses[rowIndex]?.[colIndex] || ''
 
-                                return (
-                                    <div
-                                        key={colIndex}
-                                        className={`
-                                            w-12 h-10 flex items-center justify-center m-px
-                                            text-2xl font-bold text-white border rounded
+                                    return (
+                                        <div
+                                            key={colIndex}
+                                            className={`
+                                            w-12 ${isCurrentRow ? 'h-10' : 'h-7'} flex items-center justify-center m-px
+                                            ${isCurrentRow ? 'text-2xl' : 'text-xl'} font-bold text-white border rounded
                                             ${isCurrentRow ? 'border-gray-600' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
-                                    >
-                                        {letter.toUpperCase()}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    ))}
+                                        >
+                                            {letter.toUpperCase()}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         )

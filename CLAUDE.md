@@ -38,6 +38,7 @@ src/
 │   ├── save-score-modal.tsx
 │   ├── game-stats.tsx
 │   ├── game-message.tsx
+│   ├── screen-flash.tsx
 │   └── loading-screen.tsx
 ├── hooks/           # Custom React hooks
 │   ├── use-game.ts         # Core game logic
@@ -99,6 +100,7 @@ Two-tier system for keyboard color indication:
 - **Empty lines**: No indentation on blank lines
 - **Quotes**: Single quotes
 - **Semicolons**: Never use semicolons
+- **Trailing commas**: Always use trailing commas
 - **File naming**: Lowercase with dashes (`game-board.tsx`, not `GameBoard.tsx`)
 
 ### TypeScript & React
