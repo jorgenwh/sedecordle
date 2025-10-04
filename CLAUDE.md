@@ -155,10 +155,19 @@ Deployment:
 - Two jobs: checks (quality gates) → deploy (Firebase Hosting)
 
 ## Git Guidelines
-**IMPORTANT: Never perform git operations that modify the repository**
 
-Allowed (inspection only):
-- `git status`, `git log`, `git diff`, `git branch`, `git show`
+### Safe Git Operations
+- `git status`, `git log`, `git diff`, `git branch`, `git show` - inspection only
+- `git add`, `git commit` - creating commits when explicitly requested by user
+- `git push` - pushing to remote when explicitly requested by user
 
-Never use:
-- `git add`, `git commit`, `git push`, `git pull`, `git fetch`, `git checkout`
+### Restricted Git Operations
+**IMPORTANT: Never use these commands without explicit user approval:**
+- `git push --force` or `git push -f` (especially to main/master)
+- `git reset --hard`
+- `git checkout` to switch branches (may lose uncommitted work)
+- `git rebase -i` or `git add -i` (interactive commands not supported)
+- `git commit --amend` (except when fixing pre-commit hook changes)
+
+### Commit Guidelines
+Only create commits when the user explicitly requests it. Follow the standard commit workflow documented in the Bash tool instructions.
