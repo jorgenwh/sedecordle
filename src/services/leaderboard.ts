@@ -25,12 +25,47 @@ export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
     }
 }
 
-export const getTopScores = async (limitCount = 10): Promise<Score[]> => {
+export const getTopScoresByGuesses = async (
+    limitCount = 10,
+): Promise<Score[]> => {
     try {
         const scoresQuery = query(
             collection(db, COLLECTION_NAME),
             orderBy('attempts', 'asc'),
             orderBy('timeSeconds', 'asc'),
+            limit(limitCount),
+        )
+
+        const querySnapshot = await getDocs(scoresQuery)
+        const scores: Score[] = []
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data()
+            scores.push({
+                id: doc.id,
+                playerName: data.playerName,
+                attempts: data.attempts,
+                timeSeconds: data.timeSeconds,
+                completedAt: data.completedAt.toDate(),
+                targetWords: data.targetWords,
+            })
+        })
+
+        return scores
+    } catch (error) {
+        console.error('Error fetching scores:', error)
+        return []
+    }
+}
+
+export const getTopScoresBySpeed = async (
+    limitCount = 10,
+): Promise<Score[]> => {
+    try {
+        const scoresQuery = query(
+            collection(db, COLLECTION_NAME),
+            orderBy('timeSeconds', 'asc'),
+            orderBy('attempts', 'asc'),
             limit(limitCount),
         )
 

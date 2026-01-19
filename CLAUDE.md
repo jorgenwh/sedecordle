@@ -30,33 +30,15 @@ npm run deploy        # Build and deploy to Firebase
 
 ```
 src/
-├── components/       # React components
-│   ├── game-board.tsx
-│   ├── keyboard.tsx
-│   ├── keyboard-key.tsx
-│   ├── leaderboard.tsx
-│   ├── save-score-modal.tsx
-│   ├── game-stats.tsx
-│   ├── game-message.tsx
-│   ├── screen-flash.tsx
-│   └── loading-screen.tsx
-├── hooks/           # Custom React hooks
-│   ├── use-game.ts         # Core game logic
-│   └── use-keyboard-handler.ts
-├── services/        # External service integrations
-│   └── leaderboard.ts      # Firebase Firestore operations
-├── utils/           # Utility functions
-│   └── words.ts            # Word validation and selection
-├── types/           # TypeScript type definitions
-│   └── game.ts
-├── data/            # Static data files
-│   ├── wordle_words_la.txt  # Answer words (~2300 words)
-│   └── wordle_words_ta.txt  # Additional valid guesses (~10000 words)
-├── config/          # Configuration
-│   └── firebase.ts         # Firebase initialization
-├── app.tsx          # Main app component
-├── main.tsx         # React entry point
-└── index.css        # Global styles
+├── components/       # React components (game boards, keyboard, modals)
+├── hooks/            # Custom React hooks (use-game.ts is the core game engine)
+├── services/         # Firebase Firestore operations
+├── utils/            # Word validation and selection
+├── types/            # TypeScript type definitions
+├── data/             # Word lists (LA = answers, TA = additional valid guesses)
+├── config/           # Firebase initialization
+├── app.tsx           # Main app component
+└── main.tsx          # React entry point
 ```
 
 ## Core Architecture
@@ -110,14 +92,9 @@ Two-tier system for keyboard color indication:
 - **Strict mode**: Enabled with strict TypeScript checks
 
 ### Code Quality Principles
-- **Modularity**: Small, focused components and functions
-- **Readability**: Self-documenting code, minimal comments
-- **No dead code**: Don't add unused "future" features
-- **Consistency**: Follow existing patterns in the codebase
-- **Before adding code**:
-  1. Is this the right location?
-  2. Does similar functionality exist?
-  3. Can this be clearer?
+- Follow existing patterns in the codebase
+- No dead code or unused "future" features
+- Before adding code: check if similar functionality exists
 
 ## Environment Variables
 
@@ -157,18 +134,6 @@ Deployment:
 
 ## Git Guidelines
 
-### Safe Git Operations
-- `git status`, `git log`, `git diff`, `git branch`, `git show` - inspection only
-- `git add`, `git commit` - creating commits when explicitly requested by user
-- `git push` - pushing to remote when explicitly requested by user
-
-### Restricted Git Operations
-**IMPORTANT: Never use these commands without explicit user approval:**
-- `git push --force` or `git push -f` (especially to main/master)
-- `git reset --hard`
-- `git checkout` to switch branches (may lose uncommitted work)
-- `git rebase -i` or `git add -i` (interactive commands not supported)
-- `git commit --amend` (except when fixing pre-commit hook changes)
-
-### Commit Guidelines
-Only create commits when the user explicitly requests it. Follow the standard commit workflow documented in the Bash tool instructions.
+- Only create commits when the user explicitly requests it
+- Never use destructive commands (`push --force`, `reset --hard`) without explicit approval
+- Interactive git commands (`-i` flag) are not supported
