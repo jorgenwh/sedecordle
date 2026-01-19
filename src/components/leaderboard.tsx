@@ -17,7 +17,11 @@ interface LeaderboardTableProps {
     loading: boolean
 }
 
-const LeaderboardTable = ({ title, scores, loading }: LeaderboardTableProps) => {
+const LeaderboardTable = ({
+    title,
+    scores,
+    loading,
+}: LeaderboardTableProps) => {
     const truncateName = (name: string, maxLength = 12) => {
         return name.length > maxLength
             ? name.slice(0, maxLength - 1) + '…'
@@ -27,8 +31,8 @@ const LeaderboardTable = ({ title, scores, loading }: LeaderboardTableProps) => 
     return (
         <div className="flex-1">
             <h3 className="text-lg font-bold text-white mb-3 text-center">
-                    {title}
-                </h3>
+                {title}
+            </h3>
             {loading ? (
                 <div className="text-center text-gray-400 py-8">
                     Loading scores...
