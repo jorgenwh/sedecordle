@@ -3,8 +3,17 @@ import {
     getTopScoresByGuesses,
     getTopScoresBySpeed,
     formatTime,
+    TimePeriod,
 } from '../services/leaderboard'
 import { Score } from '../types/game'
+
+const TIME_PERIOD_LABELS: Record<TimePeriod, string> = {
+    overall: 'Overall',
+    today: 'Today',
+    week: 'Last week',
+    month: 'Last month',
+    year: 'Last year',
+}
 
 interface LeaderboardProps {
     isOpen: boolean
@@ -97,14 +106,30 @@ const LeaderboardTable = ({
     )
 }
 
+type ScoresCache = Record<TimePeriod, { guesses: Score[]; speed: Score[] }>
+
+const EMPTY_CACHE: ScoresCache = {
+    overall: { guesses: [], speed: [] },
+    today: { guesses: [], speed: [] },
+    week: { guesses: [], speed: [] },
+    month: { guesses: [], speed: [] },
+    year: { guesses: [], speed: [] },
+}
+
+const TIME_PERIODS: TimePeriod[] = ['overall', 'today', 'week', 'month', 'year']
+
 const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
-    const [guessesScores, setGuessesScores] = useState<Score[]>([])
-    const [speedScores, setSpeedScores] = useState<Score[]>([])
+    const [scoresCache, setScoresCache] = useState<ScoresCache>(EMPTY_CACHE)
     const [loading, setLoading] = useState(true)
+    const [timePeriod, setTimePeriod] = useState<TimePeriod>('overall')
 
     useEffect(() => {
         if (isOpen) {
-            loadScores()
+            loadAllScores()
+        } else {
+            // Clear cache when modal closes
+            setScoresCache(EMPTY_CACHE)
+            setTimePeriod('overall')
         }
     }, [isOpen])
 
@@ -123,15 +148,27 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
         }
     }, [isOpen, onClose])
 
-    const loadScores = async () => {
+    const loadAllScores = async () => {
         try {
             setLoading(true)
-            const [guessesData, speedData] = await Promise.all([
-                getTopScoresByGuesses(10),
-                getTopScoresBySpeed(10),
-            ])
-            setGuessesScores(guessesData)
-            setSpeedScores(speedData)
+
+            // Load all time periods in parallel
+            const results = await Promise.all(
+                TIME_PERIODS.map(async (period) => {
+                    const [guesses, speed] = await Promise.all([
+                        getTopScoresByGuesses(10, period),
+                        getTopScoresBySpeed(10, period),
+                    ])
+                    return { period, guesses, speed }
+                }),
+            )
+
+            // Build the cache from results
+            const newCache = { ...EMPTY_CACHE }
+            results.forEach(({ period, guesses, speed }) => {
+                newCache[period] = { guesses, speed }
+            })
+            setScoresCache(newCache)
         } catch (error) {
             console.error('Error loading scores:', error)
         } finally {
@@ -144,28 +181,49 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-black rounded-xl border border-gray-700 p-6 w-full max-w-[1000px] mx-4 max-h-[80vh] overflow-hidden">
-                <div className="relative flex justify-center items-center mb-4">
-                    <h2 className="text-2xl font-bold text-white">
-                        Leaderboard
-                    </h2>
+                <div className="relative mb-4">
                     <button
                         onClick={onClose}
-                        className="absolute right-0 text-gray-400 hover:text-white text-2xl"
+                        className="absolute right-0 top-0 text-gray-400 hover:text-white text-2xl"
                     >
                         ×
                     </button>
+                    <h2 className="text-2xl font-bold text-white text-center mb-2">
+                        Leaderboard
+                    </h2>
+                    <div className="flex justify-center">
+                        <div className="inline-flex rounded-lg border border-gray-700 p-1">
+                            {Object.entries(TIME_PERIOD_LABELS).map(
+                                ([value, label]) => (
+                                    <button
+                                        key={value}
+                                        onClick={() =>
+                                            setTimePeriod(value as TimePeriod)
+                                        }
+                                        className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                                            timePeriod === value
+                                                ? 'bg-gray-700 text-white'
+                                                : 'text-gray-400 hover:text-white'
+                                        }`}
+                                    >
+                                        {label}
+                                    </button>
+                                ),
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="overflow-y-auto max-h-[60vh]">
                     <div className="flex gap-8">
                         <LeaderboardTable
                             title="Guesses"
-                            scores={guessesScores}
+                            scores={scoresCache[timePeriod].guesses}
                             loading={loading}
                         />
                         <LeaderboardTable
                             title="Time"
-                            scores={speedScores}
+                            scores={scoresCache[timePeriod].speed}
                             loading={loading}
                         />
                     </div>
