@@ -6,11 +6,39 @@ import {
     limit,
     getDocs,
     Timestamp,
+    where,
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { Score } from '../types/game'
 
 const COLLECTION_NAME = 'leaderboard'
+
+export type TimePeriod = 'overall' | 'today' | 'week' | 'month' | 'year'
+
+const getStartDate = (period: TimePeriod): Date | null => {
+    if (period === 'overall') return null
+
+    const now = new Date()
+    switch (period) {
+        case 'today':
+            return new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        case 'week': {
+            const weekAgo = new Date(now)
+            weekAgo.setDate(weekAgo.getDate() - 7)
+            return weekAgo
+        }
+        case 'month': {
+            const monthAgo = new Date(now)
+            monthAgo.setMonth(monthAgo.getMonth() - 1)
+            return monthAgo
+        }
+        case 'year': {
+            const yearAgo = new Date(now)
+            yearAgo.setFullYear(yearAgo.getFullYear() - 1)
+            return yearAgo
+        }
+    }
+}
 
 export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
     try {
@@ -27,14 +55,29 @@ export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
 
 export const getTopScoresByGuesses = async (
     limitCount = 10,
+    period: TimePeriod = 'overall',
 ): Promise<Score[]> => {
     try {
-        const scoresQuery = query(
-            collection(db, COLLECTION_NAME),
-            orderBy('attempts', 'asc'),
-            orderBy('timeSeconds', 'asc'),
-            limit(limitCount),
-        )
+        const startDate = getStartDate(period)
+        let scoresQuery
+
+        if (startDate) {
+            // Time-filtered query: fetch recent entries, sort in memory
+            scoresQuery = query(
+                collection(db, COLLECTION_NAME),
+                where('completedAt', '>=', Timestamp.fromDate(startDate)),
+                orderBy('completedAt', 'desc'),
+                limit(100),
+            )
+        } else {
+            // Overall: use original optimized query
+            scoresQuery = query(
+                collection(db, COLLECTION_NAME),
+                orderBy('attempts', 'asc'),
+                orderBy('timeSeconds', 'asc'),
+                limit(limitCount),
+            )
+        }
 
         const querySnapshot = await getDocs(scoresQuery)
         const scores: Score[] = []
@@ -51,7 +94,15 @@ export const getTopScoresByGuesses = async (
             })
         })
 
-        return scores
+        // Sort by guesses, then time
+        if (startDate) {
+            scores.sort((a, b) => {
+                if (a.attempts !== b.attempts) return a.attempts - b.attempts
+                return a.timeSeconds - b.timeSeconds
+            })
+        }
+
+        return scores.slice(0, limitCount)
     } catch (error) {
         console.error('Error fetching scores:', error)
         return []
@@ -60,14 +111,29 @@ export const getTopScoresByGuesses = async (
 
 export const getTopScoresBySpeed = async (
     limitCount = 10,
+    period: TimePeriod = 'overall',
 ): Promise<Score[]> => {
     try {
-        const scoresQuery = query(
-            collection(db, COLLECTION_NAME),
-            orderBy('timeSeconds', 'asc'),
-            orderBy('attempts', 'asc'),
-            limit(limitCount),
-        )
+        const startDate = getStartDate(period)
+        let scoresQuery
+
+        if (startDate) {
+            // Time-filtered query: fetch recent entries, sort in memory
+            scoresQuery = query(
+                collection(db, COLLECTION_NAME),
+                where('completedAt', '>=', Timestamp.fromDate(startDate)),
+                orderBy('completedAt', 'desc'),
+                limit(100),
+            )
+        } else {
+            // Overall: use original optimized query
+            scoresQuery = query(
+                collection(db, COLLECTION_NAME),
+                orderBy('timeSeconds', 'asc'),
+                orderBy('attempts', 'asc'),
+                limit(limitCount),
+            )
+        }
 
         const querySnapshot = await getDocs(scoresQuery)
         const scores: Score[] = []
@@ -84,7 +150,16 @@ export const getTopScoresBySpeed = async (
             })
         })
 
-        return scores
+        // Sort by time, then guesses
+        if (startDate) {
+            scores.sort((a, b) => {
+                if (a.timeSeconds !== b.timeSeconds)
+                    return a.timeSeconds - b.timeSeconds
+                return a.attempts - b.attempts
+            })
+        }
+
+        return scores.slice(0, limitCount)
     } catch (error) {
         console.error('Error fetching scores:', error)
         return []
