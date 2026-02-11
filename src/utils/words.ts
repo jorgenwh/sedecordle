@@ -1,8 +1,10 @@
 import laWordsRaw from '../data/wordle_words_la.txt?raw'
 import taWordsRaw from '../data/wordle_words_ta.txt?raw'
+import hornyWordsRaw from '../data/horny_words.txt?raw'
 
 let ANSWER_WORDS: string[] = []
 let ALL_VALID_WORDS: Set<string> = new Set()
+let HORNY_WORDS: string[] = []
 
 const initializeWords = () => {
     if (ANSWER_WORDS.length === 0) {
@@ -16,7 +18,12 @@ const initializeWords = () => {
             .map((word) => word.trim().toUpperCase())
             .filter((word) => word.length === 5)
 
-        ALL_VALID_WORDS = new Set([...ANSWER_WORDS, ...taWords])
+        HORNY_WORDS = hornyWordsRaw
+            .split('\n')
+            .map((word) => word.trim().toUpperCase())
+            .filter((word) => word.length === 5)
+
+        ALL_VALID_WORDS = new Set([...ANSWER_WORDS, ...taWords, ...HORNY_WORDS])
     }
 }
 
@@ -24,6 +31,11 @@ export const getRandomWords = (count: number): string[] => {
     initializeWords()
     const shuffled = [...ANSWER_WORDS].sort(() => Math.random() - 0.5)
     return shuffled.slice(0, count)
+}
+
+export const getRandomHornyWord = (): string => {
+    initializeWords()
+    return HORNY_WORDS[Math.floor(Math.random() * HORNY_WORDS.length)]
 }
 
 export const isValidWord = (word: string): boolean => {
