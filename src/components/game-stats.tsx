@@ -4,9 +4,16 @@ import { GameState } from '../types/game'
 interface GameStatsProps {
     gameState: GameState
     onShowLeaderboard: () => void
+    hornyMode: boolean
+    onToggleHornyMode: () => void
 }
 
-export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
+export const GameStats = ({
+    gameState,
+    onShowLeaderboard,
+    hornyMode,
+    onToggleHornyMode,
+}: GameStatsProps) => {
     const [elapsedTime, setElapsedTime] = useState(0)
 
     useEffect(() => {
@@ -68,7 +75,18 @@ export const GameStats = ({ gameState, onShowLeaderboard }: GameStatsProps) => {
                     </span>
                 </div>
             </div>
-            <div className="w-6"></div>
+            <button
+                onClick={onToggleHornyMode}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                    hornyMode
+                        ? 'bg-pink-600 text-white shadow-[0_0_10px_rgba(236,72,153,0.5)]'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+                title="Toggle horny mode"
+            >
+                <span>{hornyMode ? '🔥' : '😇'}</span>
+                <span>Horny</span>
+            </button>
         </div>
     )
 }

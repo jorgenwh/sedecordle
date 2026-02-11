@@ -21,7 +21,9 @@ export function App() {
         letterBoardStatus,
         message,
         flashType,
+        hornyMode,
         initializeGame,
+        toggleHornyMode,
         submitGuess,
         deleteLastLetter,
         addLetter,
@@ -34,6 +36,13 @@ export function App() {
         deleteLastLetter,
         addLetter,
     )
+
+    const handleToggleHornyMode = () => {
+        const newHornyMode = !hornyMode
+        toggleHornyMode()
+        setHasPromptedSave(false)
+        initializeGame(newHornyMode)
+    }
 
     useEffect(() => {
         initializeGame()
@@ -61,6 +70,8 @@ export function App() {
                     <GameStats
                         gameState={gameState}
                         onShowLeaderboard={() => setShowLeaderboard(true)}
+                        hornyMode={hornyMode}
+                        onToggleHornyMode={handleToggleHornyMode}
                     />
                 </div>
                 <Keyboard
