@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
     getTopScoresByGuesses,
     getTopScoresBySpeed,
+    getCollectionName,
     formatTime,
     TimePeriod,
 } from '../services/leaderboard'
@@ -18,6 +19,7 @@ const TIME_PERIOD_LABELS: Record<TimePeriod, string> = {
 interface LeaderboardProps {
     isOpen: boolean
     onClose: () => void
+    hornyMode: boolean
 }
 
 interface LeaderboardTableProps {
@@ -118,7 +120,7 @@ const EMPTY_CACHE: ScoresCache = {
 
 const TIME_PERIODS: TimePeriod[] = ['overall', 'today', 'week', 'month', 'year']
 
-const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
+const Leaderboard = ({ isOpen, onClose, hornyMode }: LeaderboardProps) => {
     const [scoresCache, setScoresCache] = useState<ScoresCache>(EMPTY_CACHE)
     const [loading, setLoading] = useState(true)
     const [timePeriod, setTimePeriod] = useState<TimePeriod>('overall')
@@ -131,7 +133,7 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
             setScoresCache(EMPTY_CACHE)
             setTimePeriod('overall')
         }
-    }, [isOpen])
+    }, [isOpen, hornyMode])
 
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
@@ -151,13 +153,14 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
     const loadAllScores = async () => {
         try {
             setLoading(true)
+            const collectionName = getCollectionName(hornyMode)
 
             // Load all time periods in parallel
             const results = await Promise.all(
                 TIME_PERIODS.map(async (period) => {
                     const [guesses, speed] = await Promise.all([
-                        getTopScoresByGuesses(10, period),
-                        getTopScoresBySpeed(10, period),
+                        getTopScoresByGuesses(10, period, collectionName),
+                        getTopScoresBySpeed(10, period, collectionName),
                     ])
                     return { period, guesses, speed }
                 }),
@@ -189,7 +192,7 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
                         ×
                     </button>
                     <h2 className="text-2xl font-bold text-white text-center mb-2">
-                        Leaderboard
+                        {hornyMode ? '🔥 Horny Leaderboard' : 'Leaderboard'}
                     </h2>
                     <div className="flex justify-center">
                         <div className="inline-flex rounded-lg border border-gray-700 p-1">

@@ -23,57 +23,41 @@ npm run format:check  # Check formatting (used in CI)
 npm run lint          # Lint with ESLint
 npm run lint:fix      # Fix ESLint issues
 npm run deploy        # Build and deploy to Firebase
-./run-checks.sh       # Run all quality checks (format, lint, build)
+./run-checks.sh       # Run all quality checks (format, lint, build) - mirrors CI
 ```
 
-## Project Structure
-
-```
-src/
-├── components/       # React components (game boards, keyboard, modals)
-├── hooks/            # Custom React hooks (use-game.ts is the core game engine)
-├── services/         # Firebase Firestore operations
-├── utils/            # Word validation and selection
-├── types/            # TypeScript type definitions
-├── data/             # Word lists (LA = answers, TA = additional valid guesses)
-├── config/           # Firebase initialization
-├── app.tsx           # Main app component
-└── main.tsx          # React entry point
-```
+There is no test framework configured. The quality gate is `./run-checks.sh` (format + lint + build).
 
 ## Core Architecture
 
-### Game State Management (`src/hooks/use-game.ts`)
-The `useGame` hook is the central game engine managing:
-- **Target words**: 16 random 5-letter words selected from `wordle_words_la.txt`
-- **Guesses**: Array of all submitted guesses (max 21)
-- **Current guess**: The word being typed (max 5 letters)
-- **Solved boards**: Set of board indices that have been solved
-- **Game status**: 'playing' | 'won' | 'lost'
-- **Timing**: Start and end timestamps for leaderboard
+### Game State (`src/hooks/use-game.ts`)
+The `useGame` hook is the central game engine. It manages target words, guesses (max 21), solved boards (Set of indices), game status (`'playing' | 'won' | 'lost'`), and timing for the leaderboard. All word comparisons happen in **UPPERCASE** internally.
+
+### Input Handling (`src/hooks/use-keyboard-handler.ts`)
+`useKeyboardHandler` handles both physical keyboard events (via `keydown` listener) and virtual keyboard clicks. It returns a `handleKeyPress` callback that the on-screen `Keyboard` component also uses, so both input paths funnel through the same handler.
 
 ### Letter Status Tracking
 Two-tier system for keyboard color indication:
-1. **Overall letter status** (`usedLetters` Map):
-   - `correct` (green): Letter is in correct position on at least one unsolved board
-   - `present` (yellow): Letter exists in at least one unsolved board but wrong position
-   - `absent` (gray): Letter not in any unsolved board
+1. **Overall status** (`usedLetters` Map): Best status across all unsolved boards (`correct` > `present` > `absent`)
+2. **Per-board status** (`letterBoardStatus` Map): Each letter tracks its status on each individual board, enabling detailed keyboard tooltips
 
-2. **Board-specific status** (`letterBoardStatus` Map):
-   - Each letter tracks its status per board
-   - Used to show which boards have each letter correct/present/absent
-   - Enables per-board color indication in keyboard
+### Word System (`src/utils/words.ts`)
+- Word files are loaded via Vite's `?raw` import suffix (e.g., `import laWordsRaw from '../data/wordle_words_la.txt?raw'`)
+- **Answer words** (`wordle_words_la.txt`): ~2300 common words used as targets
+- **Valid guesses** (`wordle_words_la.txt` + `wordle_words_ta.txt` + `horny_words.txt`): ~12000+ total valid words
+- Words are lazily initialized on first access via `initializeWords()`
 
-### Word Validation System
-- **Answer words** (`wordle_words_la.txt`): ~2300 common 5-letter words used as target answers
-- **Valid guesses** (`wordle_words_la.txt` + `wordle_words_ta.txt`): ~12000 total valid words
-- Players can guess any valid word, but only LA words are selected as targets
+### Horny Mode
+Optional toggle that replaces one random board's target word with a word from `horny_words.txt`. Toggling restarts the game. The `hornyBoardIndex` in `GameState` tracks which board (if any) has the special word.
 
-### Firebase Integration
-- **Firestore collection**: `leaderboard`
-- **Client-side only**: No backend, direct Firestore access from browser
-- **Security rules**: Allow read/create, deny update/delete
-- **Score sorting**: Primary by attempts (asc), secondary by time (asc)
+### Leaderboard (`src/services/leaderboard.ts`)
+- Firebase Firestore collection: `leaderboard`
+- Two ranking modes: by fewest guesses (`getTopScoresByGuesses`) and by fastest time (`getTopScoresBySpeed`)
+- Time period filtering (overall/today/week/month/year): overall uses Firestore-side sorting; filtered periods fetch up to 100 recent entries and sort in memory
+- Only wins trigger the save-score prompt
+
+### App Composition (`src/app.tsx`)
+`App` wires `useGame` and `useKeyboardHandler` together, manages modal state (leaderboard, save-score), and handles the win-triggered save prompt via `hasPromptedSave` flag.
 
 ## Code Style Guidelines
 
@@ -98,39 +82,17 @@ Two-tier system for keyboard color indication:
 
 ## Environment Variables
 
-### Local Development
-1. Copy `.env.example` to `.env`
-2. Add Firebase config values (from Firebase Console → Project Settings → Web App)
-3. `.env` is gitignored - never commit
-
-### GitHub Actions (Required Secrets)
-Firebase configuration:
-- `VITE_FIREBASE_API_KEY`
-- `VITE_FIREBASE_AUTH_DOMAIN`
-- `VITE_FIREBASE_PROJECT_ID`
-- `VITE_FIREBASE_STORAGE_BUCKET`
-- `VITE_FIREBASE_MESSAGING_SENDER_ID`
-- `VITE_FIREBASE_APP_ID`
-- `VITE_FIREBASE_MEASUREMENT_ID`
-
-Deployment:
-- `FIREBASE_SERVICE_ACCOUNT` (JSON from Firebase Console → Project Settings → Service Accounts)
+Copy `.env.example` to `.env` and fill in Firebase config values. The same variables are configured as GitHub Actions secrets (prefixed with `VITE_FIREBASE_`). Deployment also requires a `FIREBASE_SERVICE_ACCOUNT` secret.
 
 ## CI/CD
 
 ### Branch Protection (`main` branch)
-- Direct pushes disabled
-- Pull requests required
+- Direct pushes disabled; pull requests required
 - Required status checks: format, lint, build
 
 ### GitHub Actions Workflows
-**PR Checks** (`.github/workflows/pr-checks.yml`):
-- Runs on all PRs to `main`
-- Validates: formatting, linting, build
-
-**Deploy** (`.github/workflows/deploy.yml`):
-- Runs on push to `main`
-- Two jobs: checks (quality gates) → deploy (Firebase Hosting)
+- **PR Checks** (`.github/workflows/pr-checks.yml`): Runs format, lint, build on all PRs to `main`
+- **Deploy** (`.github/workflows/deploy.yml`): On push to `main`, runs checks then deploys to Firebase Hosting
 
 ## Git Guidelines
 

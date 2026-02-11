@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { saveScore } from '../services/leaderboard'
+import { saveScore, getCollectionName } from '../services/leaderboard'
 import { GameState } from '../types/game'
 
 interface SaveScoreModalProps {
@@ -7,6 +7,7 @@ interface SaveScoreModalProps {
     onClose: () => void
     onSaveSuccess: () => void
     gameState: GameState
+    hornyMode: boolean
 }
 
 export const SaveScoreModal = ({
@@ -14,6 +15,7 @@ export const SaveScoreModal = ({
     onClose,
     onSaveSuccess,
     gameState,
+    hornyMode,
 }: SaveScoreModalProps) => {
     const [playerName, setPlayerName] = useState('')
     const [isSaving, setIsSaving] = useState(false)
@@ -52,13 +54,16 @@ export const SaveScoreModal = ({
                 (gameState.endTime! - gameState.startTime!) / 1000,
             )
 
-            await saveScore({
-                playerName: playerName.trim(),
-                attempts: gameState.guesses.length,
-                timeSeconds,
-                completedAt: new Date(gameState.endTime!),
-                targetWords: gameState.targetWords,
-            })
+            await saveScore(
+                {
+                    playerName: playerName.trim(),
+                    attempts: gameState.guesses.length,
+                    timeSeconds,
+                    completedAt: new Date(gameState.endTime!),
+                    targetWords: gameState.targetWords,
+                },
+                getCollectionName(hornyMode),
+            )
 
             onSaveSuccess()
         } catch (err) {
