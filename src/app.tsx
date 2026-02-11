@@ -85,6 +85,7 @@ export function App() {
             <Leaderboard
                 isOpen={showLeaderboard}
                 onClose={() => setShowLeaderboard(false)}
+                hornyMode={hornyMode}
             />
 
             <SaveScoreModal
@@ -95,6 +96,7 @@ export function App() {
                     setShowLeaderboard(true)
                 }}
                 gameState={gameState}
+                hornyMode={hornyMode}
             />
 
             <ScreenFlash type={flashType} onComplete={clearFlash} />

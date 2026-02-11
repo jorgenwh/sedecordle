@@ -11,7 +11,11 @@ import {
 import { db } from '../config/firebase'
 import { Score } from '../types/game'
 
-const COLLECTION_NAME = 'leaderboard'
+const CLASSIC_COLLECTION = 'leaderboard'
+const HORNY_COLLECTION = 'leaderboard_horny'
+
+export const getCollectionName = (hornyMode: boolean): string =>
+    hornyMode ? HORNY_COLLECTION : CLASSIC_COLLECTION
 
 export type TimePeriod = 'overall' | 'today' | 'week' | 'month' | 'year'
 
@@ -40,9 +44,12 @@ const getStartDate = (period: TimePeriod): Date | null => {
     }
 }
 
-export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
+export const saveScore = async (
+    score: Omit<Score, 'id'>,
+    collectionName = CLASSIC_COLLECTION,
+): Promise<string> => {
     try {
-        const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+        const docRef = await addDoc(collection(db, collectionName), {
             ...score,
             completedAt: Timestamp.fromDate(score.completedAt),
         })
@@ -56,6 +63,7 @@ export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
 export const getTopScoresByGuesses = async (
     limitCount = 10,
     period: TimePeriod = 'overall',
+    collectionName = CLASSIC_COLLECTION,
 ): Promise<Score[]> => {
     try {
         const startDate = getStartDate(period)
@@ -64,7 +72,7 @@ export const getTopScoresByGuesses = async (
         if (startDate) {
             // Time-filtered query: fetch recent entries, sort in memory
             scoresQuery = query(
-                collection(db, COLLECTION_NAME),
+                collection(db, collectionName),
                 where('completedAt', '>=', Timestamp.fromDate(startDate)),
                 orderBy('completedAt', 'desc'),
                 limit(100),
@@ -72,7 +80,7 @@ export const getTopScoresByGuesses = async (
         } else {
             // Overall: use original optimized query
             scoresQuery = query(
-                collection(db, COLLECTION_NAME),
+                collection(db, collectionName),
                 orderBy('attempts', 'asc'),
                 orderBy('timeSeconds', 'asc'),
                 limit(limitCount),
@@ -112,6 +120,7 @@ export const getTopScoresByGuesses = async (
 export const getTopScoresBySpeed = async (
     limitCount = 10,
     period: TimePeriod = 'overall',
+    collectionName = CLASSIC_COLLECTION,
 ): Promise<Score[]> => {
     try {
         const startDate = getStartDate(period)
@@ -120,7 +129,7 @@ export const getTopScoresBySpeed = async (
         if (startDate) {
             // Time-filtered query: fetch recent entries, sort in memory
             scoresQuery = query(
-                collection(db, COLLECTION_NAME),
+                collection(db, collectionName),
                 where('completedAt', '>=', Timestamp.fromDate(startDate)),
                 orderBy('completedAt', 'desc'),
                 limit(100),
@@ -128,7 +137,7 @@ export const getTopScoresBySpeed = async (
         } else {
             // Overall: use original optimized query
             scoresQuery = query(
-                collection(db, COLLECTION_NAME),
+                collection(db, collectionName),
                 orderBy('timeSeconds', 'asc'),
                 orderBy('attempts', 'asc'),
                 limit(limitCount),
