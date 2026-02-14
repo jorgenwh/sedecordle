@@ -15,6 +15,20 @@
       ]
     },
     {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "timeSeconds",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "attempts",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "leaderboard_horny",
       "queryScope": "COLLECTION",
       "fields": [
