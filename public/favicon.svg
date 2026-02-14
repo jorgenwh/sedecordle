@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#000000"/>
+  <!-- 4x4 grid representing 16 boards with wordle colors -->
+  <!-- padding=10, gap=4, cell=24 => 10 + 24*4 + 4*3 + 10 = 128 -->
+  <!-- Row 1 -->
+  <rect x="10" y="10" width="24" height="24" rx="4" fill="#16A34A"/>
+  <rect x="38" y="10" width="24" height="24" rx="4" fill="#CA8A04"/>
+  <rect x="66" y="10" width="24" height="24" rx="4" fill="#16A34A"/>
+  <rect x="94" y="10" width="24" height="24" rx="4" fill="#1F2937"/>
+  <!-- Row 2 -->
+  <rect x="10" y="38" width="24" height="24" rx="4" fill="#1F2937"/>
+  <rect x="38" y="38" width="24" height="24" rx="4" fill="#16A34A"/>
+  <rect x="66" y="38" width="24" height="24" rx="4" fill="#1F2937"/>
+  <rect x="94" y="38" width="24" height="24" rx="4" fill="#16A34A"/>
+  <!-- Row 3 -->
+  <rect x="10" y="66" width="24" height="24" rx="4" fill="#16A34A"/>
+  <rect x="38" y="66" width="24" height="24" rx="4" fill="#1F2937"/>
+  <rect x="66" y="66" width="24" height="24" rx="4" fill="#CA8A04"/>
+  <rect x="94" y="66" width="24" height="24" rx="4" fill="#16A34A"/>
+  <!-- Row 4 -->
+  <rect x="10" y="94" width="24" height="24" rx="4" fill="#CA8A04"/>
+  <rect x="38" y="94" width="24" height="24" rx="4" fill="#16A34A"/>
+  <rect x="66" y="94" width="24" height="24" rx="4" fill="#16A34A"/>
+  <rect x="94" y="94" width="24" height="24" rx="4" fill="#1F2937"/>
+</svg>
