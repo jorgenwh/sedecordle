@@ -1,5 +1,6 @@
 import { LetterBoardStatus } from '../types/game'
 import KeyboardKey from './keyboard-key'
+import { activeTheme } from '../themes'
 
 interface KeyboardProps {
     onKeyPress: (key: string) => void
@@ -19,8 +20,10 @@ const Keyboard = ({
         ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'],
     ]
 
+    const keyboardClass = activeTheme.keyboardClassName ?? 'bg-black'
+
     return (
-        <div className="flex flex-col gap-1.5 p-3 bg-black">
+        <div className={`flex flex-col gap-1.5 p-3 ${keyboardClass}`}>
             {rows.map((row, rowIndex) => (
                 <div key={rowIndex} className="flex justify-center gap-1.5">
                     {row.map((key) => (

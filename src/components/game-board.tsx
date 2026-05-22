@@ -1,24 +1,24 @@
 import { GameState } from '../types/game'
+import { activeTheme } from '../themes'
 
 interface GameBoardProps {
     gameState: GameState
 }
 
 const GameBoard = ({ gameState }: GameBoardProps) => {
-    const {
-        targetWords,
-        guesses,
-        currentGuess,
-        solvedBoards,
-        hornyBoardIndex,
-    } = gameState
+    const { targetWords, guesses, currentGuess, solvedBoards } = gameState
+
+    const emptyCellClass =
+        activeTheme.emptyCellClassName ?? 'bg-black border-gray-800'
+    const boardContainerClass =
+        activeTheme.boardContainerClassName ?? 'bg-black border border-gray-800'
 
     const getCellColor = (
         boardIndex: number,
         guessIndex: number,
         letterIndex: number,
     ): string => {
-        if (guessIndex >= guesses.length) return 'bg-black border-gray-800'
+        if (guessIndex >= guesses.length) return emptyCellClass
 
         const guess = guesses[guessIndex]
         const target = targetWords[boardIndex]
@@ -57,7 +57,6 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
 
     const renderBoard = (boardIndex: number) => {
         const isSolved = solvedBoards.has(boardIndex)
-        const isHornyBoard = boardIndex === hornyBoardIndex
 
         // For solved boards, only show the guesses up to when it was solved
         const rowsToShow = isSolved
@@ -71,17 +70,8 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                     <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
                 )}
                 <div
-                    className={`flex flex-col p-2 bg-black border rounded ${
-                        isHornyBoard
-                            ? 'border-pink-500 shadow-[0_0_12px_rgba(236,72,153,0.4)] animate-pulse-subtle'
-                            : 'border-gray-800'
-                    }`}
+                    className={`flex flex-col p-2 rounded ${boardContainerClass}`}
                 >
-                    {isHornyBoard && (
-                        <div className="absolute -top-2 -right-2 text-sm z-20 animate-bounce">
-                            ✨
-                        </div>
-                    )}
                     {[...Array(rowsToShow)].map((_, rowIndex) => {
                         const isCurrentRow =
                             rowIndex === guesses.length && !isSolved

@@ -9,6 +9,7 @@ import { GameStats } from './components/game-stats'
 import { ScreenFlash } from './components/screen-flash'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
+import { activeTheme } from './themes'
 
 export function App() {
     const [showLeaderboard, setShowLeaderboard] = useState(false)
@@ -21,9 +22,7 @@ export function App() {
         letterBoardStatus,
         message,
         flashType,
-        hornyMode,
         initializeGame,
-        toggleHornyMode,
         submitGuess,
         deleteLastLetter,
         addLetter,
@@ -36,13 +35,6 @@ export function App() {
         deleteLastLetter,
         addLetter,
     )
-
-    const handleToggleHornyMode = () => {
-        const newHornyMode = !hornyMode
-        toggleHornyMode()
-        setHasPromptedSave(false)
-        initializeGame(newHornyMode)
-    }
 
     useEffect(() => {
         initializeGame()
@@ -59,19 +51,27 @@ export function App() {
         return <LoadingScreen />
     }
 
+    const Scene = activeTheme.Scene
+    const rootClass = activeTheme.rootClassName ?? 'bg-black'
+    const bottomPanelClass =
+        activeTheme.bottomPanelClassName ?? 'bg-black border-t border-gray-800'
+
     return (
-        <div className="h-screen bg-black text-white flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto pb-64">
+        <div
+            className={`h-screen text-white flex flex-col overflow-hidden relative ${rootClass}`}
+        >
+            {Scene && <Scene />}
+            <div className="flex-1 overflow-y-auto pb-64 relative z-10">
                 <GameMessage message={message} />
                 <GameBoard gameState={gameState} />
             </div>
-            <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-20">
+            <div
+                className={`fixed bottom-0 left-0 right-0 z-20 ${bottomPanelClass}`}
+            >
                 <div>
                     <GameStats
                         gameState={gameState}
                         onShowLeaderboard={() => setShowLeaderboard(true)}
-                        hornyMode={hornyMode}
-                        onToggleHornyMode={handleToggleHornyMode}
                     />
                 </div>
                 <Keyboard
@@ -85,7 +85,6 @@ export function App() {
             <Leaderboard
                 isOpen={showLeaderboard}
                 onClose={() => setShowLeaderboard(false)}
-                hornyMode={hornyMode}
             />
 
             <SaveScoreModal
@@ -96,7 +95,6 @@ export function App() {
                     setShowLeaderboard(true)
                 }}
                 gameState={gameState}
-                hornyMode={hornyMode}
             />
 
             <ScreenFlash type={flashType} onComplete={clearFlash} />

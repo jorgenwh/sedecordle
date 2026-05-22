@@ -1,10 +1,9 @@
 import { useState, useCallback } from 'react'
-import { getRandomWords, getRandomHornyWord, isValidWord } from '../utils/words'
+import { getRandomWords, isValidWord } from '../utils/words'
 import { GameState, UsedLetterStatus, LetterBoardStatus } from '../types/game'
 
 export const useGame = () => {
     const [isLoading, setIsLoading] = useState(true)
-    const [hornyMode, setHornyMode] = useState(false)
     const [gameState, setGameState] = useState<GameState>({
         targetWords: [],
         guesses: [],
@@ -13,7 +12,6 @@ export const useGame = () => {
         solvedBoards: new Set(),
         startTime: null,
         endTime: null,
-        hornyBoardIndex: null,
     })
     const [usedLetters, setUsedLetters] = useState<
         Map<string, UsedLetterStatus>
@@ -26,18 +24,11 @@ export const useGame = () => {
         null,
     )
 
-    const initializeGame = async (useHornyMode?: boolean) => {
+    const initializeGame = async () => {
         setIsLoading(true)
         await new Promise((resolve) => setTimeout(resolve, 500))
 
-        const isHorny = useHornyMode ?? hornyMode
         const words = getRandomWords(16)
-        let hornyBoardIndex: number | null = null
-
-        if (isHorny) {
-            hornyBoardIndex = Math.floor(Math.random() * 16)
-            words[hornyBoardIndex] = getRandomHornyWord()
-        }
 
         setGameState({
             targetWords: words,
@@ -47,7 +38,6 @@ export const useGame = () => {
             solvedBoards: new Set(),
             startTime: null,
             endTime: null,
-            hornyBoardIndex,
         })
         setUsedLetters(new Map())
         setLetterBoardStatus(new Map())
@@ -236,10 +226,6 @@ export const useGame = () => {
         setFlashType(null)
     }, [])
 
-    const toggleHornyMode = useCallback(() => {
-        setHornyMode((prev) => !prev)
-    }, [])
-
     return {
         isLoading,
         gameState,
@@ -247,9 +233,7 @@ export const useGame = () => {
         letterBoardStatus,
         message,
         flashType,
-        hornyMode,
         initializeGame,
-        toggleHornyMode,
         submitGuess,
         updateCurrentGuess,
         deleteLastLetter,

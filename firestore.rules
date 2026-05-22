@@ -28,29 +28,5 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if false;
     }
-
-    // Horny mode leaderboard collection rules
-    match /leaderboard_horny/{document} {
-      allow read: if true;
-
-      allow create: if request.resource.data.keys().hasAll([
-        'playerName', 'attempts', 'timeSeconds', 'completedAt', 'targetWords'
-      ]) &&
-      request.resource.data.playerName is string &&
-      request.resource.data.playerName.size() > 0 &&
-      request.resource.data.playerName.size() <= 50 &&
-      request.resource.data.attempts is int &&
-      request.resource.data.attempts >= 1 &&
-      request.resource.data.attempts <= 21 &&
-      request.resource.data.timeSeconds is int &&
-      request.resource.data.timeSeconds > 0 &&
-      request.resource.data.timeSeconds < 86400 && // Less than 24 hours
-      request.resource.data.completedAt is timestamp &&
-      request.resource.data.targetWords is list &&
-      request.resource.data.targetWords.size() == 16;
-
-      allow update: if false;
-      allow delete: if false;
-    }
   }
 }

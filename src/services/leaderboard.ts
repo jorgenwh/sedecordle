@@ -11,16 +11,12 @@ import {
 import { db } from '../config/firebase'
 import { Score } from '../types/game'
 
-const CLASSIC_COLLECTION = 'leaderboard'
-const HORNY_COLLECTION = 'leaderboard_horny'
+const LEADERBOARD_COLLECTION = 'leaderboard'
 
 // Higher score = better. Each guess costs SECONDS_PER_GUESS, each second costs
-// 1, both subtracted from SCORE_CEILING. Saving one guess is worth ~45 seconds.
+// 1, both subtracted from SCORE_CEILING. Saving one guess is worth ~60 seconds.
 const SECONDS_PER_GUESS = 60
 const SCORE_CEILING = 1800
-
-export const getCollectionName = (hornyMode: boolean): string =>
-    hornyMode ? HORNY_COLLECTION : CLASSIC_COLLECTION
 
 export type TimePeriod = 'overall' | 'today' | 'week' | 'month' | 'year'
 
@@ -52,12 +48,9 @@ const getStartDate = (period: TimePeriod): Date | null => {
     }
 }
 
-export const saveScore = async (
-    score: Omit<Score, 'id'>,
-    collectionName = CLASSIC_COLLECTION,
-): Promise<string> => {
+export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
     try {
-        const docRef = await addDoc(collection(db, collectionName), {
+        const docRef = await addDoc(collection(db, LEADERBOARD_COLLECTION), {
             ...score,
             completedAt: Timestamp.fromDate(score.completedAt),
         })
@@ -71,7 +64,6 @@ export const saveScore = async (
 export const getTopScores = async (
     limitCount = 10,
     period: TimePeriod = 'overall',
-    collectionName = CLASSIC_COLLECTION,
 ): Promise<Score[]> => {
     try {
         const startDate = getStartDate(period)
@@ -80,13 +72,13 @@ export const getTopScores = async (
         // safely covers the top results once we sort by the merged score.
         const scoresQuery = startDate
             ? query(
-                  collection(db, collectionName),
+                  collection(db, LEADERBOARD_COLLECTION),
                   where('completedAt', '>=', Timestamp.fromDate(startDate)),
                   orderBy('completedAt', 'desc'),
                   limit(100),
               )
             : query(
-                  collection(db, collectionName),
+                  collection(db, LEADERBOARD_COLLECTION),
                   orderBy('timeSeconds', 'asc'),
                   limit(100),
               )

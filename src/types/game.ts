@@ -6,7 +6,6 @@ export interface GameState {
     solvedBoards: Set<number>
     startTime: number | null
     endTime: number | null
-    hornyBoardIndex: number | null
 }
 
 export type UsedLetterStatus = 'correct' | 'present' | 'absent'
