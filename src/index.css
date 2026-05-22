@@ -2,16 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes pulse-subtle {
-    0%,
-    100% {
-        box-shadow: 0 0 8px rgba(236, 72, 153, 0.3);
+@keyframes snowfall {
+    0% {
+        transform: translate3d(0, -10vh, 0);
     }
-    50% {
-        box-shadow: 0 0 16px rgba(236, 72, 153, 0.6);
+    100% {
+        transform: translate3d(15px, 110vh, 0);
     }
 }
 
-.animate-pulse-subtle {
-    animation: pulse-subtle 2s ease-in-out infinite;
+.snowflake {
+    position: absolute;
+    top: 0;
+    background: #ffffff;
+    border-radius: 50%;
+    pointer-events: none;
+    animation-name: snowfall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+}
+
+@keyframes star-twinkle {
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.star-twinkle {
+    animation: star-twinkle 3s ease-in-out infinite;
 }
