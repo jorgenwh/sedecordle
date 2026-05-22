@@ -44,16 +44,13 @@ Two-tier system for keyboard color indication:
 ### Word System (`src/utils/words.ts`)
 - Word files are loaded via Vite's `?raw` import suffix (e.g., `import laWordsRaw from '../data/wordle_words_la.txt?raw'`)
 - **Answer words** (`wordle_words_la.txt`): ~2300 common words used as targets
-- **Valid guesses** (`wordle_words_la.txt` + `wordle_words_ta.txt` + `horny_words.txt`): ~12000+ total valid words
+- **Valid guesses** (`wordle_words_la.txt` + `wordle_words_ta.txt`): ~12000+ total valid words
 - Words are lazily initialized on first access via `initializeWords()`
-
-### Horny Mode
-Optional toggle that replaces one random board's target word with a word from `horny_words.txt`. Toggling restarts the game. The `hornyBoardIndex` in `GameState` tracks which board (if any) has the special word.
 
 ### Leaderboard (`src/services/leaderboard.ts`)
 - Firebase Firestore collection: `leaderboard`
-- Two ranking modes: by fewest guesses (`getTopScoresByGuesses`) and by fastest time (`getTopScoresBySpeed`)
-- Time period filtering (overall/today/week/month/year): overall uses Firestore-side sorting; filtered periods fetch up to 100 recent entries and sort in memory
+- Single ranking by combined score: `score = SCORE_CEILING - (timeSeconds + attempts * SECONDS_PER_GUESS)` (higher is better) via `getTopScores`
+- Score computation lives in `computeScore`; scores are sorted client-side from a batch of the 100 fastest (or 100 most recent for time-filtered periods)
 - Only wins trigger the save-score prompt
 
 ### App Composition (`src/app.tsx`)

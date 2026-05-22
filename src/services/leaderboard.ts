@@ -11,13 +11,17 @@ import {
 import { db } from '../config/firebase'
 import { Score } from '../types/game'
 
-const CLASSIC_COLLECTION = 'leaderboard'
-const HORNY_COLLECTION = 'leaderboard_horny'
+const LEADERBOARD_COLLECTION = 'leaderboard'
 
-export const getCollectionName = (hornyMode: boolean): string =>
-    hornyMode ? HORNY_COLLECTION : CLASSIC_COLLECTION
+// Higher score = better. Each guess costs SECONDS_PER_GUESS, each second costs
+// 1, both subtracted from SCORE_CEILING. Saving one guess is worth ~60 seconds.
+const SECONDS_PER_GUESS = 60
+const SCORE_CEILING = 1800
 
 export type TimePeriod = 'overall' | 'today' | 'week' | 'month' | 'year'
+
+export const computeScore = (score: Pick<Score, 'attempts' | 'timeSeconds'>) =>
+    SCORE_CEILING - (score.timeSeconds + score.attempts * SECONDS_PER_GUESS)
 
 const getStartDate = (period: TimePeriod): Date | null => {
     if (period === 'overall') return null
@@ -44,12 +48,9 @@ const getStartDate = (period: TimePeriod): Date | null => {
     }
 }
 
-export const saveScore = async (
-    score: Omit<Score, 'id'>,
-    collectionName = CLASSIC_COLLECTION,
-): Promise<string> => {
+export const saveScore = async (score: Omit<Score, 'id'>): Promise<string> => {
     try {
-        const docRef = await addDoc(collection(db, collectionName), {
+        const docRef = await addDoc(collection(db, LEADERBOARD_COLLECTION), {
             ...score,
             completedAt: Timestamp.fromDate(score.completedAt),
         })
@@ -60,32 +61,27 @@ export const saveScore = async (
     }
 }
 
-export const getTopScoresByGuesses = async (
+export const getTopScores = async (
     limitCount = 10,
     period: TimePeriod = 'overall',
-    collectionName = CLASSIC_COLLECTION,
 ): Promise<Score[]> => {
     try {
         const startDate = getStartDate(period)
-        let scoresQuery
-
-        if (startDate) {
-            // Time-filtered query: fetch recent entries, sort in memory
-            scoresQuery = query(
-                collection(db, collectionName),
-                where('completedAt', '>=', Timestamp.fromDate(startDate)),
-                orderBy('completedAt', 'desc'),
-                limit(100),
-            )
-        } else {
-            // Overall: use original optimized query
-            scoresQuery = query(
-                collection(db, collectionName),
-                orderBy('attempts', 'asc'),
-                orderBy('timeSeconds', 'asc'),
-                limit(limitCount),
-            )
-        }
+        // attempts is bounded to [16, 21] for wins, so its contribution to the
+        // score lies in a 150-second band. Fetching the 100 fastest entries
+        // safely covers the top results once we sort by the merged score.
+        const scoresQuery = startDate
+            ? query(
+                  collection(db, LEADERBOARD_COLLECTION),
+                  where('completedAt', '>=', Timestamp.fromDate(startDate)),
+                  orderBy('completedAt', 'desc'),
+                  limit(100),
+              )
+            : query(
+                  collection(db, LEADERBOARD_COLLECTION),
+                  orderBy('timeSeconds', 'asc'),
+                  limit(100),
+              )
 
         const querySnapshot = await getDocs(scoresQuery)
         const scores: Score[] = []
@@ -102,72 +98,7 @@ export const getTopScoresByGuesses = async (
             })
         })
 
-        // Sort by guesses, then time
-        if (startDate) {
-            scores.sort((a, b) => {
-                if (a.attempts !== b.attempts) return a.attempts - b.attempts
-                return a.timeSeconds - b.timeSeconds
-            })
-        }
-
-        return scores.slice(0, limitCount)
-    } catch (error) {
-        console.error('Error fetching scores:', error)
-        return []
-    }
-}
-
-export const getTopScoresBySpeed = async (
-    limitCount = 10,
-    period: TimePeriod = 'overall',
-    collectionName = CLASSIC_COLLECTION,
-): Promise<Score[]> => {
-    try {
-        const startDate = getStartDate(period)
-        let scoresQuery
-
-        if (startDate) {
-            // Time-filtered query: fetch recent entries, sort in memory
-            scoresQuery = query(
-                collection(db, collectionName),
-                where('completedAt', '>=', Timestamp.fromDate(startDate)),
-                orderBy('completedAt', 'desc'),
-                limit(100),
-            )
-        } else {
-            // Overall: use original optimized query
-            scoresQuery = query(
-                collection(db, collectionName),
-                orderBy('timeSeconds', 'asc'),
-                orderBy('attempts', 'asc'),
-                limit(limitCount),
-            )
-        }
-
-        const querySnapshot = await getDocs(scoresQuery)
-        const scores: Score[] = []
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data()
-            scores.push({
-                id: doc.id,
-                playerName: data.playerName,
-                attempts: data.attempts,
-                timeSeconds: data.timeSeconds,
-                completedAt: data.completedAt.toDate(),
-                targetWords: data.targetWords,
-            })
-        })
-
-        // Sort by time, then guesses
-        if (startDate) {
-            scores.sort((a, b) => {
-                if (a.timeSeconds !== b.timeSeconds)
-                    return a.timeSeconds - b.timeSeconds
-                return a.attempts - b.attempts
-            })
-        }
-
+        scores.sort((a, b) => computeScore(b) - computeScore(a))
         return scores.slice(0, limitCount)
     } catch (error) {
         console.error('Error fetching scores:', error)
