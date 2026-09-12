@@ -50,9 +50,10 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
         }
 
         const color = guessColors[letterIndex]
-        if (color === 'green') return 'bg-green-600 border-green-600'
-        if (color === 'yellow') return 'bg-yellow-600 border-yellow-600'
-        return 'bg-gray-800 border-gray-800'
+        if (color === 'green') return 'bg-game-correct-fill border-game-correct'
+        if (color === 'yellow')
+            return 'bg-game-present-fill border-game-present'
+        return 'bg-game-absent border-game-absent'
     }
 
     const renderBoard = (boardIndex: number) => {
@@ -65,20 +66,35 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
             : Math.min(21, guesses.length + 1)
 
         return (
-            <div key={boardIndex} className="relative">
-                {isSolved && (
-                    <div className="absolute inset-0 bg-black bg-opacity-25 z-10 pointer-events-none rounded" />
-                )}
+            <section
+                key={boardIndex}
+                aria-label={`Board ${boardIndex + 1}${isSolved ? ', solved' : ''}`}
+                className="min-w-0"
+            >
                 <div
-                    className={`flex flex-col p-2 rounded ${boardContainerClass}`}
+                    className={`flex flex-col p-2 sm:p-3 rounded-xl ${boardContainerClass}`}
                 >
+                    <div className="mb-3 flex h-5 items-center gap-3">
+                        <span className="font-mono text-sm font-semibold tabular-nums text-game-muted">
+                            {boardIndex + 1}
+                        </span>
+                        <span
+                            aria-hidden="true"
+                            className={`h-px flex-1 ${isSolved ? 'bg-game-accent/40' : 'bg-game-line/70'}`}
+                        />
+                        {isSolved && (
+                            <span className="text-[11px] font-semibold text-game-accent">
+                                Solved ✓
+                            </span>
+                        )}
+                    </div>
                     {[...Array(rowsToShow)].map((_, rowIndex) => {
                         const isCurrentRow =
                             rowIndex === guesses.length && !isSolved
                         return (
                             <div
                                 key={rowIndex}
-                                className={`grid grid-cols-5 gap-1 ${rowIndex < rowsToShow - 1 ? (isCurrentRow ? 'mb-1' : 'mb-0.5') : ''}`}
+                                className={`grid grid-cols-5 gap-1 transition-opacity duration-200 ${isSolved ? 'opacity-70' : ''} ${rowIndex < rowsToShow - 1 ? 'mb-1' : ''}`}
                             >
                                 {[...Array(5)].map((_, colIndex) => {
                                     const letter = isCurrentRow
@@ -89,9 +105,9 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                                         <div
                                             key={colIndex}
                                             className={`
-                                            w-12 ${isCurrentRow ? 'h-11' : 'h-7'} flex items-center justify-center m-px
-                                            ${isCurrentRow ? 'text-2xl' : 'text-2xl'} font-bold text-white border rounded
-                                            ${isCurrentRow ? 'border-gray-600' : getCellColor(boardIndex, rowIndex, colIndex)}
+                                            min-w-0 ${isCurrentRow ? 'h-11' : 'h-8'} flex items-center justify-center
+                                            text-xl sm:text-[22px] leading-none font-bold text-white border rounded-md
+                                            ${isCurrentRow && letter ? 'bg-game-tile/60 border-game-muted/70' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
                                         >
                                             {letter.toUpperCase()}
@@ -102,12 +118,12 @@ const GameBoard = ({ gameState }: GameBoardProps) => {
                         )
                     })}
                 </div>
-            </div>
+            </section>
         )
     }
 
     return (
-        <div className="grid grid-cols-4 gap-3 p-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 items-start gap-2 sm:gap-3 max-w-6xl mx-auto">
             {targetWords.map((_, index) => renderBoard(index))}
         </div>
     )
