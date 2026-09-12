@@ -11,6 +11,9 @@ import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
 import { activeTheme } from './themes'
 
+// Keep the loading screen visible while we work on its design.
+const SHOW_LOADING_PREVIEW = true
+
 export function App() {
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
@@ -47,7 +50,7 @@ export function App() {
         }
     }, [gameState.gameStatus, hasPromptedSave])
 
-    if (isLoading) {
+    if (SHOW_LOADING_PREVIEW || isLoading) {
         return <LoadingScreen />
     }
 
