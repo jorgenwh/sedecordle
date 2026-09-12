@@ -23,9 +23,15 @@ const Keyboard = ({
     const keyboardClass = activeTheme.keyboardClassName ?? 'bg-black'
 
     return (
-        <div className={`flex flex-col gap-1.5 p-3 ${keyboardClass}`}>
+        <div
+            aria-label="On-screen keyboard"
+            className={`flex flex-col gap-1.5 mx-auto max-w-[620px] px-1 pt-3 ${keyboardClass}`}
+        >
             {rows.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex justify-center gap-1.5">
+                <div
+                    key={rowIndex}
+                    className={`flex justify-center gap-1 sm:gap-1.5 ${rowIndex === 1 ? 'w-[90%] mx-auto' : 'w-full'}`}
+                >
                     {row.map((key) => (
                         <KeyboardKey
                             key={key}

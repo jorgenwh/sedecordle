@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    body {
+        @apply bg-game-canvas text-game-text antialiased;
+        color-scheme: dark;
+    }
+
+    :focus-visible {
+        outline: 2px solid theme('colors.game.accent');
+        outline-offset: 4px;
+    }
+
+    ::selection {
+        background: theme('colors.game.accent');
+        color: theme('colors.game.canvas');
+    }
+}
+
+@layer components {
+    .classic-background {
+        background-color: theme('colors.game.canvas');
+        background-image:
+            radial-gradient(
+                ellipse at 15% 0%,
+                rgb(22 163 74 / 6%),
+                transparent 55%
+            ),
+            radial-gradient(
+                ellipse at 90% 100%,
+                rgb(202 138 4 / 3%),
+                transparent 50%
+            );
+    }
+
+    .game-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: theme('colors.game.line') transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
 @keyframes snowfall {
     0% {
         transform: translate3d(0, -10vh, 0);

@@ -1,5 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="16" fill="#000000"/>
   <!-- 4x4 grid representing 16 boards with wordle colors -->
   <!-- padding=10, gap=4, cell=24 => 10 + 24*4 + 4*3 + 10 = 128 -->
   <!-- Row 1 -->

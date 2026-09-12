@@ -76,16 +76,25 @@ export const SaveScoreModal = ({
     const seconds = timeSeconds % 60
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="save-score-title"
+                className="bg-game-surface border border-game-line rounded-2xl p-6 max-w-md w-full max-h-[90dvh] overflow-y-auto shadow-2xl"
+            >
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-white">
-                        🎉 Congratulations!
+                    <h2
+                        id="save-score-title"
+                        className="text-2xl font-semibold tracking-tight text-game-text"
+                    >
+                        Beautifully solved.
                     </h2>
                     <button
                         onClick={onClose}
                         disabled={isSaving}
-                        className="text-gray-400 hover:text-white text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Close save score"
+                        className="h-8 w-8 rounded-lg text-game-muted hover:bg-game-tile hover:text-game-text text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         ×
                     </button>
@@ -108,7 +117,7 @@ export const SaveScoreModal = ({
                             id="playerName"
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-3 bg-game-canvas border border-game-line text-game-text rounded-lg placeholder:text-game-muted focus:outline-none focus:ring-2 focus:ring-game-accent"
                             placeholder="Your name"
                             maxLength={50}
                             disabled={isSaving}
@@ -122,7 +131,7 @@ export const SaveScoreModal = ({
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="flex-1 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 bg-game-accent text-game-canvas font-semibold px-4 py-3 rounded-lg hover:bg-game-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSaving ? 'Saving...' : 'Save Score'}
                         </button>
@@ -130,7 +139,7 @@ export const SaveScoreModal = ({
                             type="button"
                             onClick={onClose}
                             disabled={isSaving}
-                            className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 bg-game-tile text-game-text px-4 py-3 rounded-lg hover:bg-game-line disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Skip
                         </button>
