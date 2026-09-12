@@ -85,3 +85,27 @@
 .star-twinkle {
     animation: star-twinkle 3s ease-in-out infinite;
 }
+
+@keyframes loading-tile-wave {
+    0%,
+    60%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        background-color: theme('colors.game.absent');
+        border-color: theme('colors.game.line');
+    }
+    18% {
+        transform: translateY(-10px) rotate(-4deg);
+        background-color: theme('colors.game.present-fill');
+        border-color: theme('colors.game.present');
+    }
+    36% {
+        transform: translateY(0) rotate(0deg);
+        background-color: theme('colors.game.correct-fill');
+        border-color: theme('colors.game.correct');
+    }
+}
+
+.loading-tile {
+    animation: loading-tile-wave 2.8s ease-in-out infinite;
+}
