@@ -109,3 +109,37 @@
 .loading-tile {
     animation: loading-tile-wave 2.8s ease-in-out infinite;
 }
+
+@keyframes share-copy-pop {
+    0% {
+        opacity: 0;
+        transform: translateY(28px) scale(0.5) rotate(-8deg);
+    }
+    14% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.12) rotate(4deg);
+    }
+    23% {
+        transform: translateY(3px) scale(0.97) rotate(-2deg);
+    }
+    32%,
+    80% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-18px) scale(0.95);
+    }
+}
+
+.share-copy-pop {
+    transform-origin: bottom center;
+    animation: share-copy-pop 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .share-copy-pop {
+        animation: none;
+    }
+}

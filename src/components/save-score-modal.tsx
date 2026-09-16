@@ -23,6 +23,14 @@ export const SaveScoreModal = ({
     const [isSaving, setIsSaving] = useState(false)
     const [error, setError] = useState('')
     const [shareMessage, setShareMessage] = useState('')
+    const [shareAnimationId, setShareAnimationId] = useState(0)
+
+    useEffect(() => {
+        if (!shareMessage) return
+
+        const timeout = setTimeout(() => setShareMessage(''), 2400)
+        return () => clearTimeout(timeout)
+    }, [shareMessage, shareAnimationId])
 
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
@@ -73,7 +81,8 @@ export const SaveScoreModal = ({
                     await navigator.share({ text })
                 } else {
                     await navigator.clipboard.writeText(text)
-                    setShareMessage('Result copied to clipboard.')
+                    setShareMessage('Copied to clipboard!')
+                    setShareAnimationId((previous) => previous + 1)
                 }
                 return
             }
@@ -202,29 +211,53 @@ export const SaveScoreModal = ({
                             {error}
                         </p>
                     )}
-                    {shareMessage && (
-                        <p
-                            role="status"
-                            className="mb-4 text-sm text-game-accent"
-                        >
-                            {shareMessage}
-                        </p>
-                    )}
-
                     <div className="flex gap-3">
-                        <button
-                            type="submit"
-                            disabled={isSaving}
-                            className="flex-1 bg-game-accent text-game-canvas font-semibold px-4 py-4 rounded-xl hover:bg-game-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {mode === 'daily'
-                                ? isSaving
-                                    ? 'Sharing...'
-                                    : 'Share'
-                                : isSaving
-                                  ? 'Saving...'
-                                  : 'Save Score'}
-                        </button>
+                        <div className="relative flex-1">
+                            <div
+                                role="status"
+                                aria-live="polite"
+                                className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 -translate-x-1/2"
+                            >
+                                {shareMessage && (
+                                    <span
+                                        key={shareAnimationId}
+                                        className="share-copy-pop relative flex items-center gap-2 whitespace-nowrap rounded-full bg-game-accent px-4 py-2 text-sm font-semibold text-game-canvas shadow-lg shadow-black/30"
+                                    >
+                                        <svg
+                                            aria-hidden="true"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="m5 12 4 4L19 6" />
+                                        </svg>
+                                        {shareMessage}
+                                        <span
+                                            aria-hidden="true"
+                                            className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-game-accent"
+                                        />
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isSaving}
+                                className="w-full bg-game-accent text-game-canvas font-semibold px-4 py-4 rounded-xl hover:bg-game-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {mode === 'daily'
+                                    ? isSaving
+                                        ? 'Sharing...'
+                                        : 'Share'
+                                    : isSaving
+                                      ? 'Saving...'
+                                      : 'Save Score'}
+                            </button>
+                        </div>
                         <button
                             type="button"
                             onClick={onClose}

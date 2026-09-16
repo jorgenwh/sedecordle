@@ -3,8 +3,8 @@ import { GameState } from '../types/game'
 
 interface GameStatsProps {
     gameState: GameState
-    onShowLeaderboard: () => void
-    onNewGame: () => void
+    onShowLeaderboard?: () => void
+    onNewGame?: () => void
 }
 
 export const GameStats = ({
@@ -80,54 +80,62 @@ export const GameStats = ({
                     </dd>
                 </div>
             </dl>
-            <div className="flex items-center gap-2">
-                <button
-                    onClick={onNewGame}
-                    onKeyDown={(event) => event.stopPropagation()}
-                    className={`flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-xs font-medium transition-colors ${
-                        gameState.gameStatus === 'playing'
-                            ? 'border-game-line text-game-muted hover:bg-game-tile hover:text-game-text'
-                            : 'border-game-accent bg-game-accent text-game-canvas hover:bg-game-accent/90'
-                    }`}
-                >
-                    <svg
-                        aria-hidden="true"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5" />
-                    </svg>
-                    New game
-                </button>
-                <button
-                    onClick={onShowLeaderboard}
-                    className="flex h-10 items-center justify-center gap-2 rounded-lg border border-game-line px-3 text-xs font-medium text-game-muted transition-colors hover:bg-game-tile hover:text-game-text"
-                    title="Leaderboard"
-                    aria-label="Open leaderboard"
-                >
-                    <svg
-                        aria-hidden="true"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <path d="M8 3h8v5a4 4 0 0 1-8 0V3Z" />
-                        <path d="M8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 1v5m-4 3h8m-6-3h4v3" />
-                    </svg>
-                    <span className="hidden sm:inline">Leaderboard</span>
-                </button>
-            </div>
+            {(onNewGame || onShowLeaderboard) && (
+                <div className="flex items-center gap-2">
+                    {onNewGame && (
+                        <button
+                            onClick={onNewGame}
+                            onKeyDown={(event) => event.stopPropagation()}
+                            className={`flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                                gameState.gameStatus === 'playing'
+                                    ? 'border-game-line text-game-muted hover:bg-game-tile hover:text-game-text'
+                                    : 'border-game-accent bg-game-accent text-game-canvas hover:bg-game-accent/90'
+                            }`}
+                        >
+                            <svg
+                                aria-hidden="true"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5" />
+                            </svg>
+                            New game
+                        </button>
+                    )}
+                    {onShowLeaderboard && (
+                        <button
+                            onClick={onShowLeaderboard}
+                            className="flex h-10 items-center justify-center gap-2 rounded-lg border border-game-line px-3 text-xs font-medium text-game-muted transition-colors hover:bg-game-tile hover:text-game-text"
+                            title="Leaderboard"
+                            aria-label="Open leaderboard"
+                        >
+                            <svg
+                                aria-hidden="true"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M8 3h8v5a4 4 0 0 1-8 0V3Z" />
+                                <path d="M8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 1v5m-4 3h8m-6-3h4v3" />
+                            </svg>
+                            <span className="hidden sm:inline">
+                                Leaderboard
+                            </span>
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     )
 }

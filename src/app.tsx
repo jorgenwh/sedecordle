@@ -15,11 +15,7 @@ import { activeTheme } from './themes'
 export function App() {
     const [mode, setMode] = useState<'daily' | 'free-play' | null>(null)
 
-    if (mode === 'free-play') return <FreePlay />
-
-    if (mode === 'daily') {
-        return <main aria-label="Daily" className="min-h-dvh bg-game-canvas" />
-    }
+    if (mode) return <Game mode={mode} />
 
     const Scene = activeTheme.Scene
 
@@ -95,8 +91,8 @@ export function App() {
     )
 }
 
-const FreePlay = () => {
-    // Temporary completed-game preview when entering Free play.
+const Game = ({ mode }: { mode: 'free-play' | 'daily' }) => {
+    // Temporary random completed-game preview for both modes.
     const [isPreview, setIsPreview] = useState(true)
     const [showNewGame, setShowNewGame] = useState(false)
     const [showLeaderboard, setShowLeaderboard] = useState(false)
@@ -212,8 +208,12 @@ const FreePlay = () => {
             >
                 <GameStats
                     gameState={gameState}
-                    onShowLeaderboard={() => setShowLeaderboard(true)}
-                    onNewGame={handleNewGame}
+                    onShowLeaderboard={
+                        mode === 'free-play'
+                            ? () => setShowLeaderboard(true)
+                            : undefined
+                    }
+                    onNewGame={mode === 'free-play' ? handleNewGame : undefined}
                 />
                 <Keyboard
                     onKeyPress={handleKeyPress}
@@ -229,7 +229,7 @@ const FreePlay = () => {
             />
 
             <SaveScoreModal
-                mode="free-play"
+                mode={mode}
                 isPreview={isPreview}
                 isOpen={showSaveScore}
                 onClose={() => setShowSaveScore(false)}
