@@ -7,11 +7,96 @@ import { GameMessage } from './components/game-message'
 import { SaveScoreModal } from './components/save-score-modal'
 import { GameStats } from './components/game-stats'
 import { ScreenFlash } from './components/screen-flash'
+import { NewGameModal } from './components/new-game-modal'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
 import { activeTheme } from './themes'
 
 export function App() {
+    const [mode, setMode] = useState<'daily' | 'free-play' | null>(null)
+
+    if (mode === 'free-play') return <FreePlay />
+
+    if (mode === 'daily') {
+        return <main aria-label="Daily" className="min-h-dvh bg-game-canvas" />
+    }
+
+    const Scene = activeTheme.Scene
+
+    return (
+        <main
+            className={`min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative ${activeTheme.rootClassName ?? 'bg-game-canvas'}`}
+        >
+            {Scene && <Scene />}
+            <div className="relative z-10 w-full max-w-3xl">
+                <header className="mb-10 text-center sm:mb-12">
+                    <img
+                        src="/favicon.svg"
+                        alt=""
+                        width={48}
+                        height={48}
+                        className="mx-auto mb-5"
+                    />
+                    <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">
+                        <span className="text-game-correct">S</span>u
+                        <span className="text-game-present">p</span>er
+                        <span className="text-game-correct">w</span>ord
+                        <span className="text-game-present">l</span>e
+                    </h1>
+                    <p className="mt-4 text-sm sm:text-base text-game-muted">
+                        Choose your game mode
+                    </p>
+                </header>
+                <div className="grid grid-cols-2 gap-3 sm:gap-6">
+                    <button
+                        onClick={() => setMode('daily')}
+                        className="flex min-h-60 sm:min-h-64 flex-col items-center justify-center rounded-2xl border border-game-line bg-game-surface/80 p-4 sm:p-8 transition-colors hover:border-game-present hover:bg-game-surface"
+                    >
+                        <svg
+                            aria-hidden="true"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mb-6 h-12 w-12 text-game-present"
+                        >
+                            <rect x="3" y="5" width="18" height="16" rx="2" />
+                            <path d="M16 3v4M8 3v4M3 11h18m-13 5h2m4 0h2" />
+                        </svg>
+                        <span className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                            Daily
+                        </span>
+                    </button>
+                    <button
+                        onClick={() => setMode('free-play')}
+                        className="flex min-h-60 sm:min-h-64 flex-col items-center justify-center rounded-2xl border border-game-line bg-game-surface/80 p-4 sm:p-8 transition-colors hover:border-game-correct hover:bg-game-surface"
+                    >
+                        <svg
+                            aria-hidden="true"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mb-6 h-12 w-12 text-game-correct"
+                        >
+                            <path d="M3 6h3c6 0 6 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-1 4-3m4-6c1-2 2-3 4-3h3m-4-4 4 4-4 4" />
+                        </svg>
+                        <span className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                            Free play
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    )
+}
+
+const FreePlay = () => {
+    const [showNewGame, setShowNewGame] = useState(false)
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
     const [hasPromptedSave, setHasPromptedSave] = useState(false)
@@ -34,6 +119,7 @@ export function App() {
         submitGuess,
         deleteLastLetter,
         addLetter,
+        !isLoading && !showNewGame && !showLeaderboard && !showSaveScore,
     )
 
     useEffect(() => {
@@ -46,6 +132,25 @@ export function App() {
             setHasPromptedSave(true)
         }
     }, [gameState.gameStatus, hasPromptedSave])
+
+    const startNewGame = async () => {
+        setShowNewGame(false)
+        setShowLeaderboard(false)
+        setShowSaveScore(false)
+        await initializeGame()
+        setHasPromptedSave(false)
+    }
+
+    const handleNewGame = () => {
+        if (
+            gameState.gameStatus === 'playing' &&
+            gameState.guesses.length > 0
+        ) {
+            setShowNewGame(true)
+        } else {
+            startNewGame()
+        }
+    }
 
     if (isLoading) {
         return <LoadingScreen />
@@ -105,6 +210,7 @@ export function App() {
                 <GameStats
                     gameState={gameState}
                     onShowLeaderboard={() => setShowLeaderboard(true)}
+                    onNewGame={handleNewGame}
                 />
                 <Keyboard
                     onKeyPress={handleKeyPress}
@@ -130,6 +236,12 @@ export function App() {
             />
 
             <ScreenFlash type={flashType} onComplete={clearFlash} />
+            {showNewGame && (
+                <NewGameModal
+                    onClose={() => setShowNewGame(false)}
+                    onConfirm={startNewGame}
+                />
+            )}
         </div>
     )
 }
