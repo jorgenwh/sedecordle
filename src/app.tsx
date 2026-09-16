@@ -15,7 +15,7 @@ import { activeTheme } from './themes'
 export function App() {
     const [mode, setMode] = useState<'daily' | 'free-play' | null>(null)
 
-    if (mode) return <Game mode={mode} />
+    if (mode) return <Game mode={mode} onBackToMenu={() => setMode(null)} />
 
     const Scene = activeTheme.Scene
 
@@ -91,7 +91,13 @@ export function App() {
     )
 }
 
-const Game = ({ mode }: { mode: 'free-play' | 'daily' }) => {
+const Game = ({
+    mode,
+    onBackToMenu,
+}: {
+    mode: 'free-play' | 'daily'
+    onBackToMenu: () => void
+}) => {
     // Temporary random completed-game preview for both modes.
     const [isPreview, setIsPreview] = useState(true)
     const [showNewGame, setShowNewGame] = useState(false)
@@ -167,21 +173,30 @@ const Game = ({ mode }: { mode: 'free-play' | 'daily' }) => {
             {Scene && <Scene />}
             <main className="game-scroll flex-1 overflow-y-auto px-3 pt-7 pb-80 sm:px-6 sm:pt-10 relative z-10">
                 <header className="max-w-6xl mx-auto mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-5 pb-6">
-                    <div className="flex items-center gap-4">
-                        <img
-                            src="/favicon.svg"
-                            alt=""
-                            width={44}
-                            height={44}
-                            className="h-11 w-11 shrink-0"
-                        />
-                        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                            <span className="text-game-correct">S</span>u
-                            <span className="text-game-present">p</span>er
-                            <span className="text-game-correct">w</span>ord
-                            <span className="text-game-present">l</span>e
-                        </h1>
-                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                        <button
+                            type="button"
+                            onClick={onBackToMenu}
+                            onKeyDown={(event) => event.stopPropagation()}
+                            aria-label="Superwordle — back to menu"
+                            title="Back to menu"
+                            className="flex cursor-pointer items-center gap-4 rounded-lg text-left"
+                        >
+                            <img
+                                src="/favicon.svg"
+                                alt=""
+                                width={44}
+                                height={44}
+                                className="h-11 w-11 shrink-0"
+                            />
+                            <span>
+                                <span className="text-game-correct">S</span>u
+                                <span className="text-game-present">p</span>er
+                                <span className="text-game-correct">w</span>ord
+                                <span className="text-game-present">l</span>e
+                            </span>
+                        </button>
+                    </h1>
                     <div
                         aria-label="Letter color guide"
                         className="flex items-center gap-4 text-[11px] text-game-muted"
