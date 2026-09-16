@@ -24,25 +24,47 @@ export const useGame = () => {
         null,
     )
 
-    const initializeGame = async () => {
+    const initializeGame = async (preview = false) => {
         setIsLoading(true)
         await new Promise((resolve) => setTimeout(resolve, 500))
 
-        const words = getRandomWords(16)
+        const guesses = preview ? getRandomWords(18) : []
+        const words = preview ? guesses.slice(2) : getRandomWords(16)
+        const endTime = preview ? Date.now() : null
+        const previewLetters = new Map<string, LetterBoardStatus>()
+
+        if (preview) {
+            for (const letter of new Set(guesses.join(''))) {
+                previewLetters.set(letter, {
+                    boardStatuses: new Map(
+                        words.map((word, index) => [
+                            index,
+                            word.includes(letter) ? 'correct' : 'absent',
+                        ]),
+                    ),
+                })
+            }
+        }
 
         setGameState({
             targetWords: words,
-            guesses: [],
+            guesses,
             currentGuess: '',
-            gameStatus: 'playing',
-            solvedBoards: new Set(),
-            startTime: null,
-            endTime: null,
+            gameStatus: preview ? 'won' : 'playing',
+            solvedBoards: new Set(
+                preview ? words.map((_, index) => index) : [],
+            ),
+            startTime: endTime ? endTime - 272000 : null,
+            endTime,
         })
         setUsedLetters(new Map())
-        setLetterBoardStatus(new Map())
-        setMessage('')
-        setFlashType(null)
+        setLetterBoardStatus(previewLetters)
+        setMessage(
+            preview
+                ? '🎉 Congratulations! You solved all 16 boards in 18 guesses!'
+                : '',
+        )
+        setFlashType(preview ? 'correct' : null)
         setIsLoading(false)
     }
 

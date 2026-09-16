@@ -96,6 +96,8 @@ export function App() {
 }
 
 const FreePlay = () => {
+    // Temporary completed-game preview when entering Free play.
+    const [isPreview, setIsPreview] = useState(true)
     const [showNewGame, setShowNewGame] = useState(false)
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
@@ -123,11 +125,11 @@ const FreePlay = () => {
     )
 
     useEffect(() => {
-        initializeGame()
+        initializeGame(true)
     }, [])
 
     useEffect(() => {
-        if (gameState.gameStatus === 'won' && !hasPromptedSave) {
+        if (gameState.gameStatus !== 'playing' && !hasPromptedSave) {
             setShowSaveScore(true)
             setHasPromptedSave(true)
         }
@@ -138,6 +140,7 @@ const FreePlay = () => {
         setShowLeaderboard(false)
         setShowSaveScore(false)
         await initializeGame()
+        setIsPreview(false)
         setHasPromptedSave(false)
     }
 
@@ -226,6 +229,8 @@ const FreePlay = () => {
             />
 
             <SaveScoreModal
+                mode="free-play"
+                isPreview={isPreview}
                 isOpen={showSaveScore}
                 onClose={() => setShowSaveScore(false)}
                 onSaveSuccess={() => {
