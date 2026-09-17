@@ -98,31 +98,23 @@ export const useGame = (mode: 'free-play' | 'daily') => {
         }
     }, [mode, isLoading])
 
-    const initializeGame = async (preview = false) => {
+    const initializeGame = async () => {
         const date = new Date()
         const dateKey = date.toISOString().slice(0, 10)
         setIsLoading(true)
         await new Promise((resolve) => setTimeout(resolve, 500))
 
         const saved = mode === 'daily' ? loadDailyProgress(dateKey) : null
-        const guesses = preview ? getRandomWords(18) : []
         const words =
-            mode === 'daily'
-                ? getDailyWords(date)
-                : preview
-                  ? guesses.slice(2)
-                  : getRandomWords(16)
-        const endTime = preview ? Date.now() : null
+            mode === 'daily' ? getDailyWords(date) : getRandomWords(16)
         const nextState: GameState = saved ?? {
             targetWords: words,
-            guesses,
+            guesses: [],
             currentGuess: '',
-            gameStatus: preview ? 'won' : 'playing',
-            solvedBoards: new Set(
-                preview ? words.map((_, index) => index) : [],
-            ),
-            startTime: endTime ? endTime - 272000 : null,
-            endTime,
+            gameStatus: 'playing',
+            solvedBoards: new Set(),
+            startTime: null,
+            endTime: null,
         }
         const letters = getLetterStatuses(
             nextState.guesses,
@@ -144,7 +136,7 @@ export const useGame = (mode: 'free-play' | 'daily') => {
                   ? `Game Over! You solved ${nextState.solvedBoards.size}/16 boards.`
                   : '',
         )
-        setFlashType(preview ? 'correct' : null)
+        setFlashType(null)
         setIsLoading(false)
     }
 

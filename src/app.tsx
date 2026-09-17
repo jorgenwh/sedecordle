@@ -98,8 +98,6 @@ const Game = ({
     mode: 'free-play' | 'daily'
     onBackToMenu: () => void
 }) => {
-    // Keep the temporary completed-game preview in Free play only.
-    const [isPreview, setIsPreview] = useState(mode === 'free-play')
     const [showNewGame, setShowNewGame] = useState(false)
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
@@ -128,7 +126,7 @@ const Game = ({
     )
 
     useEffect(() => {
-        initializeGame(mode === 'free-play')
+        initializeGame()
     }, [])
 
     useEffect(() => {
@@ -153,7 +151,6 @@ const Game = ({
         setShowLeaderboard(false)
         setShowSaveScore(false)
         await initializeGame()
-        setIsPreview(false)
         setHasPromptedSave(false)
     }
 
@@ -256,7 +253,6 @@ const Game = ({
 
             <SaveScoreModal
                 mode={mode}
-                isPreview={isPreview}
                 isOpen={showSaveScore}
                 onClose={() => setShowSaveScore(false)}
                 onSaveSuccess={() => {

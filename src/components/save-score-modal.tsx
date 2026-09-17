@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import { saveScore } from '../services/leaderboard'
+import { computeScore, saveScore } from '../services/leaderboard'
 import { GameState } from '../types/game'
 
 interface SaveScoreModalProps {
     mode: 'free-play' | 'daily'
-    isPreview?: boolean
     isOpen: boolean
     onClose: () => void
     onSaveSuccess: () => void
@@ -13,7 +12,6 @@ interface SaveScoreModalProps {
 
 export const SaveScoreModal = ({
     mode,
-    isPreview = false,
     isOpen,
     onClose,
     onSaveSuccess,
@@ -62,7 +60,6 @@ export const SaveScoreModal = ({
     )
     const minutes = Math.floor(timeSeconds / 60)
     const seconds = timeSeconds % 60
-    const resultText = `You solved ${gameState.solvedBoards.size} out of ${gameState.targetWords.length} boards in ${gameState.guesses.length} guesses and ${minutes}:${seconds.toString().padStart(2, '0')}!`
 
     const handleShare = async () => {
         setIsSharing(true)
@@ -70,7 +67,27 @@ export const SaveScoreModal = ({
         setShareMessage('')
 
         try {
-            const text = `Superwordle ${mode === 'daily' ? 'Daily' : 'Free play'}\n${resultText}\nhttps://superwordle.com`
+            const grid = Array.from({ length: 4 }, (_, row) =>
+                Array.from({ length: 4 }, (_, column) =>
+                    gameState.solvedBoards.has(row * 4 + column)
+                        ? ':large_green_square:'
+                        : ':black_large_square:',
+                ).join(''),
+            ).join('\n')
+            const score = computeScore({
+                attempts: gameState.guesses.length,
+                timeSeconds,
+            })
+            const text = [
+                `Superwordle - ${mode === 'daily' ? 'Daily' : 'Free play'}`,
+                `Guesses: ${gameState.guesses.length}/21 · Solved: ${gameState.solvedBoards.size}/${gameState.targetWords.length}`,
+                `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`,
+                `Score: ${score}`,
+                '',
+                grid,
+                '',
+                'https://superwordle.com',
+            ].join('\n')
             if (navigator.share) {
                 await navigator.share({ text })
             } else {
@@ -105,15 +122,13 @@ export const SaveScoreModal = ({
         setShareMessage('')
 
         try {
-            if (!isPreview) {
-                await saveScore({
-                    playerName: playerName.trim(),
-                    attempts: gameState.guesses.length,
-                    timeSeconds,
-                    completedAt: new Date(gameState.endTime!),
-                    targetWords: gameState.targetWords,
-                })
-            }
+            await saveScore({
+                playerName: playerName.trim(),
+                attempts: gameState.guesses.length,
+                timeSeconds,
+                completedAt: new Date(gameState.endTime!),
+                targetWords: gameState.targetWords,
+            })
 
             onSaveSuccess()
         } catch (err) {
