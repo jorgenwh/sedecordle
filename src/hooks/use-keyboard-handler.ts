@@ -5,10 +5,11 @@ export const useKeyboardHandler = (
     onEnter: () => void,
     onBackspace: () => void,
     onLetter: (letter: string) => void,
+    enabled = true,
 ) => {
     const handleKeyPress = useCallback(
         (key: string) => {
-            if (gameStatus !== 'playing') return
+            if (!enabled || gameStatus !== 'playing') return
 
             if (key === 'ENTER') {
                 onEnter()
@@ -18,7 +19,7 @@ export const useKeyboardHandler = (
                 onLetter(key.toUpperCase())
             }
         },
-        [gameStatus, onEnter, onBackspace, onLetter],
+        [enabled, gameStatus, onEnter, onBackspace, onLetter],
     )
 
     useEffect(() => {
