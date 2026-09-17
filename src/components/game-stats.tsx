@@ -12,19 +12,28 @@ export const GameStats = ({
     onShowLeaderboard,
     onNewGame,
 }: GameStatsProps) => {
-    const [elapsedTime, setElapsedTime] = useState(0)
+    const [elapsedTime, setElapsedTime] = useState(() =>
+        gameState.startTime
+            ? Math.floor(
+                  ((gameState.endTime ?? Date.now()) - gameState.startTime) /
+                      1000,
+              )
+            : 0,
+    )
 
     useEffect(() => {
         if (!gameState.startTime || gameState.gameStatus !== 'playing') {
             return
         }
 
-        const interval = setInterval(() => {
+        const updateElapsedTime = () => {
             const elapsed = Math.floor(
                 (Date.now() - gameState.startTime!) / 1000,
             )
             setElapsedTime(elapsed)
-        }, 1000)
+        }
+        updateElapsedTime()
+        const interval = setInterval(updateElapsedTime, 1000)
 
         return () => clearInterval(interval)
     }, [gameState.startTime, gameState.gameStatus])

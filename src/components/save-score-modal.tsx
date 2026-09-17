@@ -21,6 +21,8 @@ export const SaveScoreModal = ({
 }: SaveScoreModalProps) => {
     const [playerName, setPlayerName] = useState('')
     const [isSaving, setIsSaving] = useState(false)
+    const [isSharing, setIsSharing] = useState(false)
+    const isBusy = isSaving || isSharing
     const [error, setError] = useState('')
     const [shareMessage, setShareMessage] = useState('')
     const [shareAnimationId, setShareAnimationId] = useState(0)
@@ -34,7 +36,7 @@ export const SaveScoreModal = ({
 
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
-            if (event.key === 'Escape' && isOpen && !isSaving) {
+            if (event.key === 'Escape' && isOpen && !isBusy) {
                 onClose()
             }
         }
@@ -45,7 +47,7 @@ export const SaveScoreModal = ({
                 document.removeEventListener('keydown', handleEscKey)
             }
         }
-    }, [isOpen, onClose, isSaving])
+    }, [isOpen, onClose, isBusy])
 
     if (
         !isOpen ||
@@ -62,10 +64,38 @@ export const SaveScoreModal = ({
     const seconds = timeSeconds % 60
     const resultText = `You solved ${gameState.solvedBoards.size} out of ${gameState.targetWords.length} boards in ${gameState.guesses.length} guesses and ${minutes}:${seconds.toString().padStart(2, '0')}!`
 
+    const handleShare = async () => {
+        setIsSharing(true)
+        setError('')
+        setShareMessage('')
+
+        try {
+            const text = `Superwordle ${mode === 'daily' ? 'Daily' : 'Free play'}\n${resultText}\nhttps://superwordle.com`
+            if (navigator.share) {
+                await navigator.share({ text })
+            } else {
+                await navigator.clipboard.writeText(text)
+                setShareMessage('Copied to clipboard!')
+                setShareAnimationId((previous) => previous + 1)
+            }
+        } catch (err) {
+            if (err instanceof DOMException && err.name === 'AbortError') return
+            setError('Failed to share result. Please try again.')
+            console.error('Error sharing result:', err)
+        } finally {
+            setIsSharing(false)
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (mode === 'free-play' && !playerName.trim()) {
+        if (mode === 'daily') {
+            await handleShare()
+            return
+        }
+
+        if (!playerName.trim()) {
             setError('Please enter your name')
             return
         }
@@ -75,18 +105,6 @@ export const SaveScoreModal = ({
         setShareMessage('')
 
         try {
-            if (mode === 'daily') {
-                const text = `Superwordle Daily\n${resultText}\nhttps://superwordle.com`
-                if (navigator.share) {
-                    await navigator.share({ text })
-                } else {
-                    await navigator.clipboard.writeText(text)
-                    setShareMessage('Copied to clipboard!')
-                    setShareAnimationId((previous) => previous + 1)
-                }
-                return
-            }
-
             if (!isPreview) {
                 await saveScore({
                     playerName: playerName.trim(),
@@ -99,14 +117,7 @@ export const SaveScoreModal = ({
 
             onSaveSuccess()
         } catch (err) {
-            if (err instanceof DOMException && err.name === 'AbortError') {
-                return
-            }
-            setError(
-                mode === 'daily'
-                    ? 'Failed to share result. Please try again.'
-                    : 'Failed to save score. Please try again.',
-            )
+            setError('Failed to save score. Please try again.')
             console.error('Error submitting result:', err)
         } finally {
             setIsSaving(false)
@@ -127,7 +138,7 @@ export const SaveScoreModal = ({
                     </span>
                     <button
                         onClick={onClose}
-                        disabled={isSaving}
+                        disabled={isBusy}
                         aria-label="Close result"
                         className="h-10 w-10 shrink-0 rounded-full text-game-muted hover:bg-game-tile hover:text-game-text text-2xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -202,7 +213,7 @@ export const SaveScoreModal = ({
                                 className="w-full px-4 py-4 bg-game-canvas/60 border border-game-line text-game-text rounded-xl placeholder:text-game-muted focus:outline-none focus:ring-2 focus:ring-game-accent"
                                 placeholder="Your name"
                                 maxLength={50}
-                                disabled={isSaving}
+                                disabled={isBusy}
                             />
                         </div>
                     )}
@@ -211,8 +222,19 @@ export const SaveScoreModal = ({
                             {error}
                         </p>
                     )}
-                    <div className="flex gap-3">
-                        <div className="relative flex-1">
+                    <div
+                        className={`grid grid-cols-2 gap-3 ${mode === 'free-play' ? 'sm:grid-cols-3' : ''}`}
+                    >
+                        {mode === 'free-play' && (
+                            <button
+                                type="submit"
+                                disabled={isBusy}
+                                className="col-span-2 sm:col-span-1 bg-game-accent text-game-canvas font-semibold px-4 py-4 rounded-xl hover:bg-game-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSaving ? 'Saving...' : 'Save Score'}
+                            </button>
+                        )}
+                        <div className="relative min-w-0">
                             <div
                                 role="status"
                                 aria-live="polite"
@@ -245,24 +267,19 @@ export const SaveScoreModal = ({
                                 )}
                             </div>
                             <button
-                                type="submit"
-                                disabled={isSaving}
+                                type="button"
+                                onClick={handleShare}
+                                disabled={isBusy}
                                 className="w-full bg-game-accent text-game-canvas font-semibold px-4 py-4 rounded-xl hover:bg-game-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {mode === 'daily'
-                                    ? isSaving
-                                        ? 'Sharing...'
-                                        : 'Share'
-                                    : isSaving
-                                      ? 'Saving...'
-                                      : 'Save Score'}
+                                {isSharing ? 'Sharing...' : 'Share'}
                             </button>
                         </div>
                         <button
                             type="button"
                             onClick={onClose}
-                            disabled={isSaving}
-                            className="flex-1 border border-game-line bg-transparent text-game-text px-4 py-4 rounded-xl hover:bg-game-tile transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isBusy}
+                            className="border border-game-line bg-transparent text-game-text px-4 py-4 rounded-xl hover:bg-game-tile transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Close
                         </button>

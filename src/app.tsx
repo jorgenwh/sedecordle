@@ -98,14 +98,15 @@ const Game = ({
     mode: 'free-play' | 'daily'
     onBackToMenu: () => void
 }) => {
-    // Temporary random completed-game preview for both modes.
-    const [isPreview, setIsPreview] = useState(true)
+    // Keep the temporary completed-game preview in Free play only.
+    const [isPreview, setIsPreview] = useState(mode === 'free-play')
     const [showNewGame, setShowNewGame] = useState(false)
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
     const [hasPromptedSave, setHasPromptedSave] = useState(false)
     const {
         isLoading,
+        restoredCompletedGame,
         gameState,
         usedLetters,
         letterBoardStatus,
@@ -116,7 +117,7 @@ const Game = ({
         deleteLastLetter,
         addLetter,
         clearFlash,
-    } = useGame()
+    } = useGame(mode)
 
     const handleKeyPress = useKeyboardHandler(
         gameState.gameStatus,
@@ -127,15 +128,25 @@ const Game = ({
     )
 
     useEffect(() => {
-        initializeGame(true)
+        initializeGame(mode === 'free-play')
     }, [])
 
     useEffect(() => {
-        if (gameState.gameStatus !== 'playing' && !hasPromptedSave) {
+        if (
+            !isLoading &&
+            !restoredCompletedGame &&
+            gameState.gameStatus !== 'playing' &&
+            !hasPromptedSave
+        ) {
             setShowSaveScore(true)
             setHasPromptedSave(true)
         }
-    }, [gameState.gameStatus, hasPromptedSave])
+    }, [
+        gameState.gameStatus,
+        hasPromptedSave,
+        isLoading,
+        restoredCompletedGame,
+    ])
 
     const startNewGame = async () => {
         setShowNewGame(false)

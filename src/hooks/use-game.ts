@@ -1,9 +1,13 @@
-import { useState, useCallback } from 'react'
-import { getRandomWords, isValidWord } from '../utils/words'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { getDailyWords, getRandomWords, isValidWord } from '../utils/words'
 import { GameState, UsedLetterStatus, LetterBoardStatus } from '../types/game'
+import { loadDailyProgress, saveDailyProgress } from '../utils/daily-progress'
+import { getLetterStatuses } from '../utils/letter-status'
 
-export const useGame = () => {
+export const useGame = (mode: 'free-play' | 'daily') => {
     const [isLoading, setIsLoading] = useState(true)
+    const [restoredCompletedGame, setRestoredCompletedGame] = useState(false)
+    const dailyDate = useRef<string | null>(null)
     const [gameState, setGameState] = useState<GameState>({
         targetWords: [],
         guesses: [],
@@ -13,6 +17,8 @@ export const useGame = () => {
         startTime: null,
         endTime: null,
     })
+    const latestGameState = useRef(gameState)
+    const pausedAt = useRef<number | null>(null)
     const [usedLetters, setUsedLetters] = useState<
         Map<string, UsedLetterStatus>
     >(new Map())
@@ -24,29 +30,90 @@ export const useGame = () => {
         null,
     )
 
+    useEffect(() => {
+        latestGameState.current = gameState
+        if (mode === 'daily' && !isLoading && dailyDate.current) {
+            saveDailyProgress(
+                dailyDate.current,
+                gameState,
+                pausedAt.current ?? Date.now(),
+            )
+        }
+    }, [mode, isLoading, gameState])
+
+    useEffect(() => {
+        if (mode !== 'daily' || isLoading) return
+
+        const saveProgress = () => {
+            if (dailyDate.current) {
+                saveDailyProgress(
+                    dailyDate.current,
+                    latestGameState.current,
+                    pausedAt.current ?? Date.now(),
+                )
+            }
+        }
+        const pause = () => {
+            pausedAt.current ??= Date.now()
+            saveProgress()
+        }
+        const resume = () => {
+            if (document.hidden || pausedAt.current === null) return
+
+            const state = latestGameState.current
+            const awayTime = Math.max(0, Date.now() - pausedAt.current)
+            pausedAt.current = null
+            if (state.startTime !== null && state.gameStatus === 'playing') {
+                // Shift the timer's origin so the existing display and result
+                // calculations both exclude this pause.
+                const resumed = {
+                    ...state,
+                    startTime: state.startTime + awayTime,
+                }
+                latestGameState.current = resumed
+                setGameState(resumed)
+            }
+            saveProgress()
+        }
+        const onVisibilityChange = () => {
+            if (document.hidden) pause()
+            else resume()
+        }
+
+        onVisibilityChange()
+        document.addEventListener('visibilitychange', onVisibilityChange)
+        window.addEventListener('pagehide', pause)
+        window.addEventListener('pageshow', resume)
+        // Checkpoint active time in case the browser closes without an event.
+        const interval = setInterval(() => {
+            if (!document.hidden && pausedAt.current === null) saveProgress()
+        }, 1000)
+
+        return () => {
+            pause()
+            document.removeEventListener('visibilitychange', onVisibilityChange)
+            window.removeEventListener('pagehide', pause)
+            window.removeEventListener('pageshow', resume)
+            clearInterval(interval)
+        }
+    }, [mode, isLoading])
+
     const initializeGame = async (preview = false) => {
+        const date = new Date()
+        const dateKey = date.toISOString().slice(0, 10)
         setIsLoading(true)
         await new Promise((resolve) => setTimeout(resolve, 500))
 
+        const saved = mode === 'daily' ? loadDailyProgress(dateKey) : null
         const guesses = preview ? getRandomWords(18) : []
-        const words = preview ? guesses.slice(2) : getRandomWords(16)
+        const words =
+            mode === 'daily'
+                ? getDailyWords(date)
+                : preview
+                  ? guesses.slice(2)
+                  : getRandomWords(16)
         const endTime = preview ? Date.now() : null
-        const previewLetters = new Map<string, LetterBoardStatus>()
-
-        if (preview) {
-            for (const letter of new Set(guesses.join(''))) {
-                previewLetters.set(letter, {
-                    boardStatuses: new Map(
-                        words.map((word, index) => [
-                            index,
-                            word.includes(letter) ? 'correct' : 'absent',
-                        ]),
-                    ),
-                })
-            }
-        }
-
-        setGameState({
+        const nextState: GameState = saved ?? {
             targetWords: words,
             guesses,
             currentGuess: '',
@@ -56,102 +123,33 @@ export const useGame = () => {
             ),
             startTime: endTime ? endTime - 272000 : null,
             endTime,
-        })
-        setUsedLetters(new Map())
-        setLetterBoardStatus(previewLetters)
+        }
+        const letters = getLetterStatuses(
+            nextState.guesses,
+            nextState.targetWords,
+        )
+
+        dailyDate.current = dateKey
+        pausedAt.current = document.hidden ? Date.now() : null
+        setGameState(nextState)
+        setUsedLetters(letters.usedLetters)
+        setLetterBoardStatus(letters.letterBoardStatus)
+        setRestoredCompletedGame(
+            saved !== null && saved.gameStatus !== 'playing',
+        )
         setMessage(
-            preview
-                ? '🎉 Congratulations! You solved all 16 boards in 18 guesses!'
-                : '',
+            nextState.gameStatus === 'won'
+                ? `🎉 Congratulations! You solved all 16 boards in ${nextState.guesses.length} guesses!`
+                : nextState.gameStatus === 'lost'
+                  ? `Game Over! You solved ${nextState.solvedBoards.size}/16 boards.`
+                  : '',
         )
         setFlashType(preview ? 'correct' : null)
         setIsLoading(false)
     }
 
-    const updateUsedLetters = useCallback(
-        (guess: string, targetWords: string[], solvedBoards: Set<number>) => {
-            const newUsedLetters = new Map(usedLetters)
-            const newLetterBoardStatus = new Map(letterBoardStatus)
-
-            // Process each letter in the guess
-            for (const letter of guess) {
-                let overallStatus: UsedLetterStatus = 'absent'
-                const boardStatuses = new Map<number, UsedLetterStatus>()
-
-                // Check each board for this letter
-                for (
-                    let boardIndex = 0;
-                    boardIndex < targetWords.length;
-                    boardIndex++
-                ) {
-                    if (solvedBoards.has(boardIndex)) continue
-
-                    const target = targetWords[boardIndex]
-                    let boardStatus: UsedLetterStatus = 'absent'
-
-                    // Check if letter is in correct position
-                    for (let pos = 0; pos < target.length; pos++) {
-                        if (target[pos] === letter) {
-                            if (guess[pos] === letter) {
-                                boardStatus = 'correct'
-                                overallStatus = 'correct'
-                                break
-                            } else if (boardStatus === 'absent') {
-                                boardStatus = 'present'
-                                if (overallStatus === 'absent') {
-                                    overallStatus = 'present'
-                                }
-                            }
-                        }
-                    }
-
-                    // Store the status for this board (including absent)
-                    boardStatuses.set(boardIndex, boardStatus)
-                }
-
-                // Update overall letter status
-                const currentStatus = newUsedLetters.get(letter)
-                if (
-                    !currentStatus ||
-                    (currentStatus === 'absent' &&
-                        overallStatus !== 'absent') ||
-                    (currentStatus === 'present' && overallStatus === 'correct')
-                ) {
-                    newUsedLetters.set(letter, overallStatus)
-                }
-
-                // Update or merge board-specific statuses
-                const existingBoardStatus = newLetterBoardStatus.get(letter)
-                if (existingBoardStatus) {
-                    // Merge with existing board statuses
-                    boardStatuses.forEach((status, boardIndex) => {
-                        const existing =
-                            existingBoardStatus.boardStatuses.get(boardIndex)
-                        if (
-                            !existing ||
-                            status === 'correct' ||
-                            (existing === 'absent' && status === 'present')
-                        ) {
-                            existingBoardStatus.boardStatuses.set(
-                                boardIndex,
-                                status,
-                            )
-                        }
-                    })
-                } else if (boardStatuses.size > 0) {
-                    newLetterBoardStatus.set(letter, {
-                        boardStatuses: boardStatuses,
-                    })
-                }
-            }
-
-            setUsedLetters(newUsedLetters)
-            setLetterBoardStatus(newLetterBoardStatus)
-        },
-        [usedLetters, letterBoardStatus],
-    )
-
     const submitGuess = useCallback(() => {
+        if (isLoading || gameState.gameStatus !== 'playing') return false
         if (gameState.currentGuess.length !== 5) return false
 
         if (!isValidWord(gameState.currentGuess)) {
@@ -162,12 +160,6 @@ export const useGame = () => {
         const newSolvedBoards = new Set(gameState.solvedBoards)
         const previousSolvedCount = gameState.solvedBoards.size
 
-        updateUsedLetters(
-            gameState.currentGuess.toUpperCase(),
-            gameState.targetWords,
-            gameState.solvedBoards,
-        )
-
         gameState.targetWords.forEach((target, index) => {
             if (target === gameState.currentGuess.toUpperCase()) {
                 newSolvedBoards.add(index)
@@ -176,11 +168,9 @@ export const useGame = () => {
 
         const solvedAnyBoard = newSolvedBoards.size > previousSolvedCount
 
-        updateUsedLetters(
-            gameState.currentGuess.toUpperCase(),
-            gameState.targetWords,
-            gameState.solvedBoards,
-        )
+        const letters = getLetterStatuses(newGuesses, gameState.targetWords)
+        setUsedLetters(letters.usedLetters)
+        setLetterBoardStatus(letters.letterBoardStatus)
 
         const startTime = gameState.startTime || Date.now()
         const allSolved = newSolvedBoards.size === 16
@@ -216,7 +206,7 @@ export const useGame = () => {
         }
 
         return true
-    }, [gameState, updateUsedLetters])
+    }, [gameState, isLoading])
 
     const updateCurrentGuess = useCallback((newGuess: string) => {
         setGameState((prev) => ({
@@ -250,6 +240,7 @@ export const useGame = () => {
 
     return {
         isLoading,
+        restoredCompletedGame,
         gameState,
         usedLetters,
         letterBoardStatus,
