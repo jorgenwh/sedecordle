@@ -10,6 +10,7 @@ export const winterTheme: Theme = {
     rootClassName: 'winter-background',
     Scene: WinterScene,
     boardContainerClassName:
-        'bg-game-surface/90 border border-game-line/40 shadow-sm',
+        'theme-board bg-game-surface/90 border border-game-line/40 shadow-sm',
+    bottomPanelClassName: `${classicTheme.bottomPanelClassName} theme-panel`,
     emptyCellClassName: 'bg-game-canvas/80 border-game-line/80',
 }

@@ -156,6 +156,265 @@
             radial-gradient(ellipse at 50% 110%, #843b1f, transparent 70%),
             #251814;
     }
+
+    /* Scene materials continue through the controls, including on small screens. */
+    .theme-board {
+        position: relative;
+        border-top-width: 2px;
+    }
+
+    .theme-panel {
+        border-top-width: 2px;
+    }
+
+    .beachy-background :is(.theme-board, .theme-panel) {
+        border-top-color: #b4a278;
+        background-image:
+            repeating-linear-gradient(
+                90deg,
+                rgb(197 175 130 / 6%) 0 1px,
+                transparent 1px 8px
+            ),
+            repeating-linear-gradient(
+                0deg,
+                rgb(197 175 130 / 4%) 0 1px,
+                transparent 1px 8px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(18 47 47 / 40%),
+            0 4px 12px rgb(4 23 27 / 15%);
+    }
+
+    .space-cadet-background :is(.theme-board, .theme-panel) {
+        border-top-color: #8d9cce;
+        background-image:
+            linear-gradient(125deg, rgb(161 177 226 / 12%), transparent 40%),
+            repeating-linear-gradient(
+                0deg,
+                transparent 0 4px,
+                rgb(131 163 224 / 4%) 4px 5px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(8 16 38 / 45%),
+            0 0 14px rgb(125 149 229 / 6%);
+    }
+
+    .space-cadet-background .theme-board::before {
+        content: '';
+        position: absolute;
+        inset: 4px;
+        pointer-events: none;
+        background:
+            radial-gradient(circle, #8b9bb7 1px, transparent 2px) top left / 4px
+                4px no-repeat,
+            radial-gradient(circle, #8b9bb7 1px, transparent 2px) top right /
+                4px 4px no-repeat,
+            radial-gradient(circle, #8b9bb7 1px, transparent 2px) bottom left /
+                4px 4px no-repeat,
+            radial-gradient(circle, #8b9bb7 1px, transparent 2px) bottom right /
+                4px 4px no-repeat;
+    }
+
+    .this-is-fine-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c18a59;
+        background-image:
+            linear-gradient(
+                90deg,
+                rgb(23 11 10 / 15%),
+                transparent 20% 80%,
+                rgb(23 11 10 / 15%)
+            ),
+            repeating-linear-gradient(
+                2deg,
+                transparent 0 7px,
+                rgb(185 131 82 / 7%) 7px 8px,
+                transparent 8px 12px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(26 15 12 / 25%),
+            0 3px 10px rgb(27 15 12 / 20%);
+    }
+
+    .fine-floor {
+        background-image:
+            repeating-linear-gradient(
+                90deg,
+                transparent 0 100px,
+                rgb(16 9 7 / 25%) 100px 102px
+            ),
+            repeating-linear-gradient(
+                0deg,
+                transparent 0 39px,
+                rgb(16 9 7 / 20%) 39px 41px
+            );
+    }
+
+    .spring-background :is(.theme-board, .theme-panel) {
+        border-top-color: #b7ab99;
+        background-image:
+            radial-gradient(
+                ellipse at top left,
+                rgb(199 160 184 / 14%),
+                transparent 55%
+            ),
+            radial-gradient(
+                ellipse at bottom right,
+                rgb(137 167 103 / 9%),
+                transparent 60%
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(161 191 142 / 5%),
+            0 4px 12px rgb(11 28 20 / 12%);
+    }
+
+    .spring-background .theme-board::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        right: 13px;
+        width: 18px;
+        height: 5px;
+        border-radius: 100% 0 100% 0;
+        background: #9aad83;
+        box-shadow: -11px 0 0 #758f6a;
+        pointer-events: none;
+    }
+
+    .autumn-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c79865;
+        background-image:
+            repeating-linear-gradient(
+                90deg,
+                rgb(207 161 110 / 4%) 0 8px,
+                transparent 8px 22px
+            ),
+            repeating-linear-gradient(
+                0deg,
+                rgb(207 161 110 / 4%) 0 8px,
+                transparent 8px 22px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(39 26 25 / 30%),
+            0 4px 12px rgb(27 20 20 / 16%);
+    }
+
+    .winter-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c5d8df;
+        background-image:
+            linear-gradient(145deg, rgb(195 222 237 / 14%), transparent 30%),
+            linear-gradient(325deg, rgb(166 211 224 / 8%), transparent 40%);
+        box-shadow:
+            inset 0 1px 8px rgb(194 222 238 / 9%),
+            0 3px 12px rgb(5 22 41 / 20%);
+    }
+
+    .winter-background .theme-board::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: 10px;
+        width: 45%;
+        height: 4px;
+        border-radius: 60% 60% 30% 30%;
+        background: #d0dfe2;
+        pointer-events: none;
+    }
+
+    .christmas-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c6ad75;
+        background-image: repeating-linear-gradient(
+            135deg,
+            rgb(171 86 64 / 13%) 0 7px,
+            transparent 7px 15px,
+            rgb(210 187 126 / 8%) 15px 17px,
+            transparent 17px 26px
+        );
+        box-shadow:
+            inset 0 0 0 3px rgb(12 32 22 / 45%),
+            0 4px 12px rgb(4 19 14 / 20%);
+    }
+
+    .halloween-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c58b57;
+        background-image:
+            radial-gradient(
+                ellipse at top right,
+                rgb(174 103 67 / 15%),
+                transparent 60%
+            ),
+            repeating-linear-gradient(
+                60deg,
+                transparent 0 24px,
+                rgb(169 136 169 / 4%) 24px 25px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(17 12 29 / 30%),
+            0 3px 15px rgb(132 84 165 / 9%);
+    }
+
+    .new-year-background :is(.theme-board, .theme-panel) {
+        border-top-color: #cdb37c;
+        background-image: repeating-linear-gradient(
+            135deg,
+            transparent 0 18px,
+            rgb(211 184 125 / 5%) 18px 19px,
+            transparent 19px 23px,
+            rgb(211 184 125 / 5%) 23px 24px,
+            transparent 24px 42px
+        );
+        box-shadow:
+            inset 0 0 0 3px rgb(198 174 119 / 7%),
+            0 4px 12px rgb(16 16 26 / 20%);
+    }
+}
+
+.winter-aurora {
+    background: linear-gradient(
+        165deg,
+        transparent 20%,
+        rgb(105 201 173 / 18%) 37%,
+        rgb(109 154 184 / 12%) 44%,
+        transparent 58%
+    );
+    animation: aurora-drift 18s ease-in-out infinite;
+}
+
+/* Keep the scene's characters visible beside the legend on narrow screens. */
+@media (max-width: 639px) {
+    .scene-vignette-left,
+    .scene-vignette-right {
+        top: 64px;
+        bottom: auto;
+        width: 84px;
+    }
+
+    .scene-vignette-left {
+        left: 0;
+    }
+
+    .scene-vignette-right {
+        right: 0;
+    }
+}
+
+@media (max-width: 359px) {
+    .scene-vignette-left,
+    .scene-vignette-right {
+        top: 68px;
+        width: 60px;
+    }
+}
+
+@keyframes aurora-drift {
+    0%,
+    100% {
+        transform: translateY(0) scaleY(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(14px) scaleY(1.1);
+        opacity: 1;
+    }
 }
 
 @keyframes space-drift {
@@ -212,6 +471,7 @@
     border-radius: 50%;
     pointer-events: none;
     animation-name: snowfall;
+    animation-fill-mode: both;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     will-change: transform;

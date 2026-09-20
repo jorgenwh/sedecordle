@@ -10,6 +10,7 @@ export const beachyTheme: Theme = {
     rootClassName: 'beachy-background',
     Scene: BeachyScene,
     boardContainerClassName:
-        'bg-game-surface/85 border border-game-line/40 shadow-sm',
+        'theme-board bg-game-surface/85 border border-game-line/40 shadow-sm',
+    bottomPanelClassName: `${classicTheme.bottomPanelClassName} theme-panel`,
     emptyCellClassName: 'bg-game-canvas/80 border-game-line/80',
 }

@@ -20,7 +20,42 @@ export const ThisIsFineScene = () => (
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
     >
-        <div className="absolute inset-x-0 bottom-0 h-[24%] border-t-8 border-[#573b2a] bg-[#39271f]/60" />
+        <div className="fine-floor absolute inset-x-0 bottom-0 h-[24%] border-t-8 border-[#573b2a] bg-[#39271f]/60" />
+        <svg
+            className="absolute -right-4 top-[16%] w-48 opacity-70 sm:right-4 sm:w-56"
+            viewBox="0 0 240 280"
+        >
+            <rect
+                x="25"
+                y="22"
+                width="185"
+                height="225"
+                rx="3"
+                fill="#6f5038"
+                stroke="#b8925e"
+                strokeWidth="4"
+            />
+            <rect x="36" y="34" width="162" height="198" fill="#352932" />
+            <path
+                d="M39 187q4-86 38-77-9 40 20 51 33-32 21-103 73 38 63 130v43H39Z"
+                fill="#a65131"
+            />
+            <path
+                d="M80 232q-32-63 15-92-11 39 24 52 31-39 26-77 40 68 25 117"
+                fill="#df9852"
+            />
+            <path d="M117 34v198M36 130h162" stroke="#9a784f" strokeWidth="8" />
+            <path
+                d="M14 30q26 122-2 208l55-4Q31 135 68 30m110 0q42 106 1 204l49 4q-26-97-6-208"
+                fill="#824a40"
+            />
+            <path
+                d="M27 38q16 65-2 142m176-142q-14 66 6 141"
+                stroke="#ae7360"
+                strokeWidth="3"
+                fill="none"
+            />
+        </svg>
         <svg
             className="absolute -left-6 top-[16%] w-36 opacity-40 sm:left-5"
             viewBox="0 0 160 200"
@@ -73,7 +108,7 @@ export const ThisIsFineScene = () => (
             <Flames className="absolute -right-12 top-[17%] w-32 opacity-30 sm:w-40" />
         </div>
         <svg
-            className="absolute -right-14 bottom-72 w-44 opacity-80 sm:-right-4 sm:w-52 xl:right-0"
+            className="scene-vignette-right absolute -right-14 bottom-72 w-44 opacity-80 sm:-right-4 sm:w-52 xl:right-0"
             viewBox="0 0 240 290"
             fill="none"
             stroke="#37251d"
@@ -148,6 +183,173 @@ export const ThisIsFineScene = () => (
             <path d="M15 10h48v78H15Z" fill="#55382a" />
             <path d="m26 30 6 6 13-14m-19 29 6 6 13-14m-19 29 6 6 13-14" />
             <path d="M51 32h5m-5 20h5m-5 20h5" />
+        </svg>
+        <svg
+            className="scene-vignette-left absolute -left-4 bottom-5 w-60 sm:bottom-7 sm:left-3 sm:w-80"
+            viewBox="0 -35 340 395"
+        >
+            <ellipse
+                cx="165"
+                cy="324"
+                rx="159"
+                ry="23"
+                fill="#713b30"
+                stroke="#9e6b49"
+                strokeWidth="4"
+            />
+            <ellipse
+                cx="165"
+                cy="324"
+                rx="133"
+                ry="14"
+                fill="none"
+                stroke="#bc8758"
+                strokeWidth="2"
+                strokeDasharray="5 5"
+            />
+            <path
+                d="M46 35h162v216H46Z"
+                fill="#4a3026"
+                stroke="#8b6340"
+                strokeWidth="5"
+            />
+            <path
+                d="M48 109h158m-158 70h158m-147 20h139"
+                stroke="#8b6340"
+                strokeWidth="6"
+            />
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+                <g key={i}>
+                    <rect
+                        x={60 + i * 22}
+                        y={50 + (i % 2) * 7}
+                        width="15"
+                        height={54 - (i % 2) * 7}
+                        rx="2"
+                        fill={['#8b6a4a', '#68704b', '#934b3b'][i % 3]}
+                    />
+                    <path
+                        d={`M${63 + i * 22} 63h9m-9 26h9`}
+                        stroke="#d0af76"
+                        strokeWidth="2"
+                    />
+                </g>
+            ))}
+            <g transform="translate(61 140)">
+                <rect width="122" height="27" rx="2" fill="#a37f50" />
+                <text
+                    x="61"
+                    y="18"
+                    textAnchor="middle"
+                    fontSize="12"
+                    fontFamily="monospace"
+                    fill="#33291f"
+                >
+                    DON'T PANIC
+                </text>
+            </g>
+            <path
+                d="M185 42q-26-23-11-51 5 24 24 23 1-28 21-43 0 32 17 52Z"
+                fill="#c9773c"
+            />
+            <path d="M197 42q-14-16 2-31 3 14 15 18l-4 13" fill="#efb762" />
+            <path d="M98 275v43m124-43v43" stroke="#b28452" strokeWidth="8" />
+            <ellipse
+                cx="160"
+                cy="270"
+                rx="90"
+                ry="20"
+                fill="#b78a55"
+                stroke="#53382a"
+                strokeWidth="3"
+            />
+            <ellipse cx="160" cy="266" rx="80" ry="12" fill="#c49b65" />
+            <rect
+                x="114"
+                y="244"
+                width="70"
+                height="17"
+                rx="3"
+                fill="#cfba8c"
+                transform="rotate(-8 114 244)"
+            />
+            <path
+                d="m125 243 42-6m-41 12 40-6"
+                stroke="#785f43"
+                strokeWidth="2"
+            />
+            <path
+                d="M216 235v-24q0-13 14-13t14 13v24Z"
+                fill="#cab18a"
+                stroke="#725237"
+                strokeWidth="2"
+            />
+            <circle
+                cx="230"
+                cy="233"
+                r="16"
+                fill="#cb9768"
+                stroke="#725237"
+                strokeWidth="2"
+            />
+            <path
+                d="m230 223 2 11 6 3"
+                stroke="#6a442f"
+                strokeWidth="2"
+                fill="none"
+            />
+            <path
+                d="M268 206h29v83h-29Z"
+                fill="#a34c38"
+                stroke="#c37b59"
+                strokeWidth="2"
+            />
+            <path
+                d="m277 206 1-11h15m-15 13q-19-12-26 9"
+                fill="none"
+                stroke="#bca78a"
+                strokeWidth="4"
+            />
+            <text
+                x="282"
+                y="246"
+                textAnchor="middle"
+                fontFamily="monospace"
+                fontSize="8"
+                fill="#ead6b2"
+            >
+                LATER
+            </text>
+        </svg>
+        <svg
+            className="absolute left-2 top-[22%] w-16 opacity-60 sm:left-[3%] sm:top-5 sm:w-24"
+            viewBox="0 0 120 100"
+        >
+            <circle
+                cx="60"
+                cy="50"
+                r="37"
+                fill="#51382d"
+                stroke="#b88d58"
+                strokeWidth="4"
+            />
+            <circle cx="60" cy="50" r="30" fill="#ceb68a" />
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+                <path
+                    key={i}
+                    d="M60 24v4"
+                    transform={`rotate(${i * 30} 60 50)`}
+                    stroke="#66462e"
+                    strokeWidth="2"
+                />
+            ))}
+            <path
+                d="M60 29v21l13 10"
+                fill="none"
+                stroke="#66462e"
+                strokeWidth="3"
+            />
+            <circle cx="60" cy="50" r="3" fill="#66462e" />
         </svg>
     </div>
 )

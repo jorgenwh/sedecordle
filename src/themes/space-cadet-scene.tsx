@@ -38,6 +38,98 @@ export const SpaceCadetScene = () => (
                 strokeWidth="1"
                 opacity="0.25"
             />
+            <ellipse
+                cx="740"
+                cy="580"
+                rx="650"
+                ry="280"
+                transform="rotate(-25 740 580)"
+                fill="none"
+                stroke="#91a9d3"
+                strokeDasharray="3 12"
+                opacity="0.12"
+            />
+            <ellipse
+                cx="740"
+                cy="580"
+                rx="790"
+                ry="370"
+                transform="rotate(-25 740 580)"
+                fill="none"
+                stroke="#91a9d3"
+                opacity="0.08"
+            />
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+                <g
+                    key={i}
+                    transform={`translate(${60 + i * 257} ${(i * 193 + 70) % 950})`}
+                    stroke="#b1c9ef"
+                    opacity="0.5"
+                >
+                    <path d="M-5 0H5M0-5V5" />
+                    <circle r="1.5" fill="#e3f2ff" />
+                </g>
+            ))}
+        </svg>
+        <svg
+            className="absolute -left-9 top-[14%] w-48 -rotate-12 opacity-80 sm:left-3 sm:w-60"
+            viewBox="0 0 300 260"
+        >
+            <path d="M46 103h208" stroke="#b3a88b" strokeWidth="7" />
+            <g fill="#243e66" stroke="#658aaf" strokeWidth="2">
+                <path d="M8 65h94v80H8Zm192 0h92v80h-92Z" />
+                {[24, 43, 62, 81, 216, 235, 254, 273].map((x) => (
+                    <path key={x} d={`M${x} 67v76`} />
+                ))}
+                <path d="M10 91h90m-90 26h90m102-26h88m-88 26h88" />
+            </g>
+            <rect
+                x="114"
+                y="71"
+                width="72"
+                height="84"
+                rx="10"
+                fill="#a39782"
+                stroke="#d3c9a7"
+                strokeWidth="2"
+            />
+            <path
+                d="M124 91h52m-52 8h52m-52 8h52"
+                stroke="#6c665f"
+                strokeWidth="3"
+            />
+            <circle
+                cx="151"
+                cy="135"
+                r="10"
+                fill="#3d5974"
+                stroke="#dbbb83"
+                strokeWidth="3"
+            />
+            <path
+                d="M144 71V43m-31-19q35 42 65 0Z"
+                fill="#9fb3c8"
+                stroke="#b8cce0"
+                strokeWidth="3"
+            />
+            <path
+                d="m148 30 12-22m5 156 13 29 22 9"
+                fill="none"
+                stroke="#b8cce0"
+                strokeWidth="2"
+            />
+            <circle cx="160" cy="9" r="4" fill="#e5b57c" />
+            <text
+                x="149"
+                y="222"
+                textAnchor="middle"
+                fontFamily="monospace"
+                fontSize="11"
+                letterSpacing="2"
+                fill="#acbcdc"
+            >
+                SEARCHING FOR VOWELS
+            </text>
         </svg>
         <svg
             className="absolute -right-20 top-[8%] w-64 opacity-65 sm:-right-12 sm:w-80"
@@ -161,7 +253,176 @@ export const SpaceCadetScene = () => (
                 />
                 <path d="M74 20 71 9" stroke="#93a5c7" />
                 <circle cx="70" cy="7" r="5" fill="#e5b77b" />
+                <path d="M58 111h9m-9 5h9" stroke="#d89e83" strokeWidth="3" />
+                <path
+                    d="m44 180 24 8m52-1 20-5M8 123l20-7m111-32 21 7"
+                    stroke="#8194b4"
+                    strokeWidth="4"
+                />
             </svg>
         </div>
+        <svg
+            className="scene-vignette-left absolute -left-5 bottom-5 w-60 sm:bottom-8 sm:left-5 sm:w-80"
+            viewBox="0 0 360 330"
+        >
+            <path d="M0 278q131-76 360-12v64H0Z" fill="#283d58" />
+            <path
+                d="M13 292q160-45 320-3"
+                fill="none"
+                stroke="#44627e"
+                strokeWidth="2"
+            />
+            <g fill="#1c2c45" stroke="#405873" strokeWidth="2">
+                <ellipse cx="53" cy="293" rx="31" ry="8" />
+                <ellipse cx="289" cy="285" rx="20" ry="6" />
+                <ellipse cx="261" cy="319" rx="44" ry="8" />
+            </g>
+            <g transform="translate(62 28) rotate(-12 70 120)">
+                <path d="M55 210q-18 42 16 79 28-48 13-79" fill="#bd784f" />
+                <path d="M64 211q-6 28 8 48 13-31 5-48" fill="#eac287" />
+                <path
+                    d="M39 144q-28 10-32 60l32-15m57-45q31 11 37 60l-35-15"
+                    fill="#bd7973"
+                    stroke="#342c40"
+                    strokeWidth="3"
+                />
+                <path
+                    d="M37 186V92q4-60 32-76 33 21 35 76v94Z"
+                    fill="#c9c8bc"
+                    stroke="#5c6c88"
+                    strokeWidth="3"
+                />
+                <path
+                    d="M38 89q32 13 65 0Q95 39 69 16 43 37 38 89"
+                    fill="#b77875"
+                />
+                <circle
+                    cx="70"
+                    cy="123"
+                    r="22"
+                    fill="#233650"
+                    stroke="#d6b98a"
+                    strokeWidth="6"
+                />
+                <path
+                    d="M57 117q9-12 23-6"
+                    fill="none"
+                    stroke="#81b6ce"
+                    strokeWidth="3"
+                />
+                <path d="M39 179h64v18H39Z" fill="#7485a1" />
+                <path d="M48 158h43" stroke="#a0a8af" strokeWidth="3" />
+            </g>
+            <path
+                d="M246 204v74m0-70 59 5v35l-59-7"
+                fill="#51637f"
+                stroke="#b3b5b8"
+                strokeWidth="3"
+            />
+            <text
+                x="274"
+                y="233"
+                textAnchor="middle"
+                fontFamily="monospace"
+                fontSize="11"
+                fill="#d9dcd4"
+            >
+                BRB
+            </text>
+            <g fill="#7490a8" opacity="0.6">
+                {[0, 1, 2, 3, 4].map((i) => (
+                    <g key={i}>
+                        <ellipse
+                            cx={167 + i * 13}
+                            cy={276 - i * 9}
+                            rx="4"
+                            ry="2"
+                        />
+                        <ellipse
+                            cx={177 + i * 13}
+                            cy={279 - i * 9}
+                            rx="4"
+                            ry="2"
+                        />
+                    </g>
+                ))}
+            </g>
+        </svg>
+        <svg
+            className="scene-vignette-right absolute bottom-8 right-2 w-40 sm:right-12 sm:w-56"
+            viewBox="0 0 220 250"
+        >
+            <g transform="rotate(15 110 95)">
+                <path
+                    d="M52 95q8-71 58-71t58 71"
+                    fill="#6b9c97"
+                    fillOpacity="0.35"
+                    stroke="#91c2b7"
+                    strokeWidth="2"
+                />
+                <path d="M86 89q-19-50 23-53 44 4 25 53" fill="#8faf7b" />
+                <ellipse
+                    cx="97"
+                    cy="61"
+                    rx="5"
+                    ry="9"
+                    transform="rotate(-20 97 61)"
+                    fill="#27384a"
+                />
+                <ellipse
+                    cx="124"
+                    cy="61"
+                    rx="5"
+                    ry="9"
+                    transform="rotate(20 124 61)"
+                    fill="#27384a"
+                />
+                <path d="M105 77h12" stroke="#27384a" strokeWidth="2" />
+                <ellipse
+                    cx="110"
+                    cy="101"
+                    rx="97"
+                    ry="25"
+                    fill="#667899"
+                    stroke="#a5b2c9"
+                    strokeWidth="2"
+                />
+                <path d="M36 118q75 40 149-2" fill="#374b6b" />
+                {[47, 79, 112, 145, 177].map((x) => (
+                    <circle key={x} cx={x} cy={102} r="4" fill="#e1bd86" />
+                ))}
+            </g>
+            <path
+                d="m55 136-17 66m93-67 28 52"
+                stroke="#7da9b4"
+                strokeDasharray="4 7"
+                opacity="0.4"
+            />
+            <g transform="translate(103 194) rotate(20)">
+                <rect
+                    x="-16"
+                    y="-11"
+                    width="32"
+                    height="29"
+                    rx="4"
+                    fill="#b9c6d1"
+                />
+                <path
+                    d="M16-4q23-7 20 8t-20 9"
+                    fill="none"
+                    stroke="#b9c6d1"
+                    strokeWidth="5"
+                />
+                <text
+                    y="8"
+                    textAnchor="middle"
+                    fontFamily="monospace"
+                    fontSize="8"
+                    fill="#344661"
+                >
+                    DECAF
+                </text>
+            </g>
+        </svg>
     </div>
 )

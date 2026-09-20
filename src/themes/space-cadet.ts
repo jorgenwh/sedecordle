@@ -10,6 +10,7 @@ export const spaceCadetTheme: Theme = {
     rootClassName: 'space-cadet-background',
     Scene: SpaceCadetScene,
     boardContainerClassName:
-        'bg-game-surface/80 border border-game-line/40 shadow-[inset_0_1px_0_rgba(165,180,252,0.08)]',
+        'theme-board bg-game-surface/80 border border-game-line/40 shadow-[inset_0_1px_0_rgba(165,180,252,0.08)]',
+    bottomPanelClassName: `${classicTheme.bottomPanelClassName} theme-panel`,
     emptyCellClassName: 'bg-game-canvas/80 border-game-line/80',
 }
