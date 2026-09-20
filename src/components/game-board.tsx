@@ -1,17 +1,18 @@
 import { GameState } from '../types/game'
-import { activeTheme } from '../themes'
+import type { Theme } from '../themes'
 
 interface GameBoardProps {
     gameState: GameState
+    theme: Theme
 }
 
-const GameBoard = ({ gameState }: GameBoardProps) => {
+const GameBoard = ({ gameState, theme }: GameBoardProps) => {
     const { targetWords, guesses, currentGuess, solvedBoards } = gameState
 
     const emptyCellClass =
-        activeTheme.emptyCellClassName ?? 'bg-black border-gray-800'
+        theme.emptyCellClassName ?? 'bg-black border-gray-800'
     const boardContainerClass =
-        activeTheme.boardContainerClassName ?? 'bg-black border border-gray-800'
+        theme.boardContainerClassName ?? 'bg-black border border-gray-800'
 
     const getCellColor = (
         boardIndex: number,

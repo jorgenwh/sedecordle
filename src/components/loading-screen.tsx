@@ -1,9 +1,14 @@
-const LoadingScreen = () => {
+import type { Theme } from '../themes'
+
+const LoadingScreen = ({ theme }: { theme: Theme }) => {
+    const Scene = theme.Scene
+
     return (
         <div
-            className={`fixed inset-0 flex items-center justify-center px-6 ${activeTheme.rootClassName ?? 'bg-game-canvas'}`}
+            className={`fixed inset-0 flex items-center justify-center px-6 ${theme.rootClassName ?? 'bg-game-canvas'}`}
         >
-            <div role="status" className="text-center">
+            {Scene && <Scene />}
+            <div role="status" className="relative z-10 text-center">
                 <div className="text-game-text text-5xl sm:text-6xl font-semibold tracking-tight">
                     <span className="text-game-correct">S</span>u
                     <span className="text-game-present">p</span>er
@@ -31,4 +36,3 @@ const LoadingScreen = () => {
 }
 
 export default LoadingScreen
-import { activeTheme } from '../themes'

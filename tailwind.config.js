@@ -8,12 +8,12 @@ export default {
         extend: {
             colors: {
                 game: {
-                    canvas: '#080b0f',
-                    surface: '#151c24',
-                    tile: '#374151',
-                    line: '#465365',
-                    muted: '#b0bccb',
-                    text: '#f3f4f6',
+                    canvas: 'rgb(var(--game-canvas) / <alpha-value>)',
+                    surface: 'rgb(var(--game-surface) / <alpha-value>)',
+                    tile: 'rgb(var(--game-tile) / <alpha-value>)',
+                    line: 'rgb(var(--game-line) / <alpha-value>)',
+                    muted: 'rgb(var(--game-muted) / <alpha-value>)',
+                    text: 'rgb(var(--game-text) / <alpha-value>)',
                     accent: '#86efac',
                     correct: '#16a34a',
                     present: '#ca8a04',

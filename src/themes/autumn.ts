@@ -1,14 +1,14 @@
-import type { Theme } from './types'
 import { classicTheme } from './classic'
-import { WinterScene } from './winter-scene'
+import { AutumnScene } from './seasonal-scenes'
+import type { Theme } from './types'
 
-export const winterTheme: Theme = {
+export const autumnTheme: Theme = {
     ...classicTheme,
-    id: 'winter',
-    name: 'Winter',
-    emoji: '❄️',
-    rootClassName: 'winter-background',
-    Scene: WinterScene,
+    id: 'autumn',
+    name: 'Autumn',
+    emoji: '🍂',
+    rootClassName: 'autumn-background',
+    Scene: AutumnScene,
     boardContainerClassName:
         'theme-board bg-game-surface/90 border border-game-line/40 shadow-sm',
     bottomPanelClassName: `${classicTheme.bottomPanelClassName} theme-panel`,

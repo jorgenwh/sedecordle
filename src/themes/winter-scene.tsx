@@ -867,14 +867,7 @@ const Reindeer = ({ rudolph = false }: { rudolph?: boolean }) => (
         <circle cx="20.5" cy="4.5" r="0.5" fill="#FFFFFF" />
         {/* Nose */}
         {rudolph ? (
-            <circle cx="5" cy="11" r="3" fill="#E53935">
-                <animate
-                    attributeName="opacity"
-                    values="0.7;1;0.7"
-                    dur="1.5s"
-                    repeatCount="indefinite"
-                />
-            </circle>
+            <circle cx="5" cy="11" r="3" fill="#E53935" />
         ) : (
             <circle cx="5" cy="11" r="2" fill="#3E2723" />
         )}
@@ -1053,9 +1046,9 @@ const SnowDrift = () => (
     </svg>
 )
 
-export const WinterScene = () => (
+export const WinterScene = ({ festive = false }: { festive?: boolean }) => (
     <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
+        className="absolute inset-0 pointer-events-none overflow-hidden opacity-70"
         aria-hidden
     >
         {/* Sky-to-snow gradient backdrop */}
@@ -1068,8 +1061,121 @@ export const WinterScene = () => (
         />
         <Stars />
         <Moon />
+        {!festive && (
+            <>
+                <div className="winter-aurora absolute inset-x-0 top-[8%] h-[32%]" />
+                <svg
+                    className="absolute -left-8 top-[10%] w-64 opacity-90 sm:left-0 sm:w-80"
+                    viewBox="0 0 350 270"
+                >
+                    <path
+                        d="M-20 22 370 135M144 69v35"
+                        stroke="#8596a9"
+                        strokeWidth="3"
+                    />
+                    <path
+                        d="M118 104h55l14 91h-82Z"
+                        fill="#a94f49"
+                        stroke="#d08c78"
+                        strokeWidth="3"
+                    />
+                    <path
+                        d="M122 114h46l7 39h-59Z"
+                        fill="#293d58"
+                        stroke="#d4b89a"
+                        strokeWidth="3"
+                    />
+                    <path
+                        d="M145 115v37m-34 17h70"
+                        stroke="#d4b89a"
+                        strokeWidth="3"
+                    />
+                    <path
+                        d="M118 195v8h56v-8m-34-39v35"
+                        stroke="#41546c"
+                        strokeWidth="4"
+                    />
+                    <path
+                        d="m94 199 105 5m-110 4 105 6"
+                        stroke="#e0d5b6"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                    />
+                    <text
+                        x="147"
+                        y="185"
+                        textAnchor="middle"
+                        fontFamily="monospace"
+                        fontSize="12"
+                        fill="#f1dcc2"
+                    >
+                        UP WE GO
+                    </text>
+                    <path
+                        d="M131 141v-9q5-8 10 0v9m13 0v-9q5-8 10 0v9"
+                        fill="#d5a984"
+                    />
+                </svg>
+            </>
+        )}
+        {festive && (
+            <svg
+                className="absolute inset-x-0 top-0 h-12 w-full"
+                viewBox="0 0 1440 160"
+                preserveAspectRatio="none"
+            >
+                <path
+                    d="M0 9q350 118 720 0 357 118 720 0"
+                    stroke="#153b2b"
+                    strokeWidth="28"
+                    fill="none"
+                />
+                <path
+                    d="M0 9q350 118 720 0 357 118 720 0"
+                    stroke="#38734b"
+                    strokeWidth="20"
+                    strokeDasharray="3 8"
+                    fill="none"
+                />
+                {Array.from({ length: 25 }, (_, i) => {
+                    const x = i * 60
+                    const y = 9 + 59 * Math.sin(((x % 720) / 720) * Math.PI)
+                    return (
+                        <g key={i} transform={`translate(${x} ${y})`}>
+                            <path d="M0 2v13" stroke="#b9a878" />
+                            <ellipse
+                                cy="17"
+                                rx="4"
+                                ry="7"
+                                fill={['#dbb875', '#c47368', '#a3c5a0'][i % 3]}
+                            />
+                            <circle
+                                cy="17"
+                                r="14"
+                                fill="#edc17c"
+                                opacity="0.1"
+                            />
+                            {i % 4 === 2 && (
+                                <g>
+                                    <path d="M0 23v15" stroke="#c7af7b" />
+                                    <circle cy="49" r="13" fill="#b55747" />
+                                    <path
+                                        d="M-10 44q10 8 20 0"
+                                        stroke="#dcba79"
+                                        fill="none"
+                                        strokeWidth="2"
+                                    />
+                                </g>
+                            )}
+                        </g>
+                    )
+                })}
+            </svg>
+        )}
         {/* Santa & reindeer flying in the upper-left sky */}
-        <SantaSleigh className="top-[8%] left-[3%] w-56 h-24 sm:w-72 sm:h-32 drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]" />
+        {festive && (
+            <SantaSleigh className="top-[24%] left-[3%] w-56 h-24 sm:top-[8%] sm:w-72 sm:h-32 drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]" />
+        )}
         <Mountains />
         {/* Skiers gliding across the snowy field below the mountains.
             SkierGroup keeps each trail anchored to its skier. */}
@@ -1099,9 +1205,347 @@ export const WinterScene = () => (
         <Penguin className="top-[67%] left-[38%] w-6 h-8 sm:w-8 sm:h-10" flip />
         <Snowflakes />
         <SnowDrift />
-        <ChristmasTree className="bottom-56 left-4 sm:bottom-60 sm:left-16 w-32 h-48 sm:w-44 sm:h-64 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]" />
+        <svg
+            className="scene-vignette-left absolute -left-8 bottom-2 w-72 sm:bottom-4 sm:left-1 sm:w-96"
+            viewBox="0 0 420 360"
+        >
+            <ellipse cx="196" cy="335" rx="198" ry="20" fill="#d5dfdf" />
+            <path
+                d="M81 158h226v164H81Z"
+                fill={festive ? '#704238' : '#6b5044'}
+                stroke="#392f30"
+                strokeWidth="4"
+            />
+            {[181, 201, 221, 241, 261, 281, 301].map((y) => (
+                <path
+                    key={y}
+                    d={`M84 ${y}h220`}
+                    stroke="#ad8364"
+                    strokeWidth="3"
+                    opacity="0.5"
+                />
+            ))}
+            <path
+                d="M55 174 187 56l147 118Z"
+                fill="#433c40"
+                stroke="#b9c9d2"
+                strokeWidth="9"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M55 174 187 56l147 118-58-12-25-25-52 4-28-13-39 26-40-1Z"
+                fill="#e0e6df"
+            />
+            <path d="M244 101V40h34v88" fill="#84615a" />
+            <path
+                d="M238 39h44"
+                stroke="#d7e0df"
+                strokeWidth="7"
+                strokeLinecap="round"
+            />
+            <path
+                d="M259 25q-20-20 1-39m13 42q21-20 6-32"
+                stroke="#d4dce1"
+                strokeWidth="5"
+                strokeLinecap="round"
+                fill="none"
+                opacity="0.3"
+            />
+            <path
+                d="M174 247h44v74h-44Z"
+                fill="#382f30"
+                stroke="#c0a184"
+                strokeWidth="3"
+            />
+            <circle cx="208" cy="282" r="3" fill="#d8ba7b" />
+            {[109, 245].map((x) => (
+                <g key={x}>
+                    <rect
+                        x={x}
+                        y="203"
+                        width="37"
+                        height="46"
+                        fill="#ecc17e"
+                        stroke="#372f31"
+                        strokeWidth="5"
+                    />
+                    <path
+                        d={`M${x + 18} 204v44m-34-23h35`}
+                        stroke="#9b7656"
+                        strokeWidth="3"
+                    />
+                    <path
+                        d={`m${x - 7} 255 51 0`}
+                        stroke="#e2e7dc"
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                    />
+                </g>
+            ))}
+            <rect
+                x="126"
+                y="164"
+                width="138"
+                height="25"
+                rx="2"
+                fill="#4c5844"
+                stroke="#a89a74"
+            />
+            <text
+                x="195"
+                y="181"
+                textAnchor="middle"
+                fontFamily="monospace"
+                fontSize="13"
+                fill="#eed8ad"
+            >
+                {festive ? 'THE NICE LIST' : 'ONE MORE RUN'}
+            </text>
+            <path d="M163 325h66l16 14h-98Z" fill="#a1b7c7" />
+            {festive && (
+                <>
+                    <path
+                        d="m89 171 98-91 112 96"
+                        stroke="#285f3d"
+                        strokeWidth="8"
+                        fill="none"
+                    />
+                    {[
+                        [105, 157],
+                        [129, 134],
+                        [154, 111],
+                        [178, 88],
+                        [205, 99],
+                        [231, 121],
+                        [258, 146],
+                        [283, 168],
+                    ].map(([x, y], i) => (
+                        <circle
+                            key={i}
+                            cx={x}
+                            cy={y}
+                            r="4"
+                            fill={i % 2 ? '#e3b970' : '#c6755d'}
+                        />
+                    ))}
+                    <circle
+                        cx="196"
+                        cy="266"
+                        r="13"
+                        fill="none"
+                        stroke="#47744b"
+                        strokeWidth="8"
+                    />
+                    <path d="m185 279 11-8 11 8-11-3Z" fill="#b65843" />
+                    <path
+                        d="M51 320v-62q0-21-16-21t-16 21"
+                        stroke="#e6dfcf"
+                        strokeWidth="11"
+                        fill="none"
+                    />
+                    <path
+                        d="m45 310 12-8m-12-11 12-8m-12-11 12-8m-14-19 10-8m-21-3 2-10m-20 19-9-7"
+                        stroke="#b65b4b"
+                        strokeWidth="6"
+                    />
+                </>
+            )}
+            <g transform="translate(340 284)">
+                <rect
+                    x="-27"
+                    y="-14"
+                    width="52"
+                    height="39"
+                    rx="4"
+                    fill="#8e674d"
+                />
+                <path d="M-29-14h56" stroke="#dce3d8" strokeWidth="7" />
+                <path
+                    d="M-11 22v28m22-28v28"
+                    stroke="#503e35"
+                    strokeWidth="5"
+                />
+                <text
+                    x="0"
+                    y="10"
+                    textAnchor="middle"
+                    fontSize="11"
+                    fontFamily="monospace"
+                    fill="#f0d1a0"
+                >
+                    COCOA
+                </text>
+            </g>
+            <g fill="#3b655b">
+                <path d="M28 278h63l-31-104Z" />
+                <path d="M325 228h80l-40-133Z" />
+            </g>
+            <path
+                d="m40 240 20-66 19 64m-28-29h18m277-54 18-60 17 61m-27-30h21"
+                stroke="#c5d5d6"
+                strokeWidth="5"
+                fill="none"
+                strokeLinejoin="round"
+            />
+        </svg>
+        <svg
+            className="scene-vignette-right absolute -right-5 bottom-3 w-56 sm:bottom-4 sm:right-6 sm:w-72"
+            viewBox="0 0 300 280"
+        >
+            {festive ? (
+                <>
+                    <ellipse
+                        cx="161"
+                        cy="256"
+                        rx="123"
+                        ry="15"
+                        fill="#d4dfd8"
+                    />
+                    <path
+                        d="M64 149h159v97H64Z"
+                        fill="#a3764e"
+                        stroke="#704731"
+                        strokeWidth="3"
+                    />
+                    <path
+                        d="m41 156 99-85 105 85"
+                        fill="#9f6643"
+                        stroke="#e6d4b0"
+                        strokeWidth="10"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                    <path
+                        d="M75 164q8 17 15 0t15 0 15 0 15 0 15 0 15 0 15 0 15 0 15 0"
+                        stroke="#e6d4b0"
+                        strokeWidth="4"
+                        fill="none"
+                    />
+                    <path
+                        d="M129 245v-40q17-28 33 0v40"
+                        fill="#613f34"
+                        stroke="#e7d3ae"
+                        strokeWidth="4"
+                    />
+                    {[91, 198].map((x) => (
+                        <g key={x}>
+                            <circle
+                                cx={x}
+                                cy="197"
+                                r="17"
+                                fill="#ab5146"
+                                stroke="#e8d1a8"
+                                strokeWidth="4"
+                            />
+                            <path
+                                d={`m${x - 12} 185 24 24m0-24-24 24`}
+                                stroke="#e8d1a8"
+                                strokeWidth="4"
+                            />
+                        </g>
+                    ))}
+                    {[
+                        [91, 136],
+                        [113, 116],
+                        [140, 99],
+                        [165, 118],
+                        [190, 139],
+                    ].map(([x, y], i) => (
+                        <circle
+                            key={i}
+                            cx={x}
+                            cy={y}
+                            r="6"
+                            fill={i % 2 ? '#9ab789' : '#d6a968'}
+                        />
+                    ))}
+                    <rect
+                        x="30"
+                        y="224"
+                        width="38"
+                        height="32"
+                        fill="#a95043"
+                    />
+                    <path
+                        d="M49 224v32m-19-20h38m-19-12q-26-19-21-2 7 7 21 2 27-19 21-2-7 7-21 2"
+                        stroke="#d6b676"
+                        strokeWidth="4"
+                        fill="none"
+                    />
+                    <rect
+                        x="230"
+                        y="211"
+                        width="40"
+                        height="44"
+                        fill="#4e795e"
+                    />
+                    <path
+                        d="M250 211v44m-20-29h40"
+                        stroke="#d6b676"
+                        strokeWidth="5"
+                    />
+                </>
+            ) : (
+                <>
+                    <ellipse
+                        cx="157"
+                        cy="223"
+                        rx="124"
+                        ry="36"
+                        fill="#7497ae"
+                        stroke="#dbe4e1"
+                        strokeWidth="7"
+                    />
+                    <ellipse cx="215" cy="219" rx="25" ry="10" fill="#233f59" />
+                    <path
+                        d="m83 214 33 10m-48 9 45 2m70 12 30-3"
+                        stroke="#b9d0d6"
+                        strokeWidth="2"
+                        opacity="0.7"
+                    />
+                    <ellipse cx="115" cy="180" rx="30" ry="38" fill="#253c4b" />
+                    <ellipse cx="117" cy="187" rx="21" ry="29" fill="#d7dfd6" />
+                    <circle cx="117" cy="146" r="25" fill="#253c4b" />
+                    <path d="M97 146q20-20 40 0v15H97Z" fill="#d7dfd6" />
+                    <circle cx="110" cy="148" r="2" fill="#253c4b" />
+                    <circle cx="127" cy="148" r="2" fill="#253c4b" />
+                    <path d="m112 156 8 8 8-8" fill="#c69b60" />
+                    <path
+                        d="m89 211 18 2m13 2 20 1"
+                        stroke="#c69b60"
+                        strokeWidth="6"
+                        strokeLinecap="round"
+                    />
+                    <path
+                        d="M93 167q25 13 50 0l-2 11q-26 8-48-2m33 3 3 25 10-1-1-27"
+                        fill="#ba6f62"
+                    />
+                    <path
+                        d="m141 184 38-41 40 76"
+                        fill="none"
+                        stroke="#927250"
+                        strokeWidth="3"
+                    />
+                    <path d="M219 174v46" stroke="#d3d9cc" />
+                    <circle cx="219" cy="219" r="3" fill="#cf8872" />
+                    <path d="M87 135q28-48 59 0" fill="#947653" />
+                    <circle cx="117" cy="108" r="7" fill="#dac7a2" />
+                    <path
+                        d="M86 137h62"
+                        stroke="#d5bd91"
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                    />
+                </>
+            )}
+        </svg>
+        {festive && (
+            <ChristmasTree className="bottom-56 left-4 sm:bottom-60 sm:left-16 w-32 h-48 sm:w-44 sm:h-64 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]" />
+        )}
         <Snowman className="bottom-56 right-8 sm:bottom-60 sm:right-32 w-28 h-48 sm:w-36 sm:h-60 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]" />
         <Sled className="bottom-60 left-1/4 w-32 h-16 sm:w-44 sm:h-20 drop-shadow-md" />
-        <GiftBox className="bottom-60 right-[18%] w-16 h-20 sm:w-20 sm:h-24 drop-shadow-md" />
+        {festive && (
+            <GiftBox className="bottom-60 right-[18%] w-16 h-20 sm:w-20 sm:h-24 drop-shadow-md" />
+        )}
     </div>
 )

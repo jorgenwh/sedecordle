@@ -8,22 +8,84 @@ import { SaveScoreModal } from './components/save-score-modal'
 import { GameStats } from './components/game-stats'
 import { ScreenFlash } from './components/screen-flash'
 import { NewGameModal } from './components/new-game-modal'
+import { ThemeMenu } from './components/theme-menu'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
-import { activeTheme } from './themes'
+import { themes, getSeasonalTheme, type Theme } from './themes'
+
+const themeStorageKey = 'superwordle:theme:v1'
 
 export function App() {
     const [mode, setMode] = useState<'daily' | 'free-play' | null>(null)
+    const [selectedTheme, setSelectedTheme] = useState(() => {
+        try {
+            const savedId = localStorage.getItem(themeStorageKey)
+            return themes.find((theme) => theme.id === savedId) ?? themes[0]
+        } catch {
+            return themes[0]
+        }
+    })
+    const [currentSeasonalTheme, setCurrentSeasonalTheme] = useState(() =>
+        getSeasonalTheme(),
+    )
+    const theme =
+        selectedTheme.id === 'seasonal' ? currentSeasonalTheme : selectedTheme
 
-    if (mode) return <Game mode={mode} onBackToMenu={() => setMode(null)} />
+    useEffect(() => {
+        if (selectedTheme.id !== 'seasonal') return
 
-    const Scene = activeTheme.Scene
+        let midnightTimer: number
+        const updateSeason = () => {
+            const now = new Date()
+            setCurrentSeasonalTheme(getSeasonalTheme(now))
+            const midnight = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate() + 1,
+            )
+            window.clearTimeout(midnightTimer)
+            midnightTimer = window.setTimeout(
+                updateSeason,
+                midnight.getTime() - now.getTime(),
+            )
+        }
+        const handleVisibilityChange = () => {
+            if (!document.hidden) updateSeason()
+        }
+
+        updateSeason()
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        return () => {
+            window.clearTimeout(midnightTimer)
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            )
+        }
+    }, [selectedTheme.id])
+
+    const changeTheme = (nextTheme: Theme) => {
+        setSelectedTheme(nextTheme)
+        try {
+            localStorage.setItem(themeStorageKey, nextTheme.id)
+        } catch {
+            // Keep theme switching available when storage is blocked.
+        }
+    }
+
+    if (mode)
+        return (
+            <Game
+                mode={mode}
+                theme={theme}
+                selectedTheme={selectedTheme}
+                onThemeChange={changeTheme}
+                onBackToMenu={() => setMode(null)}
+            />
+        )
 
     return (
-        <main
-            className={`min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative ${activeTheme.rootClassName ?? 'bg-game-canvas'}`}
-        >
-            {Scene && <Scene />}
+        <main className="min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative classic-background">
             <div className="relative z-10 w-full max-w-3xl">
                 <header className="mb-10 text-center sm:mb-12">
                     <img
@@ -97,9 +159,15 @@ export function App() {
 
 const Game = ({
     mode,
+    theme,
+    selectedTheme,
+    onThemeChange,
     onBackToMenu,
 }: {
     mode: 'free-play' | 'daily'
+    theme: Theme
+    selectedTheme: Theme
+    onThemeChange: (theme: Theme) => void
     onBackToMenu: () => void
 }) => {
     const [showNewGame, setShowNewGame] = useState(false)
@@ -170,36 +238,36 @@ const Game = ({
     }
 
     if (isLoading) {
-        return <LoadingScreen />
+        return <LoadingScreen theme={theme} />
     }
 
-    const Scene = activeTheme.Scene
-    const rootClass = activeTheme.rootClassName ?? 'bg-black'
+    const Scene = theme.Scene
+    const rootClass = theme.rootClassName ?? 'bg-black'
     const bottomPanelClass =
-        activeTheme.bottomPanelClassName ?? 'bg-black border-t border-gray-800'
+        theme.bottomPanelClassName ?? 'bg-black border-t border-gray-800'
 
     return (
         <div
             className={`h-dvh text-game-text flex flex-col overflow-hidden relative ${rootClass}`}
         >
             {Scene && <Scene />}
-            <main className="game-scroll flex-1 overflow-y-auto px-3 pt-7 pb-80 sm:px-6 sm:pt-10 relative z-10">
-                <header className="max-w-6xl mx-auto mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-5 pb-6">
-                    <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            <main className="game-scroll flex-1 overflow-y-auto px-3 pt-7 pb-80 sm:px-6 sm:pt-10 relative">
+                <header className="mx-auto mb-5 grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 border-b border-game-line/40 pb-5 sm:mb-6 sm:gap-x-6 sm:pb-6 md:grid-cols-[minmax(0,1fr)_auto_auto]">
+                    <h1 className="text-xl sm:text-3xl font-semibold tracking-tight">
                         <button
                             type="button"
                             onClick={onBackToMenu}
                             onKeyDown={(event) => event.stopPropagation()}
                             aria-label="Superwordle — back to menu"
                             title="Back to menu"
-                            className="flex cursor-pointer items-center gap-4 rounded-lg text-left"
+                            className="flex cursor-pointer items-center gap-2.5 rounded-lg text-left sm:gap-4"
                         >
                             <img
                                 src="/favicon.svg"
                                 alt=""
                                 width={44}
                                 height={44}
-                                className="h-11 w-11 shrink-0"
+                                className="h-8 w-8 shrink-0 sm:h-11 sm:w-11"
                             />
                             <span>
                                 <span className="text-game-correct">S</span>u
@@ -209,9 +277,15 @@ const Game = ({
                             </span>
                         </button>
                     </h1>
+                    <div className="col-start-2 row-start-1 md:col-start-3">
+                        <ThemeMenu
+                            theme={selectedTheme}
+                            onChange={onThemeChange}
+                        />
+                    </div>
                     <div
                         aria-label="Letter color guide"
-                        className="flex items-center gap-4 text-[11px] text-game-muted"
+                        className="col-span-2 flex items-center justify-center gap-4 text-[11px] text-game-muted md:col-span-1 md:col-start-2 md:row-start-1 md:border-r md:border-game-line/50 md:pr-6"
                     >
                         <span className="flex items-center gap-1.5">
                             <span className="h-2 w-2 rounded-sm bg-game-correct" />
@@ -228,7 +302,7 @@ const Game = ({
                     </div>
                 </header>
                 <GameMessage message={message} />
-                <GameBoard gameState={gameState} />
+                <GameBoard gameState={gameState} theme={theme} />
             </main>
             <div
                 className={`fixed bottom-0 left-0 right-0 z-20 mx-auto w-full max-w-[720px] rounded-t-2xl p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:bottom-4 sm:w-[calc(100%-2rem)] sm:rounded-2xl sm:p-3 sm:pb-[max(0.75rem,env(safe-area-inset-bottom))] ${bottomPanelClass}`}
@@ -243,6 +317,7 @@ const Game = ({
                     onNewGame={mode === 'free-play' ? handleNewGame : undefined}
                 />
                 <Keyboard
+                    theme={theme}
                     onKeyPress={handleKeyPress}
                     usedLetters={usedLetters}
                     letterBoardStatus={letterBoardStatus}

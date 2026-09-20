@@ -1,8 +1,9 @@
 import { LetterBoardStatus } from '../types/game'
 import KeyboardKey from './keyboard-key'
-import { activeTheme } from '../themes'
+import type { Theme } from '../themes'
 
 interface KeyboardProps {
+    theme: Theme
     onKeyPress: (key: string) => void
     usedLetters: Map<string, 'correct' | 'present' | 'absent'>
     letterBoardStatus: Map<string, LetterBoardStatus>
@@ -10,6 +11,7 @@ interface KeyboardProps {
 }
 
 const Keyboard = ({
+    theme,
     onKeyPress,
     letterBoardStatus,
     solvedBoards,
@@ -20,7 +22,7 @@ const Keyboard = ({
         ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'],
     ]
 
-    const keyboardClass = activeTheme.keyboardClassName ?? 'bg-black'
+    const keyboardClass = theme.keyboardClassName ?? 'bg-black'
 
     return (
         <div
