@@ -867,14 +867,7 @@ const Reindeer = ({ rudolph = false }: { rudolph?: boolean }) => (
         <circle cx="20.5" cy="4.5" r="0.5" fill="#FFFFFF" />
         {/* Nose */}
         {rudolph ? (
-            <circle cx="5" cy="11" r="3" fill="#E53935">
-                <animate
-                    attributeName="opacity"
-                    values="0.7;1;0.7"
-                    dur="1.5s"
-                    repeatCount="indefinite"
-                />
-            </circle>
+            <circle cx="5" cy="11" r="3" fill="#E53935" />
         ) : (
             <circle cx="5" cy="11" r="2" fill="#3E2723" />
         )}
@@ -1053,9 +1046,9 @@ const SnowDrift = () => (
     </svg>
 )
 
-export const WinterScene = () => (
+export const WinterScene = ({ festive = false }: { festive?: boolean }) => (
     <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
+        className="absolute inset-0 pointer-events-none overflow-hidden opacity-50"
         aria-hidden
     >
         {/* Sky-to-snow gradient backdrop */}
@@ -1069,7 +1062,9 @@ export const WinterScene = () => (
         <Stars />
         <Moon />
         {/* Santa & reindeer flying in the upper-left sky */}
-        <SantaSleigh className="top-[8%] left-[3%] w-56 h-24 sm:w-72 sm:h-32 drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]" />
+        {festive && (
+            <SantaSleigh className="top-[8%] left-[3%] w-56 h-24 sm:w-72 sm:h-32 drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]" />
+        )}
         <Mountains />
         {/* Skiers gliding across the snowy field below the mountains.
             SkierGroup keeps each trail anchored to its skier. */}
@@ -1099,9 +1094,13 @@ export const WinterScene = () => (
         <Penguin className="top-[67%] left-[38%] w-6 h-8 sm:w-8 sm:h-10" flip />
         <Snowflakes />
         <SnowDrift />
-        <ChristmasTree className="bottom-56 left-4 sm:bottom-60 sm:left-16 w-32 h-48 sm:w-44 sm:h-64 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]" />
+        {festive && (
+            <ChristmasTree className="bottom-56 left-4 sm:bottom-60 sm:left-16 w-32 h-48 sm:w-44 sm:h-64 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]" />
+        )}
         <Snowman className="bottom-56 right-8 sm:bottom-60 sm:right-32 w-28 h-48 sm:w-36 sm:h-60 drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]" />
         <Sled className="bottom-60 left-1/4 w-32 h-16 sm:w-44 sm:h-20 drop-shadow-md" />
-        <GiftBox className="bottom-60 right-[18%] w-16 h-20 sm:w-20 sm:h-24 drop-shadow-md" />
+        {festive && (
+            <GiftBox className="bottom-60 right-[18%] w-16 h-20 sm:w-20 sm:h-24 drop-shadow-md" />
+        )}
     </div>
 )

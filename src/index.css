@@ -49,6 +49,74 @@
         scrollbar-color: theme('colors.game.line') transparent;
     }
 
+    .spring-background {
+        --game-canvas: 19 37 30;
+        --game-surface: 29 51 40;
+        --game-tile: 53 82 61;
+        --game-line: 112 143 113;
+        --game-muted: 200 217 188;
+        --game-text: 247 244 225;
+        background:
+            radial-gradient(ellipse at 90% 10%, #405044, transparent 65%),
+            #13251e;
+    }
+
+    .autumn-background {
+        --game-canvas: 34 25 32;
+        --game-surface: 48 34 40;
+        --game-tile: 79 52 50;
+        --game-line: 149 112 88;
+        --game-muted: 218 193 167;
+        --game-text: 252 241 221;
+        background:
+            radial-gradient(ellipse at 0% 75%, #614332, transparent 70%),
+            #221920;
+    }
+
+    .winter-background {
+        --game-canvas: 14 28 42;
+        --game-surface: 22 42 59;
+        --game-tile: 44 68 91;
+        --game-line: 112 144 167;
+        --game-muted: 195 215 229;
+        --game-text: 239 247 255;
+        background: #0e1c2a;
+    }
+
+    .christmas-background {
+        --game-canvas: 15 32 29;
+        --game-surface: 23 45 38;
+        --game-tile: 45 73 54;
+        --game-line: 144 129 88;
+        --game-muted: 218 205 165;
+        --game-text: 255 245 223;
+        background: #0f201d;
+    }
+
+    .halloween-background {
+        --game-canvas: 28 19 39;
+        --game-surface: 42 28 53;
+        --game-tile: 70 44 77;
+        --game-line: 145 106 126;
+        --game-muted: 221 192 202;
+        --game-text: 255 240 218;
+        background:
+            radial-gradient(ellipse at 90% 90%, #653723, transparent 65%),
+            #1c1327;
+    }
+
+    .new-year-background {
+        --game-canvas: 23 25 34;
+        --game-surface: 34 36 45;
+        --game-tile: 57 59 70;
+        --game-line: 141 130 104;
+        --game-muted: 211 201 179;
+        --game-text: 255 247 226;
+        background:
+            radial-gradient(ellipse at 90% 0%, #493d37, transparent 65%),
+            #171922;
+    }
+
     .beachy-background {
         --game-canvas: 10 41 48;
         --game-surface: 18 59 64;

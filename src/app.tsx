@@ -11,13 +11,13 @@ import { NewGameModal } from './components/new-game-modal'
 import { ThemeMenu } from './components/theme-menu'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
-import { themes, type Theme } from './themes'
+import { themes, getSeasonalTheme, type Theme } from './themes'
 
 const themeStorageKey = 'superwordle:theme:v1'
 
 export function App() {
     const [mode, setMode] = useState<'daily' | 'free-play' | null>(null)
-    const [theme, setTheme] = useState(() => {
+    const [selectedTheme, setSelectedTheme] = useState(() => {
         try {
             const savedId = localStorage.getItem(themeStorageKey)
             return themes.find((theme) => theme.id === savedId) ?? themes[0]
@@ -25,9 +25,47 @@ export function App() {
             return themes[0]
         }
     })
+    const [currentSeasonalTheme, setCurrentSeasonalTheme] = useState(() =>
+        getSeasonalTheme(),
+    )
+    const theme =
+        selectedTheme.id === 'seasonal' ? currentSeasonalTheme : selectedTheme
+
+    useEffect(() => {
+        if (selectedTheme.id !== 'seasonal') return
+
+        let midnightTimer: number
+        const updateSeason = () => {
+            const now = new Date()
+            setCurrentSeasonalTheme(getSeasonalTheme(now))
+            const midnight = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate() + 1,
+            )
+            window.clearTimeout(midnightTimer)
+            midnightTimer = window.setTimeout(
+                updateSeason,
+                midnight.getTime() - now.getTime(),
+            )
+        }
+        const handleVisibilityChange = () => {
+            if (!document.hidden) updateSeason()
+        }
+
+        updateSeason()
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        return () => {
+            window.clearTimeout(midnightTimer)
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            )
+        }
+    }, [selectedTheme.id])
 
     const changeTheme = (nextTheme: Theme) => {
-        setTheme(nextTheme)
+        setSelectedTheme(nextTheme)
         try {
             localStorage.setItem(themeStorageKey, nextTheme.id)
         } catch {
@@ -40,18 +78,14 @@ export function App() {
             <Game
                 mode={mode}
                 theme={theme}
+                selectedTheme={selectedTheme}
                 onThemeChange={changeTheme}
                 onBackToMenu={() => setMode(null)}
             />
         )
 
-    const Scene = theme.Scene
-
     return (
-        <main
-            className={`min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative ${theme.rootClassName ?? 'bg-game-canvas'}`}
-        >
-            {Scene && <Scene />}
+        <main className="min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative classic-background">
             <div className="relative z-10 w-full max-w-3xl">
                 <header className="mb-10 text-center sm:mb-12">
                     <img
@@ -126,11 +160,13 @@ export function App() {
 const Game = ({
     mode,
     theme,
+    selectedTheme,
     onThemeChange,
     onBackToMenu,
 }: {
     mode: 'free-play' | 'daily'
     theme: Theme
+    selectedTheme: Theme
     onThemeChange: (theme: Theme) => void
     onBackToMenu: () => void
 }) => {
@@ -215,7 +251,7 @@ const Game = ({
             className={`h-dvh text-game-text flex flex-col overflow-hidden relative ${rootClass}`}
         >
             {Scene && <Scene />}
-            <main className="game-scroll flex-1 overflow-y-auto px-3 pt-7 pb-80 sm:px-6 sm:pt-10 relative z-10">
+            <main className="game-scroll flex-1 overflow-y-auto px-3 pt-7 pb-80 sm:px-6 sm:pt-10 relative">
                 <header className="mx-auto mb-5 grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 border-b border-game-line/40 pb-5 sm:mb-6 sm:gap-x-6 sm:pb-6 md:grid-cols-[minmax(0,1fr)_auto_auto]">
                     <h1 className="text-xl sm:text-3xl font-semibold tracking-tight">
                         <button
@@ -242,7 +278,10 @@ const Game = ({
                         </button>
                     </h1>
                     <div className="col-start-2 row-start-1 md:col-start-3">
-                        <ThemeMenu theme={theme} onChange={onThemeChange} />
+                        <ThemeMenu
+                            theme={selectedTheme}
+                            onChange={onThemeChange}
+                        />
                     </div>
                     <div
                         aria-label="Letter color guide"

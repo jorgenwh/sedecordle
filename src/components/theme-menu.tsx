@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { themes, type Theme } from '../themes'
+import { themes, getSeasonalTheme, type Theme } from '../themes'
 
 export const ThemeMenu = ({
     theme,
@@ -78,12 +78,20 @@ export const ThemeMenu = ({
                     closeMenu()
                 } else if (isOpen && /^[a-z]$/i.test(event.key)) {
                     event.preventDefault()
-                    const match = themes.findIndex((option) =>
-                        option.name
-                            .toLowerCase()
-                            .startsWith(event.key.toLowerCase()),
+                    const currentIndex = optionRefs.current.indexOf(
+                        document.activeElement as HTMLButtonElement,
                     )
-                    optionRefs.current[match]?.focus()
+                    for (let offset = 1; offset <= themes.length; offset++) {
+                        const index = (currentIndex + offset) % themes.length
+                        if (
+                            themes[index].name
+                                .toLowerCase()
+                                .startsWith(event.key.toLowerCase())
+                        ) {
+                            optionRefs.current[index]?.focus()
+                            break
+                        }
+                    }
                 }
             }}
         >
@@ -130,7 +138,7 @@ export const ThemeMenu = ({
                     id="theme-menu"
                     role="menu"
                     aria-label="Theme"
-                    className="absolute right-0 top-full z-30 mt-2 w-56 rounded-xl border border-game-line/70 bg-game-surface p-1.5 shadow-xl shadow-black/40"
+                    className="absolute right-0 top-full z-30 mt-2 max-h-[min(24rem,60dvh)] w-56 overflow-y-auto overscroll-contain rounded-xl border border-game-line/70 bg-game-surface p-1.5 shadow-xl shadow-black/40"
                 >
                     {themes.map((option, index) => (
                         <button
@@ -160,7 +168,14 @@ export const ThemeMenu = ({
                                     </>
                                 )}
                             </span>
-                            {option.name}
+                            <span className="min-w-0">
+                                {option.name}
+                                {option.id === 'seasonal' && (
+                                    <span className="block text-[10px] font-normal text-game-muted">
+                                        Auto · {getSeasonalTheme().name}
+                                    </span>
+                                )}
+                            </span>
                             {option.id === theme.id && (
                                 <svg
                                     aria-hidden="true"
