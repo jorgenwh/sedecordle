@@ -168,11 +168,7 @@ export const SpringScene = () => (
                     />
                 </g>
             ))}
-            <path
-                d="M124 134v10m84-10v10"
-                stroke="#c4bb93"
-                strokeWidth="2"
-            />
+            <path d="M124 134v10m84-10v10" stroke="#c4bb93" strokeWidth="2" />
             <rect
                 x="103"
                 y="144"
