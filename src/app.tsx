@@ -8,6 +8,7 @@ import { SaveScoreModal } from './components/save-score-modal'
 import { GameStats } from './components/game-stats'
 import { ScreenFlash } from './components/screen-flash'
 import { NewGameModal } from './components/new-game-modal'
+import { ThemeMenu } from './components/theme-menu'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
 import { activeTheme } from './themes'
@@ -184,22 +185,22 @@ const Game = ({
         >
             {Scene && <Scene />}
             <main className="game-scroll flex-1 overflow-y-auto px-3 pt-7 pb-80 sm:px-6 sm:pt-10 relative z-10">
-                <header className="max-w-6xl mx-auto mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-5 pb-6">
-                    <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                <header className="mx-auto mb-5 grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 border-b border-game-line/40 pb-5 sm:mb-6 sm:gap-x-6 sm:pb-6 md:grid-cols-[minmax(0,1fr)_auto_auto]">
+                    <h1 className="text-xl sm:text-3xl font-semibold tracking-tight">
                         <button
                             type="button"
                             onClick={onBackToMenu}
                             onKeyDown={(event) => event.stopPropagation()}
                             aria-label="Superwordle — back to menu"
                             title="Back to menu"
-                            className="flex cursor-pointer items-center gap-4 rounded-lg text-left"
+                            className="flex cursor-pointer items-center gap-2.5 rounded-lg text-left sm:gap-4"
                         >
                             <img
                                 src="/favicon.svg"
                                 alt=""
                                 width={44}
                                 height={44}
-                                className="h-11 w-11 shrink-0"
+                                className="h-8 w-8 shrink-0 sm:h-11 sm:w-11"
                             />
                             <span>
                                 <span className="text-game-correct">S</span>u
@@ -209,9 +210,12 @@ const Game = ({
                             </span>
                         </button>
                     </h1>
+                    <div className="col-start-2 row-start-1 md:col-start-3">
+                        <ThemeMenu />
+                    </div>
                     <div
                         aria-label="Letter color guide"
-                        className="flex items-center gap-4 text-[11px] text-game-muted"
+                        className="col-span-2 flex items-center justify-center gap-4 text-[11px] text-game-muted md:col-span-1 md:col-start-2 md:row-start-1 md:border-r md:border-game-line/50 md:pr-6"
                     >
                         <span className="flex items-center gap-1.5">
                             <span className="h-2 w-2 rounded-sm bg-game-correct" />
