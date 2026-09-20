@@ -40,7 +40,7 @@ export function App() {
                         <span className="text-game-present">l</span>e
                     </h1>
                     <p className="mt-4 text-sm sm:text-base text-game-muted">
-                        Choose your game mode
+                        Solve 16 five-letter words at once in 21 guesses.
                     </p>
                 </header>
                 <div className="grid grid-cols-2 gap-3 sm:gap-6">
@@ -86,6 +86,10 @@ export function App() {
                         </span>
                     </button>
                 </div>
+                <p className="mx-auto mt-6 max-w-xl text-center text-sm text-game-muted">
+                    Each guess counts for all 16 boards. Try a new daily puzzle
+                    or enjoy unlimited free play.
+                </p>
             </div>
         </main>
     )
