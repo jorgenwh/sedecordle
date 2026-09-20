@@ -14,22 +14,28 @@ import { aprilFoolsTheme } from './april-fools'
 import { easterTheme } from './easter'
 import type { Theme } from './types'
 
-export const themes: Theme[] = [
-    classicTheme,
-    seasonalTheme,
-    newYearTheme,
-    winterTheme,
-    valentinesTheme,
-    springTheme,
-    aprilFoolsTheme,
-    easterTheme,
-    beachyTheme,
-    autumnTheme,
-    halloweenTheme,
-    christmasTheme,
-    spaceCadetTheme,
-    thisIsFineTheme,
+export const themeGroups: { label?: string; themes: Theme[] }[] = [
+    {
+        themes: [classicTheme, seasonalTheme, spaceCadetTheme, thisIsFineTheme],
+    },
+    {
+        label: 'Seasonal',
+        themes: [
+            newYearTheme,
+            winterTheme,
+            valentinesTheme,
+            springTheme,
+            aprilFoolsTheme,
+            easterTheme,
+            beachyTheme,
+            autumnTheme,
+            halloweenTheme,
+            christmasTheme,
+        ],
+    },
 ]
+
+export const themes: Theme[] = themeGroups.flatMap((group) => group.themes)
 
 export type { Theme }
 export { getSeasonalTheme } from './seasonal'

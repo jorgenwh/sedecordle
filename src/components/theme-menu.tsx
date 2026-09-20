@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { themes, getSeasonalTheme, type Theme } from '../themes'
+import { themes, themeGroups, getSeasonalTheme, type Theme } from '../themes'
 
 export const ThemeMenu = ({
     theme,
@@ -140,57 +140,84 @@ export const ThemeMenu = ({
                     aria-label="Theme"
                     className="absolute right-0 top-full z-30 mt-2 max-h-[min(24rem,60dvh)] w-56 overflow-y-auto overscroll-contain rounded-xl border border-game-line/70 bg-game-surface p-1.5 shadow-xl shadow-black/40"
                 >
-                    {themes.map((option, index) => (
-                        <button
-                            key={option.id}
-                            ref={(element) => {
-                                optionRefs.current[index] = element
-                            }}
-                            type="button"
-                            role="menuitemradio"
-                            aria-checked={option.id === theme.id}
-                            tabIndex={-1}
-                            onClick={() => {
-                                onChange(option)
-                                closeMenu()
-                            }}
-                            className={`flex h-11 w-full items-center gap-3 rounded-lg px-3 text-left text-xs font-medium text-game-text hover:bg-game-tile/60 focus-visible:bg-game-tile/60 focus-visible:outline-none ${option.id === theme.id ? 'bg-game-tile/30' : ''}`}
+                    {themeGroups.map((group, groupIndex) => (
+                        <div
+                            key={group.label ?? 'general'}
+                            role="group"
+                            aria-labelledby={
+                                group.label
+                                    ? `theme-group-${groupIndex}`
+                                    : undefined
+                            }
+                            className={
+                                group.label
+                                    ? 'mt-1 border-t border-game-line/40 pt-2'
+                                    : undefined
+                            }
                         >
-                            <span
-                                aria-hidden="true"
-                                className="flex w-7 shrink-0 justify-center gap-0.5 text-lg"
-                            >
-                                {option.emoji ?? (
-                                    <>
-                                        <span className="h-3 w-2 rounded-sm bg-game-correct" />
-                                        <span className="h-3 w-2 rounded-sm bg-game-present" />
-                                        <span className="h-3 w-2 rounded-sm border border-game-line bg-game-absent" />
-                                    </>
-                                )}
-                            </span>
-                            <span className="min-w-0">
-                                {option.name}
-                                {option.id === 'seasonal' && (
-                                    <span className="block text-[10px] font-normal text-game-muted">
-                                        Auto · {getSeasonalTheme().name}
-                                    </span>
-                                )}
-                            </span>
-                            {option.id === theme.id && (
-                                <svg
-                                    aria-hidden="true"
-                                    viewBox="0 0 16 16"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="ml-auto h-4 w-4 text-game-accent"
+                            {group.label && (
+                                <div
+                                    id={`theme-group-${groupIndex}`}
+                                    className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-game-muted"
                                 >
-                                    <path d="m3 8 3 3 7-7" />
-                                </svg>
+                                    {group.label}
+                                </div>
                             )}
-                        </button>
+                            {group.themes.map((option) => (
+                                <button
+                                    key={option.id}
+                                    ref={(element) => {
+                                        optionRefs.current[
+                                            themes.indexOf(option)
+                                        ] = element
+                                    }}
+                                    type="button"
+                                    role="menuitemradio"
+                                    aria-checked={option.id === theme.id}
+                                    tabIndex={-1}
+                                    onClick={() => {
+                                        onChange(option)
+                                        closeMenu()
+                                    }}
+                                    className={`flex h-11 w-full items-center gap-3 rounded-lg px-3 text-left text-xs font-medium text-game-text hover:bg-game-tile/60 focus-visible:bg-game-tile/60 focus-visible:outline-none ${option.id === theme.id ? 'bg-game-tile/30' : ''}`}
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        className="flex w-7 shrink-0 justify-center gap-0.5 text-lg"
+                                    >
+                                        {option.emoji ?? (
+                                            <>
+                                                <span className="h-3 w-2 rounded-sm bg-game-correct" />
+                                                <span className="h-3 w-2 rounded-sm bg-game-present" />
+                                                <span className="h-3 w-2 rounded-sm border border-game-line bg-game-absent" />
+                                            </>
+                                        )}
+                                    </span>
+                                    <span className="min-w-0">
+                                        {option.name}
+                                        {option.id === 'seasonal' && (
+                                            <span className="block text-[10px] font-normal text-game-muted">
+                                                Auto · {getSeasonalTheme().name}
+                                            </span>
+                                        )}
+                                    </span>
+                                    {option.id === theme.id && (
+                                        <svg
+                                            aria-hidden="true"
+                                            viewBox="0 0 16 16"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="ml-auto h-4 w-4 text-game-accent"
+                                        >
+                                            <path d="m3 8 3 3 7-7" />
+                                        </svg>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
                     ))}
                 </div>
             )}
