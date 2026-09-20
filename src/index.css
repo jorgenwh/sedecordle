@@ -267,19 +267,6 @@
             0 4px 12px rgb(11 28 20 / 12%);
     }
 
-    .spring-background .theme-board::before {
-        content: '';
-        position: absolute;
-        top: -3px;
-        right: 13px;
-        width: 18px;
-        height: 5px;
-        border-radius: 100% 0 100% 0;
-        background: #9aad83;
-        box-shadow: -11px 0 0 #758f6a;
-        pointer-events: none;
-    }
-
     .autumn-background :is(.theme-board, .theme-panel) {
         border-top-color: #c79865;
         background-image:
