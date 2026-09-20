@@ -61,6 +61,42 @@
             #13251e;
     }
 
+    .april-fools-background {
+        --game-canvas: 22 29 40;
+        --game-surface: 34 43 56;
+        --game-tile: 59 73 91;
+        --game-line: 115 139 163;
+        --game-muted: 202 207 219;
+        --game-text: 250 242 226;
+        background:
+            radial-gradient(ellipse at 5% 90%, #44526a, transparent 65%),
+            #161d28;
+    }
+
+    .easter-background {
+        --game-canvas: 36 29 43;
+        --game-surface: 49 40 56;
+        --game-tile: 78 64 86;
+        --game-line: 142 124 149;
+        --game-muted: 219 205 218;
+        --game-text: 252 242 225;
+        background:
+            radial-gradient(ellipse at 90% 10%, #574050, transparent 65%),
+            #241d2b;
+    }
+
+    .valentines-background {
+        --game-canvas: 38 20 29;
+        --game-surface: 57 29 42;
+        --game-tile: 91 46 64;
+        --game-line: 159 104 124;
+        --game-muted: 231 197 208;
+        --game-text: 255 240 233;
+        background:
+            radial-gradient(ellipse at 80% 20%, #613647, transparent 65%),
+            #26141d;
+    }
+
     .autumn-background {
         --game-canvas: 34 25 32;
         --game-surface: 48 34 40;
@@ -283,6 +319,61 @@
         box-shadow:
             inset 0 0 0 3px rgb(39 26 25 / 30%),
             0 4px 12px rgb(27 20 20 / 16%);
+    }
+
+    .april-fools-background :is(.theme-board, .theme-panel) {
+        border-top-color: #bea4bc;
+        background-image:
+            radial-gradient(
+                circle at 6px 6px,
+                rgb(220 183 117 / 10%) 1px,
+                transparent 2px
+            ),
+            radial-gradient(
+                circle at 18px 18px,
+                rgb(154 195 183 / 10%) 1px,
+                transparent 2px
+            );
+        background-size: 24px 24px;
+        box-shadow:
+            inset 0 0 0 3px rgb(151 133 177 / 8%),
+            0 4px 12px rgb(9 17 31 / 18%);
+    }
+
+    .easter-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c1a8bb;
+        background-image:
+            repeating-linear-gradient(
+                90deg,
+                rgb(204 185 148 / 4%) 0 1px,
+                transparent 1px 12px
+            ),
+            repeating-linear-gradient(
+                0deg,
+                rgb(176 189 162 / 4%) 0 1px,
+                transparent 1px 12px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(196 166 194 / 7%),
+            0 4px 12px rgb(25 17 29 / 18%);
+    }
+
+    .valentines-background :is(.theme-board, .theme-panel) {
+        border-top-color: #c291a2;
+        background-image:
+            radial-gradient(
+                ellipse at top left,
+                rgb(213 151 174 / 12%),
+                transparent 60%
+            ),
+            repeating-linear-gradient(
+                135deg,
+                transparent 0 18px,
+                rgb(221 185 186 / 4%) 18px 19px
+            );
+        box-shadow:
+            inset 0 0 0 3px rgb(190 139 154 / 7%),
+            0 4px 12px rgb(31 12 23 / 18%);
     }
 
     .winter-background :is(.theme-board, .theme-panel) {

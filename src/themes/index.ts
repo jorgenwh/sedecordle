@@ -9,6 +9,9 @@ import { springTheme } from './spring'
 import { autumnTheme } from './autumn'
 import { halloweenTheme } from './halloween'
 import { christmasTheme } from './christmas'
+import { valentinesTheme } from './valentines'
+import { aprilFoolsTheme } from './april-fools'
+import { easterTheme } from './easter'
 import type { Theme } from './types'
 
 export const themes: Theme[] = [
@@ -16,7 +19,10 @@ export const themes: Theme[] = [
     seasonalTheme,
     newYearTheme,
     winterTheme,
+    valentinesTheme,
     springTheme,
+    aprilFoolsTheme,
+    easterTheme,
     beachyTheme,
     autumnTheme,
     halloweenTheme,
