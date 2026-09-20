@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
-import { activeTheme } from '../themes'
+import { themes, type Theme } from '../themes'
 
-export const ThemeMenu = () => {
+export const ThemeMenu = ({
+    theme,
+    onChange,
+}: {
+    theme: Theme
+    onChange: (theme: Theme) => void
+}) => {
     const [isOpen, setIsOpen] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
     const buttonRef = useRef<HTMLButtonElement>(null)
-    const optionRef = useRef<HTMLButtonElement>(null)
+    const optionRefs = useRef<(HTMLButtonElement | null)[]>([])
+    const selectedIndex = themes.findIndex((option) => option.id === theme.id)
 
     const closeMenu = () => {
         setIsOpen(false)
@@ -15,7 +22,7 @@ export const ThemeMenu = () => {
     useEffect(() => {
         if (!isOpen) return
 
-        optionRef.current?.focus()
+        optionRefs.current[selectedIndex]?.focus()
 
         const handlePointerDown = (event: PointerEvent) => {
             if (!containerRef.current?.contains(event.target as Node)) {
@@ -26,7 +33,7 @@ export const ThemeMenu = () => {
         document.addEventListener('pointerdown', handlePointerDown)
         return () =>
             document.removeEventListener('pointerdown', handlePointerDown)
-    }, [isOpen])
+    }, [isOpen, selectedIndex])
 
     return (
         <div
@@ -49,10 +56,34 @@ export const ThemeMenu = () => {
                     (isOpen && (event.key === 'Home' || event.key === 'End'))
                 ) {
                     event.preventDefault()
-                    setIsOpen(true)
-                    optionRef.current?.focus()
+                    if (!isOpen) {
+                        setIsOpen(true)
+                        return
+                    }
+
+                    const currentIndex = optionRefs.current.indexOf(
+                        document.activeElement as HTMLButtonElement,
+                    )
+                    const nextIndex =
+                        event.key === 'Home'
+                            ? 0
+                            : event.key === 'End'
+                              ? themes.length - 1
+                              : (currentIndex +
+                                    (event.key === 'ArrowDown' ? 1 : -1) +
+                                    themes.length) %
+                                themes.length
+                    optionRefs.current[nextIndex]?.focus()
                 } else if (event.key === 'Tab' && isOpen) {
                     closeMenu()
+                } else if (isOpen && /^[a-z]$/i.test(event.key)) {
+                    event.preventDefault()
+                    const match = themes.findIndex((option) =>
+                        option.name
+                            .toLowerCase()
+                            .startsWith(event.key.toLowerCase()),
+                    )
+                    optionRefs.current[match]?.focus()
                 }
             }}
         >
@@ -99,36 +130,53 @@ export const ThemeMenu = () => {
                     id="theme-menu"
                     role="menu"
                     aria-label="Theme"
-                    className="absolute right-0 top-full z-30 mt-2 w-48 rounded-xl border border-game-line/70 bg-game-surface p-1.5 shadow-xl shadow-black/40"
+                    className="absolute right-0 top-full z-30 mt-2 w-56 rounded-xl border border-game-line/70 bg-game-surface p-1.5 shadow-xl shadow-black/40"
                 >
-                    <button
-                        ref={optionRef}
-                        type="button"
-                        role="menuitemradio"
-                        aria-checked="true"
-                        tabIndex={-1}
-                        onClick={closeMenu}
-                        className="flex h-11 w-full items-center gap-3 rounded-lg bg-game-tile/30 px-3 text-left text-xs font-medium text-game-text hover:bg-game-tile/60 focus-visible:bg-game-tile/60 focus-visible:outline-none"
-                    >
-                        <span aria-hidden="true" className="flex gap-0.5">
-                            <span className="h-3 w-2 rounded-sm bg-game-correct" />
-                            <span className="h-3 w-2 rounded-sm bg-game-present" />
-                            <span className="h-3 w-2 rounded-sm border border-game-line bg-game-canvas" />
-                        </span>
-                        {activeTheme.name}
-                        <svg
-                            aria-hidden="true"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="ml-auto h-4 w-4 text-game-accent"
+                    {themes.map((option, index) => (
+                        <button
+                            key={option.id}
+                            ref={(element) => {
+                                optionRefs.current[index] = element
+                            }}
+                            type="button"
+                            role="menuitemradio"
+                            aria-checked={option.id === theme.id}
+                            tabIndex={-1}
+                            onClick={() => {
+                                onChange(option)
+                                closeMenu()
+                            }}
+                            className={`flex h-11 w-full items-center gap-3 rounded-lg px-3 text-left text-xs font-medium text-game-text hover:bg-game-tile/60 focus-visible:bg-game-tile/60 focus-visible:outline-none ${option.id === theme.id ? 'bg-game-tile/30' : ''}`}
                         >
-                            <path d="m3 8 3 3 7-7" />
-                        </svg>
-                    </button>
+                            <span
+                                aria-hidden="true"
+                                className="flex w-7 shrink-0 justify-center gap-0.5 text-lg"
+                            >
+                                {option.emoji ?? (
+                                    <>
+                                        <span className="h-3 w-2 rounded-sm bg-game-correct" />
+                                        <span className="h-3 w-2 rounded-sm bg-game-present" />
+                                        <span className="h-3 w-2 rounded-sm border border-game-line bg-game-absent" />
+                                    </>
+                                )}
+                            </span>
+                            {option.name}
+                            {option.id === theme.id && (
+                                <svg
+                                    aria-hidden="true"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="ml-auto h-4 w-4 text-game-accent"
+                                >
+                                    <path d="m3 8 3 3 7-7" />
+                                </svg>
+                            )}
+                        </button>
+                    ))}
                 </div>
             )}
         </div>

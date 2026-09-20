@@ -1,11 +1,14 @@
 import { classicTheme } from './classic'
-import { summerTheme } from './summer'
-import { winterTheme } from './winter'
+import { beachyTheme } from './beachy'
+import { spaceCadetTheme } from './space-cadet'
+import { thisIsFineTheme } from './this-is-fine'
 import type { Theme } from './types'
 
-export const themes: Theme[] = [classicTheme, summerTheme, winterTheme]
-
-// Active theme. Swap this (or build a selector later) to change the look.
-export const activeTheme: Theme = classicTheme
+export const themes: Theme[] = [
+    classicTheme,
+    beachyTheme,
+    spaceCadetTheme,
+    thisIsFineTheme,
+]
 
 export type { Theme }

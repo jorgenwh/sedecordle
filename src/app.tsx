@@ -11,18 +11,45 @@ import { NewGameModal } from './components/new-game-modal'
 import { ThemeMenu } from './components/theme-menu'
 import { useGame } from './hooks/use-game'
 import { useKeyboardHandler } from './hooks/use-keyboard-handler'
-import { activeTheme } from './themes'
+import { themes, type Theme } from './themes'
+
+const themeStorageKey = 'superwordle:theme:v1'
 
 export function App() {
     const [mode, setMode] = useState<'daily' | 'free-play' | null>(null)
+    const [theme, setTheme] = useState(() => {
+        try {
+            const savedId = localStorage.getItem(themeStorageKey)
+            return themes.find((theme) => theme.id === savedId) ?? themes[0]
+        } catch {
+            return themes[0]
+        }
+    })
 
-    if (mode) return <Game mode={mode} onBackToMenu={() => setMode(null)} />
+    const changeTheme = (nextTheme: Theme) => {
+        setTheme(nextTheme)
+        try {
+            localStorage.setItem(themeStorageKey, nextTheme.id)
+        } catch {
+            // Keep theme switching available when storage is blocked.
+        }
+    }
 
-    const Scene = activeTheme.Scene
+    if (mode)
+        return (
+            <Game
+                mode={mode}
+                theme={theme}
+                onThemeChange={changeTheme}
+                onBackToMenu={() => setMode(null)}
+            />
+        )
+
+    const Scene = theme.Scene
 
     return (
         <main
-            className={`min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative ${activeTheme.rootClassName ?? 'bg-game-canvas'}`}
+            className={`min-h-dvh flex items-center justify-center px-4 py-12 text-game-text relative ${theme.rootClassName ?? 'bg-game-canvas'}`}
         >
             {Scene && <Scene />}
             <div className="relative z-10 w-full max-w-3xl">
@@ -98,9 +125,13 @@ export function App() {
 
 const Game = ({
     mode,
+    theme,
+    onThemeChange,
     onBackToMenu,
 }: {
     mode: 'free-play' | 'daily'
+    theme: Theme
+    onThemeChange: (theme: Theme) => void
     onBackToMenu: () => void
 }) => {
     const [showNewGame, setShowNewGame] = useState(false)
@@ -171,13 +202,13 @@ const Game = ({
     }
 
     if (isLoading) {
-        return <LoadingScreen />
+        return <LoadingScreen theme={theme} />
     }
 
-    const Scene = activeTheme.Scene
-    const rootClass = activeTheme.rootClassName ?? 'bg-black'
+    const Scene = theme.Scene
+    const rootClass = theme.rootClassName ?? 'bg-black'
     const bottomPanelClass =
-        activeTheme.bottomPanelClassName ?? 'bg-black border-t border-gray-800'
+        theme.bottomPanelClassName ?? 'bg-black border-t border-gray-800'
 
     return (
         <div
@@ -211,7 +242,7 @@ const Game = ({
                         </button>
                     </h1>
                     <div className="col-start-2 row-start-1 md:col-start-3">
-                        <ThemeMenu />
+                        <ThemeMenu theme={theme} onChange={onThemeChange} />
                     </div>
                     <div
                         aria-label="Letter color guide"
@@ -232,7 +263,7 @@ const Game = ({
                     </div>
                 </header>
                 <GameMessage message={message} />
-                <GameBoard gameState={gameState} />
+                <GameBoard gameState={gameState} theme={theme} />
             </main>
             <div
                 className={`fixed bottom-0 left-0 right-0 z-20 mx-auto w-full max-w-[720px] rounded-t-2xl p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:bottom-4 sm:w-[calc(100%-2rem)] sm:rounded-2xl sm:p-3 sm:pb-[max(0.75rem,env(safe-area-inset-bottom))] ${bottomPanelClass}`}
@@ -247,6 +278,7 @@ const Game = ({
                     onNewGame={mode === 'free-play' ? handleNewGame : undefined}
                 />
                 <Keyboard
+                    theme={theme}
                     onKeyPress={handleKeyPress}
                     usedLetters={usedLetters}
                     letterBoardStatus={letterBoardStatus}

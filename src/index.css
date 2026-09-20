@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --game-canvas: 8 11 15;
+        --game-surface: 21 28 36;
+        --game-tile: 55 65 81;
+        --game-line: 70 83 101;
+        --game-muted: 176 188 203;
+        --game-text: 243 244 246;
+    }
+
     body {
         @apply bg-game-canvas text-game-text antialiased;
         color-scheme: dark;
@@ -39,6 +48,74 @@
         scrollbar-width: thin;
         scrollbar-color: theme('colors.game.line') transparent;
     }
+
+    .beachy-background {
+        --game-canvas: 10 41 48;
+        --game-surface: 18 59 64;
+        --game-tile: 38 90 96;
+        --game-line: 91 141 142;
+        --game-muted: 192 214 207;
+        --game-text: 248 243 229;
+        background: linear-gradient(180deg, #092c36, #15565a 65%, #756348);
+    }
+
+    .space-cadet-background {
+        --game-canvas: 9 13 34;
+        --game-surface: 19 27 56;
+        --game-tile: 38 52 84;
+        --game-line: 82 102 151;
+        --game-muted: 183 198 239;
+        --game-text: 241 245 255;
+        background:
+            radial-gradient(ellipse at 90% 10%, #3a2555, transparent 55%),
+            radial-gradient(ellipse at 5% 85%, #17385a, transparent 50%),
+            #090d22;
+    }
+
+    .this-is-fine-background {
+        --game-canvas: 37 24 20;
+        --game-surface: 53 34 27;
+        --game-tile: 89 55 41;
+        --game-line: 155 106 68;
+        --game-muted: 220 197 170;
+        --game-text: 255 243 223;
+        background:
+            repeating-linear-gradient(
+                90deg,
+                transparent 0 59px,
+                rgb(229 150 92 / 6%) 59px 60px
+            ),
+            radial-gradient(ellipse at 50% 110%, #843b1f, transparent 70%),
+            #251814;
+    }
+}
+
+@keyframes space-drift {
+    0%,
+    100% {
+        transform: translateY(0) rotate(-8deg);
+    }
+    50% {
+        transform: translateY(-12px) rotate(-3deg);
+    }
+}
+
+.space-drift {
+    animation: space-drift 10s ease-in-out infinite;
+}
+
+@keyframes fire-glow {
+    0%,
+    100% {
+        opacity: 0.65;
+    }
+    50% {
+        opacity: 0.9;
+    }
+}
+
+.fire-glow {
+    animation: fire-glow 6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

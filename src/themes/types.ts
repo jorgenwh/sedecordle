@@ -3,6 +3,7 @@ import type { ComponentType } from 'react'
 export interface Theme {
     id: string
     name: string
+    emoji?: string
     // CSS classes applied to the App root. Should set the page background.
     // Falls back to plain bg-black when omitted.
     rootClassName?: string
