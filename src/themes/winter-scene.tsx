@@ -1,3 +1,4 @@
+import { Ambient } from './ambient'
 const Moon = () => (
     <svg
         className="absolute top-4 right-6 sm:top-8 sm:right-16 w-24 h-24 sm:w-36 sm:h-36 drop-shadow-[0_0_40px_rgba(224,242,254,0.45)]"
@@ -1547,5 +1548,13 @@ export const WinterScene = ({ festive = false }: { festive?: boolean }) => (
         {festive && (
             <GiftBox className="bottom-60 right-[18%] w-16 h-20 sm:w-20 sm:h-24 drop-shadow-md" />
         )}
+        <Ambient
+            count={10}
+            motion="fall"
+            glyphs={['❄']}
+            colors={['#e0f2fe', '#ffffff']}
+            size={[12, 20]}
+            duration={[14, 26]}
+        />
     </div>
 )

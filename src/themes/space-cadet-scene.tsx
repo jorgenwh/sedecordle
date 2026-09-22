@@ -1,3 +1,4 @@
+import { Ambient } from './ambient'
 const stars = Array.from({ length: 65 }, (_, index) => ({
     x: (index * 223 + 41) % 1440,
     y: (index * 137 + 73) % 1000,
@@ -424,5 +425,13 @@ export const SpaceCadetScene = () => (
                 </text>
             </g>
         </svg>
+        <Ambient
+            count={14}
+            motion="float"
+            glyphs={['✦', '✧', '+']}
+            colors={['#c7d2fe', '#a5f3fc', '#f0abfc']}
+            size={[8, 16]}
+            duration={[5, 11]}
+        />
     </div>
 )

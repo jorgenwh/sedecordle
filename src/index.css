@@ -57,7 +57,8 @@
         --game-muted: 200 217 188;
         --game-text: 247 244 225;
         background:
-            radial-gradient(ellipse at 90% 10%, #405044, transparent 65%),
+            radial-gradient(ellipse at 85% 0%, #7b5578, transparent 55%),
+            radial-gradient(ellipse at 0% 100%, #2c6a45, transparent 60%),
             #13251e;
     }
 
@@ -69,7 +70,8 @@
         --game-muted: 202 207 219;
         --game-text: 250 242 226;
         background:
-            radial-gradient(ellipse at 5% 90%, #44526a, transparent 65%),
+            radial-gradient(ellipse at 5% 90%, #5a4a8c, transparent 55%),
+            radial-gradient(ellipse at 95% 5%, #1d6468, transparent 50%),
             #161d28;
     }
 
@@ -81,7 +83,8 @@
         --game-muted: 219 205 218;
         --game-text: 252 242 225;
         background:
-            radial-gradient(ellipse at 90% 10%, #574050, transparent 65%),
+            radial-gradient(ellipse at 90% 10%, #7c4d74, transparent 55%),
+            radial-gradient(ellipse at 5% 95%, #3b615b, transparent 55%),
             #241d2b;
     }
 
@@ -93,7 +96,8 @@
         --game-muted: 231 197 208;
         --game-text: 255 240 233;
         background:
-            radial-gradient(ellipse at 80% 20%, #613647, transparent 65%),
+            radial-gradient(ellipse at 80% 15%, #8c2d55, transparent 60%),
+            radial-gradient(ellipse at 5% 95%, #5c1c3c, transparent 55%),
             #26141d;
     }
 
@@ -105,7 +109,8 @@
         --game-muted: 218 193 167;
         --game-text: 252 241 221;
         background:
-            radial-gradient(ellipse at 0% 75%, #614332, transparent 70%),
+            radial-gradient(ellipse at 0% 80%, #8c4a22, transparent 65%),
+            radial-gradient(ellipse at 100% 0%, #5c2a36, transparent 55%),
             #221920;
     }
 
@@ -137,7 +142,8 @@
         --game-muted: 221 192 202;
         --game-text: 255 240 218;
         background:
-            radial-gradient(ellipse at 90% 90%, #653723, transparent 65%),
+            radial-gradient(ellipse at 90% 95%, #9c4818, transparent 60%),
+            radial-gradient(ellipse at 10% 0%, #3f2468, transparent 55%),
             #1c1327;
     }
 
@@ -149,7 +155,8 @@
         --game-muted: 211 201 179;
         --game-text: 255 247 226;
         background:
-            radial-gradient(ellipse at 90% 0%, #493d37, transparent 65%),
+            radial-gradient(ellipse at 90% 0%, #6e552c, transparent 60%),
+            radial-gradient(ellipse at 0% 100%, #3a2960, transparent 55%),
             #171922;
     }
 
@@ -160,7 +167,7 @@
         --game-line: 91 141 142;
         --game-muted: 192 214 207;
         --game-text: 248 243 229;
-        background: linear-gradient(180deg, #092c36, #15565a 65%, #756348);
+        background: linear-gradient(180deg, #0a3848, #147072 60%, #a88a58);
     }
 
     .space-cadet-background {
@@ -171,9 +178,10 @@
         --game-muted: 183 198 239;
         --game-text: 241 245 255;
         background:
-            radial-gradient(ellipse at 90% 10%, #3a2555, transparent 55%),
-            radial-gradient(ellipse at 5% 85%, #17385a, transparent 50%),
-            #090d22;
+            radial-gradient(ellipse at 90% 10%, #5a2c88, transparent 55%),
+            radial-gradient(ellipse at 5% 85%, #1a5286, transparent 50%),
+            radial-gradient(ellipse at 50% 45%, #1b2150, transparent 70%),
+            #070a1c;
     }
 
     .this-is-fine-background {
@@ -189,7 +197,7 @@
                 transparent 0 59px,
                 rgb(229 150 92 / 6%) 59px 60px
             ),
-            radial-gradient(ellipse at 50% 110%, #843b1f, transparent 70%),
+            radial-gradient(ellipse at 50% 115%, #b8481c, transparent 70%),
             #251814;
     }
 
@@ -204,6 +212,7 @@
     }
 
     .beachy-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(180 162 120 / 45%);
         border-top-color: #b4a278;
         background-image:
             repeating-linear-gradient(
@@ -218,10 +227,12 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(18 47 47 / 40%),
-            0 4px 12px rgb(4 23 27 / 15%);
+            0 4px 12px rgb(4 23 27 / 15%),
+            0 0 24px rgb(94 234 212 / 10%);
     }
 
     .space-cadet-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(141 156 206 / 45%);
         border-top-color: #8d9cce;
         background-image:
             linear-gradient(125deg, rgb(161 177 226 / 12%), transparent 40%),
@@ -232,7 +243,8 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(8 16 38 / 45%),
-            0 0 14px rgb(125 149 229 / 6%);
+            0 0 14px rgb(125 149 229 / 6%),
+            0 0 24px rgb(129 140 248 / 16%);
     }
 
     .space-cadet-background .theme-board::before {
@@ -252,6 +264,7 @@
     }
 
     .this-is-fine-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(193 138 89 / 45%);
         border-top-color: #c18a59;
         background-image:
             linear-gradient(
@@ -268,7 +281,8 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(26 15 12 / 25%),
-            0 3px 10px rgb(27 15 12 / 20%);
+            0 3px 10px rgb(27 15 12 / 20%),
+            0 0 24px rgb(249 115 22 / 14%);
     }
 
     .fine-floor {
@@ -286,6 +300,7 @@
     }
 
     .spring-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(183 171 153 / 40%);
         border-top-color: #b7ab99;
         background-image:
             radial-gradient(
@@ -300,10 +315,12 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(161 191 142 / 5%),
-            0 4px 12px rgb(11 28 20 / 12%);
+            0 4px 12px rgb(11 28 20 / 12%),
+            0 0 24px rgb(244 114 182 / 10%);
     }
 
     .autumn-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(199 152 101 / 45%);
         border-top-color: #c79865;
         background-image:
             repeating-linear-gradient(
@@ -318,10 +335,12 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(39 26 25 / 30%),
-            0 4px 12px rgb(27 20 20 / 16%);
+            0 4px 12px rgb(27 20 20 / 16%),
+            0 0 24px rgb(234 88 12 / 12%);
     }
 
     .april-fools-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(190 164 188 / 45%);
         border-top-color: #bea4bc;
         background-image:
             radial-gradient(
@@ -337,10 +356,12 @@
         background-size: 24px 24px;
         box-shadow:
             inset 0 0 0 3px rgb(151 133 177 / 8%),
-            0 4px 12px rgb(9 17 31 / 18%);
+            0 4px 12px rgb(9 17 31 / 18%),
+            0 0 24px rgb(94 234 212 / 10%);
     }
 
     .easter-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(193 168 187 / 45%);
         border-top-color: #c1a8bb;
         background-image:
             repeating-linear-gradient(
@@ -355,10 +376,12 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(196 166 194 / 7%),
-            0 4px 12px rgb(25 17 29 / 18%);
+            0 4px 12px rgb(25 17 29 / 18%),
+            0 0 24px rgb(249 168 212 / 12%);
     }
 
     .valentines-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(194 145 162 / 45%);
         border-top-color: #c291a2;
         background-image:
             radial-gradient(
@@ -373,17 +396,20 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(190 139 154 / 7%),
-            0 4px 12px rgb(31 12 23 / 18%);
+            0 4px 12px rgb(31 12 23 / 18%),
+            0 0 24px rgb(244 63 94 / 16%);
     }
 
     .winter-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(197 216 223 / 40%);
         border-top-color: #c5d8df;
         background-image:
             linear-gradient(145deg, rgb(195 222 237 / 14%), transparent 30%),
             linear-gradient(325deg, rgb(166 211 224 / 8%), transparent 40%);
         box-shadow:
             inset 0 1px 8px rgb(194 222 238 / 9%),
-            0 3px 12px rgb(5 22 41 / 20%);
+            0 3px 12px rgb(5 22 41 / 20%),
+            0 0 24px rgb(165 243 252 / 12%);
     }
 
     .winter-background .theme-board::before {
@@ -399,6 +425,7 @@
     }
 
     .christmas-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(198 173 117 / 45%);
         border-top-color: #c6ad75;
         background-image: repeating-linear-gradient(
             135deg,
@@ -409,10 +436,12 @@
         );
         box-shadow:
             inset 0 0 0 3px rgb(12 32 22 / 45%),
-            0 4px 12px rgb(4 19 14 / 20%);
+            0 4px 12px rgb(4 19 14 / 20%),
+            0 0 24px rgb(250 204 21 / 10%);
     }
 
     .halloween-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(197 139 87 / 45%);
         border-top-color: #c58b57;
         background-image:
             radial-gradient(
@@ -427,10 +456,12 @@
             );
         box-shadow:
             inset 0 0 0 3px rgb(17 12 29 / 30%),
-            0 3px 15px rgb(132 84 165 / 9%);
+            0 3px 15px rgb(132 84 165 / 9%),
+            0 0 24px rgb(168 85 247 / 16%);
     }
 
     .new-year-background :is(.theme-board, .theme-panel) {
+        border-color: rgb(205 179 124 / 50%);
         border-top-color: #cdb37c;
         background-image: repeating-linear-gradient(
             135deg,
@@ -442,7 +473,185 @@
         );
         box-shadow:
             inset 0 0 0 3px rgb(198 174 119 / 7%),
-            0 4px 12px rgb(16 16 26 / 20%);
+            0 4px 12px rgb(16 16 26 / 20%),
+            0 0 24px rgb(252 211 77 / 14%);
+    }
+
+    /* Board ornaments sit on the frame edges so tiles stay unobstructed. */
+    .theme-board::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+    }
+
+    :is(.space-cadet-background, .new-year-background) .theme-board::after {
+        top: -2px;
+        left: 0;
+        width: 30%;
+        height: 2px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, transparent, #a5b4fc, transparent);
+        box-shadow: 0 0 8px #818cf8;
+        animation: board-sheen 6s ease-in-out infinite;
+    }
+
+    .new-year-background .theme-board::after {
+        background: linear-gradient(90deg, transparent, #fde68a, transparent);
+        box-shadow: 0 0 8px #fbbf24;
+    }
+
+    .this-is-fine-background .theme-board::after {
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: inset 0 -14px 18px -12px rgb(249 115 22 / 55%);
+        animation: fire-glow 3s ease-in-out infinite;
+    }
+
+    .winter-background .theme-board::after {
+        bottom: -11px;
+        left: 14px;
+        right: 14px;
+        height: 11px;
+        background:
+            conic-gradient(
+                    from -14deg at 50% 100%,
+                    #e3f2f8 0 28deg,
+                    transparent 0
+                )
+                0 0 / 19px 100% repeat-x,
+            conic-gradient(
+                    from -22deg at 50% 55%,
+                    #c3dde9 0 44deg,
+                    transparent 0
+                )
+                7px 0 / 13px 100% repeat-x;
+        filter: drop-shadow(0 1px 2px rgb(165 243 252 / 40%));
+    }
+
+    .christmas-background .theme-board::after {
+        top: -6px;
+        left: 10px;
+        right: 10px;
+        height: 11px;
+        background:
+            radial-gradient(circle, #f87171 3px, transparent 3.5px) 0 0 / 54px
+                11px repeat-x,
+            radial-gradient(circle, #fde047 3px, transparent 3.5px) 18px 0 /
+                54px 11px repeat-x,
+            radial-gradient(circle, #4ade80 3px, transparent 3.5px) 36px 0 /
+                54px 11px repeat-x,
+            linear-gradient(#6b5a36, #6b5a36) 0 4px / 100% 1px no-repeat;
+        filter: drop-shadow(0 0 3px rgb(253 224 71 / 70%));
+        animation: star-twinkle 2.4s ease-in-out infinite;
+    }
+
+    .halloween-background .theme-board::after {
+        top: 0;
+        right: 0;
+        width: 56px;
+        height: 56px;
+        border-top-right-radius: inherit;
+        background:
+            repeating-conic-gradient(
+                from 180deg at 100% 0,
+                rgb(226 214 240 / 22%) 0 1deg,
+                transparent 1deg 18deg
+            ),
+            repeating-radial-gradient(
+                circle at 100% 0,
+                transparent 0 10px,
+                rgb(226 214 240 / 18%) 10px 11px
+            );
+        mask-image: radial-gradient(
+            circle at 100% 0,
+            #000 40%,
+            transparent 72%
+        );
+    }
+
+    :is(.valentines-background, .spring-background) .theme-board::after {
+        content: '♥';
+        top: -13px;
+        right: 12px;
+        font-size: 22px;
+        line-height: 1;
+        color: #fb7185;
+        text-shadow: 0 0 8px rgb(244 63 94 / 70%);
+    }
+
+    .spring-background .theme-board::after {
+        content: '✿';
+        color: #f9a8d4;
+        text-shadow: 0 0 8px rgb(249 168 212 / 60%);
+    }
+
+    .easter-background .theme-board::after {
+        top: -2px;
+        left: 14px;
+        right: 14px;
+        height: 3px;
+        border-radius: 3px;
+        background: linear-gradient(
+            90deg,
+            #f9a8d4,
+            #fde68a,
+            #bbf7d0,
+            #a5f3fc,
+            #c4b5fd,
+            #f9a8d4
+        );
+        box-shadow: 0 0 8px rgb(249 168 212 / 45%);
+    }
+
+    .april-fools-background .theme-board::after {
+        top: -11px;
+        right: 12px;
+        width: 36px;
+        height: 20px;
+        background:
+            radial-gradient(circle at 11px 12px, #111 3px, transparent 3.5px),
+            radial-gradient(circle at 25px 13px, #111 3px, transparent 3.5px),
+            radial-gradient(
+                circle at 9px 10px,
+                #fff 7px,
+                #1f2937 7.5px 8.5px,
+                transparent 9px
+            ),
+            radial-gradient(
+                circle at 27px 10px,
+                #fff 7px,
+                #1f2937 7.5px 8.5px,
+                transparent 9px
+            );
+        animation: googly 2.6s ease-in-out infinite;
+    }
+
+    section:nth-child(3n + 1) .theme-board::after {
+        animation-delay: -1.3s;
+    }
+
+    section:nth-child(3n + 2) .theme-board::after {
+        animation-delay: -2.2s;
+    }
+
+    .autumn-background .theme-board::after {
+        inset: 4px;
+        border: 1px dashed rgb(214 166 110 / 30%);
+        border-radius: 9px;
+    }
+
+    .beachy-background .theme-board::after {
+        top: -3px;
+        left: 12px;
+        right: 12px;
+        height: 5px;
+        border-radius: 3px;
+        background: repeating-linear-gradient(
+            -60deg,
+            #dcc08f 0 3px,
+            #8a6a42 3px 5px
+        );
+        box-shadow: 0 1px 2px rgb(4 23 27 / 50%);
     }
 }
 
@@ -553,6 +762,118 @@
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     will-change: transform;
+}
+
+.ambient {
+    position: absolute;
+    top: 0;
+    line-height: 1;
+    pointer-events: none;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+}
+
+.ambient-dot {
+    border-radius: 50%;
+}
+
+.ambient-glow {
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px currentColor;
+}
+
+.ambient-bubble {
+    border: 1px solid currentColor;
+    border-radius: 50%;
+}
+
+.ambient-petal {
+    border-radius: 0 70% 0 70%;
+}
+
+.ambient-confetti {
+    border-radius: 1px;
+}
+
+.ambient-fall {
+    animation-name: ambient-fall;
+}
+
+.ambient-rise {
+    animation-name: ambient-rise;
+}
+
+.ambient-float {
+    animation-name: ambient-float;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ambient-fall {
+    0% {
+        transform: translate3d(0, -5vh, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate3d(var(--sway), 50vh, 0)
+            rotate(calc(var(--spin) / 2));
+    }
+    100% {
+        transform: translate3d(0, 105vh, 0) rotate(var(--spin));
+    }
+}
+
+@keyframes ambient-rise {
+    0% {
+        transform: translate3d(0, 105vh, 0) scale(0.6);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.9;
+    }
+    50% {
+        transform: translate3d(var(--sway), 55vh, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(0, -5vh, 0) scale(0.8);
+        opacity: 0;
+    }
+}
+
+@keyframes ambient-float {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(0.7);
+        opacity: 0.15;
+    }
+    50% {
+        transform: translate3d(var(--sway), -24px, 0) scale(1);
+        opacity: 0.9;
+    }
+}
+
+@keyframes board-sheen {
+    0%,
+    100% {
+        transform: translateX(0);
+        opacity: 0;
+    }
+    20%,
+    80% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(233%);
+    }
+}
+
+@keyframes googly {
+    0%,
+    100% {
+        transform: rotate(-6deg);
+    }
+    50% {
+        transform: rotate(6deg);
+    }
 }
 
 @keyframes star-twinkle {
