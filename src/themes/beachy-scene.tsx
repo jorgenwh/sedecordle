@@ -1,3 +1,4 @@
+import { Ambient } from './ambient'
 const Palm = ({ className }: { className: string }) => (
     <svg className={className} viewBox="0 0 180 320" fill="none">
         <path d="M75 325Q110 210 87 88" stroke="#634b36" strokeWidth="17" />
@@ -347,5 +348,13 @@ export const BeachyScene = () => (
             />
             <path d="m105 82-12-22m12 22-2-28m2 28 8-25" stroke="#ab926c" />
         </svg>
+        <Ambient
+            count={24}
+            motion="rise"
+            shape="bubble"
+            colors={['#e0f2fe', '#a5f3fc', '#fef9c3']}
+            size={[5, 12]}
+            duration={[10, 20]}
+        />
     </div>
 )

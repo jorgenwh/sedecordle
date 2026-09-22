@@ -1,3 +1,4 @@
+import { Ambient } from './ambient'
 const Egg = ({
     x,
     y,
@@ -302,6 +303,22 @@ export const AprilFoolsScene = () => (
                 strokeWidth="3"
             />
         </svg>
+        <Ambient
+            count={18}
+            motion="float"
+            glyphs={['?', '!', '?!', '¿']}
+            colors={['#fcd34d', '#5eead4', '#f0abfc', '#fca5a5']}
+            size={[14, 26]}
+            duration={[4, 9]}
+        />
+        <Ambient
+            count={24}
+            motion="fall"
+            shape="confetti"
+            colors={['#fcd34d', '#5eead4', '#f0abfc', '#fca5a5']}
+            size={[7, 10]}
+            duration={[10, 18]}
+        />
     </div>
 )
 
@@ -555,6 +572,14 @@ export const EasterScene = () => (
                 <circle cx="241" cy="265" r="7" />
             </g>
         </svg>
+        <Ambient
+            count={36}
+            motion="fall"
+            shape="confetti"
+            colors={['#f9a8d4', '#a5f3fc', '#fde68a', '#c4b5fd', '#bbf7d0']}
+            size={[8, 12]}
+            duration={[12, 22]}
+        />
     </div>
 )
 
@@ -804,5 +829,13 @@ export const ValentinesScene = () => (
                 strokeWidth="1.5"
             />
         </svg>
+        <Ambient
+            count={22}
+            motion="rise"
+            glyphs={['♥']}
+            colors={['#fb7185', '#f472b6', '#fda4af', '#e11d48']}
+            size={[10, 22]}
+            duration={[12, 22]}
+        />
     </div>
 )

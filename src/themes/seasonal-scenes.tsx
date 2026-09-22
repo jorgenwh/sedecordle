@@ -1,3 +1,4 @@
+import { Ambient } from './ambient'
 const Flower = ({ x, y, color }: { x: number; y: number; color: string }) => (
     <g transform={`translate(${x} ${y})`}>
         <path
@@ -264,6 +265,14 @@ export const SpringScene = () => (
                 <circle cx="13" cy="-2" r="2" fill="#354635" />
             </g>
         </svg>
+        <Ambient
+            count={30}
+            motion="fall"
+            shape="petal"
+            colors={['#f9a8d4', '#fbcfe8', '#fdf2f8', '#f0abfc']}
+            size={[7, 12]}
+            duration={[12, 24]}
+        />
     </div>
 )
 
@@ -466,6 +475,14 @@ export const AutumnScene = () => (
                 SLOW SEASON
             </text>
         </svg>
+        <Ambient
+            count={26}
+            motion="fall"
+            shape="petal"
+            colors={['#ea580c', '#dc2626', '#f59e0b', '#a16207']}
+            size={[12, 20]}
+            duration={[11, 22]}
+        />
     </div>
 )
 
@@ -702,6 +719,14 @@ export const HalloweenScene = () => (
                 LOCALLY SOURCED SPELLS
             </text>
         </svg>
+        <Ambient
+            count={22}
+            motion="float"
+            shape="glow"
+            colors={['#bef264', '#fb923c', '#c4b5fd']}
+            size={[4, 7]}
+            duration={[5, 10]}
+        />
     </div>
 )
 
@@ -992,5 +1017,21 @@ export const NewYearScene = () => (
                 <circle r="3" fill="#d1bc8d" />
             </g>
         </svg>
+        <Ambient
+            count={44}
+            motion="fall"
+            shape="confetti"
+            colors={['#fcd34d', '#f472b6', '#5eead4', '#fef3c7', '#a78bfa']}
+            size={[7, 11]}
+            duration={[9, 18]}
+        />
+        <Ambient
+            count={12}
+            motion="float"
+            glyphs={['✦']}
+            colors={['#fde68a']}
+            size={[8, 14]}
+            duration={[3, 7]}
+        />
     </div>
 )

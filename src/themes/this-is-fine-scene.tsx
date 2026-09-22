@@ -1,3 +1,4 @@
+import { Ambient } from './ambient'
 const Flames = ({ className }: { className: string }) => (
     <svg className={className} viewBox="0 0 220 300">
         <path
@@ -351,5 +352,13 @@ export const ThisIsFineScene = () => (
             />
             <circle cx="60" cy="50" r="3" fill="#66462e" />
         </svg>
+        <Ambient
+            count={34}
+            motion="rise"
+            shape="glow"
+            colors={['#fb923c', '#fbbf24', '#f97316', '#fde68a']}
+            size={[2, 5]}
+            duration={[7, 15]}
+        />
     </div>
 )

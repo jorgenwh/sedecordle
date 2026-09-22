@@ -764,6 +764,118 @@
     will-change: transform;
 }
 
+.ambient {
+    position: absolute;
+    top: 0;
+    line-height: 1;
+    pointer-events: none;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+}
+
+.ambient-dot {
+    border-radius: 50%;
+}
+
+.ambient-glow {
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px currentColor;
+}
+
+.ambient-bubble {
+    border: 1px solid currentColor;
+    border-radius: 50%;
+}
+
+.ambient-petal {
+    border-radius: 0 70% 0 70%;
+}
+
+.ambient-confetti {
+    border-radius: 1px;
+}
+
+.ambient-fall {
+    animation-name: ambient-fall;
+}
+
+.ambient-rise {
+    animation-name: ambient-rise;
+}
+
+.ambient-float {
+    animation-name: ambient-float;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ambient-fall {
+    0% {
+        transform: translate3d(0, -5vh, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate3d(var(--sway), 50vh, 0)
+            rotate(calc(var(--spin) / 2));
+    }
+    100% {
+        transform: translate3d(0, 105vh, 0) rotate(var(--spin));
+    }
+}
+
+@keyframes ambient-rise {
+    0% {
+        transform: translate3d(0, 105vh, 0) scale(0.6);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.9;
+    }
+    50% {
+        transform: translate3d(var(--sway), 55vh, 0) scale(1);
+    }
+    100% {
+        transform: translate3d(0, -5vh, 0) scale(0.8);
+        opacity: 0;
+    }
+}
+
+@keyframes ambient-float {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(0.7);
+        opacity: 0.15;
+    }
+    50% {
+        transform: translate3d(var(--sway), -24px, 0) scale(1);
+        opacity: 0.9;
+    }
+}
+
+@keyframes board-sheen {
+    0%,
+    100% {
+        transform: translateX(0);
+        opacity: 0;
+    }
+    20%,
+    80% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(233%);
+    }
+}
+
+@keyframes googly {
+    0%,
+    100% {
+        transform: rotate(-6deg);
+    }
+    50% {
+        transform: rotate(6deg);
+    }
+}
+
 @keyframes star-twinkle {
     0%,
     100% {
