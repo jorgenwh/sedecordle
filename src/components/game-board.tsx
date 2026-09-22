@@ -60,11 +60,8 @@ const GameBoard = ({ gameState, theme }: GameBoardProps) => {
     const renderBoard = (boardIndex: number) => {
         const isSolved = solvedBoards.has(boardIndex)
 
-        // For solved boards, only show the guesses up to when it was solved
-        const rowsToShow = isSolved
-            ? guesses.findIndex((guess) => guess === targetWords[boardIndex]) +
-              1
-            : Math.min(21, guesses.length + 1)
+        // Solved boards collapse to a single row showing the answer
+        const rowsToShow = isSolved ? 1 : Math.min(21, guesses.length + 1)
 
         return (
             <section
@@ -98,9 +95,11 @@ const GameBoard = ({ gameState, theme }: GameBoardProps) => {
                                 className={`grid grid-cols-5 gap-1 transition-opacity duration-200 ${isSolved ? 'opacity-70' : ''} ${rowIndex < rowsToShow - 1 ? 'mb-1' : ''}`}
                             >
                                 {[...Array(5)].map((_, colIndex) => {
-                                    const letter = isCurrentRow
-                                        ? currentGuess[colIndex] || ''
-                                        : guesses[rowIndex]?.[colIndex] || ''
+                                    const letter = isSolved
+                                        ? targetWords[boardIndex][colIndex]
+                                        : isCurrentRow
+                                          ? currentGuess[colIndex] || ''
+                                          : guesses[rowIndex]?.[colIndex] || ''
 
                                     return (
                                         <div
@@ -108,7 +107,7 @@ const GameBoard = ({ gameState, theme }: GameBoardProps) => {
                                             className={`
                                             min-w-0 ${isCurrentRow ? 'h-11' : 'h-8'} flex items-center justify-center
                                             text-xl sm:text-[22px] leading-none font-bold text-white border rounded-md
-                                            ${isCurrentRow && letter ? 'bg-game-tile/60 border-game-muted/70' : getCellColor(boardIndex, rowIndex, colIndex)}
+                                            ${isSolved ? 'bg-game-correct-fill border-game-correct' : isCurrentRow && letter ? 'bg-game-tile/60 border-game-muted/70' : getCellColor(boardIndex, rowIndex, colIndex)}
                                         `}
                                         >
                                             {letter.toUpperCase()}
