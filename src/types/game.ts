@@ -22,3 +22,8 @@ export interface Score {
     completedAt: Date
     targetWords: string[]
 }
+
+export interface ScoreStanding {
+    percentile: number
+    iq: number
+}

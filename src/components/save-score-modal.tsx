@@ -1,6 +1,11 @@
-import { useState, useEffect } from 'react'
-import { computeScore, saveScore } from '../services/leaderboard'
-import { GameState } from '../types/game'
+import { useState, useEffect, useMemo } from 'react'
+import {
+    computeScore,
+    getScoreStanding,
+    saveScore,
+} from '../services/leaderboard'
+import { GameState, ScoreStanding } from '../types/game'
+import { getIqComment, getLossComment } from '../utils/iq-comments'
 
 interface SaveScoreModalProps {
     mode: 'free-play' | 'daily'
@@ -24,6 +29,36 @@ export const SaveScoreModal = ({
     const [error, setError] = useState('')
     const [shareMessage, setShareMessage] = useState('')
     const [shareAnimationId, setShareAnimationId] = useState(0)
+    const [standing, setStanding] = useState<ScoreStanding | null>(null)
+    const [iqComment, setIqComment] = useState('')
+
+    const timeSeconds =
+        gameState.endTime && gameState.startTime
+            ? Math.floor((gameState.endTime - gameState.startTime) / 1000)
+            : 0
+    const attempts = gameState.guesses.length
+    const isWin = isOpen && gameState.gameStatus === 'won' && timeSeconds > 0
+    const isLoss = isOpen && gameState.gameStatus === 'lost'
+    const solvedCount = gameState.solvedBoards.size
+    const lossComment = useMemo(
+        () => (isLoss ? getLossComment(solvedCount) : ''),
+        [isLoss, solvedCount],
+    )
+
+    useEffect(() => {
+        if (!isWin) return
+
+        let isCurrent = true
+        setStanding(null)
+        getScoreStanding({ attempts, timeSeconds }).then((result) => {
+            if (!isCurrent) return
+            setStanding(result)
+            setIqComment(result ? getIqComment(result.iq) : '')
+        })
+        return () => {
+            isCurrent = false
+        }
+    }, [isWin, attempts, timeSeconds])
 
     useEffect(() => {
         if (!shareMessage) return
@@ -55,9 +90,7 @@ export const SaveScoreModal = ({
     )
         return null
 
-    const timeSeconds = Math.floor(
-        (gameState.endTime - gameState.startTime) / 1000,
-    )
+    const score = computeScore({ attempts, timeSeconds })
     const minutes = Math.floor(timeSeconds / 60)
     const seconds = timeSeconds % 60
 
@@ -74,15 +107,17 @@ export const SaveScoreModal = ({
                         : ':black_large_square:',
                 ).join(''),
             ).join('\n')
-            const score = computeScore({
-                attempts: gameState.guesses.length,
-                timeSeconds,
-            })
             const text = [
                 `Superwordle - ${mode === 'daily' ? 'Daily' : 'Free play'}`,
                 `Guesses: ${gameState.guesses.length}/21 · Solved: ${gameState.solvedBoards.size}/${gameState.targetWords.length}`,
                 `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`,
                 `Score: ${score}`,
+                ...(standing
+                    ? [
+                          `Better than: ${Math.floor(standing.percentile * 100)}%`,
+                          `Superwordle IQ: ${standing.iq}`,
+                      ]
+                    : []),
                 '',
                 grid,
                 '',
@@ -208,6 +243,67 @@ export const SaveScoreModal = ({
                         ))}
                     </div>
                 </div>
+                {isWin && (
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                        {[
+                            { label: 'Score', value: score },
+                            {
+                                label: 'Better than',
+                                value: standing
+                                    ? `${Math.floor(standing.percentile * 100)}%`
+                                    : '—',
+                            },
+                            {
+                                label: 'Superwordle IQ',
+                                value: standing ? standing.iq : '—',
+                            },
+                        ].map(({ label, value }) => (
+                            <div
+                                key={label}
+                                className="rounded-2xl border border-game-line/40 bg-game-canvas/30 px-3 py-4 text-center"
+                            >
+                                <span className="block text-[11px] font-medium uppercase tracking-[0.16em] text-game-muted">
+                                    {label}
+                                </span>
+                                <span className="mt-2 block text-2xl sm:text-3xl font-semibold tabular-nums text-game-text">
+                                    {value}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {isLoss && (
+                    <div className="mb-4">
+                        <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.16em] text-game-muted">
+                            Missed words
+                        </p>
+                        <ul className="flex flex-wrap gap-2">
+                            {gameState.targetWords.map((word, index) =>
+                                gameState.solvedBoards.has(index) ? null : (
+                                    <li
+                                        key={index}
+                                        className="rounded-md border border-red-400/40 bg-red-400/10 px-2 py-1 text-sm font-semibold uppercase tracking-wider text-red-300"
+                                    >
+                                        <span className="mr-1.5 text-[10px] font-medium tabular-nums text-red-300/60">
+                                            {index + 1}
+                                        </span>
+                                        {word}
+                                    </li>
+                                ),
+                            )}
+                        </ul>
+                    </div>
+                )}
+                {isLoss && (
+                    <p className="mb-8 sm:mb-10 text-center text-sm italic text-game-muted">
+                        {lossComment}
+                    </p>
+                )}
+                {isWin && (
+                    <p className="mb-8 sm:mb-10 min-h-10 text-center text-sm italic text-game-muted">
+                        {standing && iqComment}
+                    </p>
+                )}
                 <form
                     onSubmit={handleSubmit}
                     className="border-t border-game-line/60 pt-7 sm:pt-8"

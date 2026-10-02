@@ -3,9 +3,10 @@ import {
     getTopScores,
     formatTime,
     computeScore,
+    getScoreStanding,
     TimePeriod,
 } from '../services/leaderboard'
-import { Score } from '../types/game'
+import { Score, ScoreStanding } from '../types/game'
 
 const TIME_PERIOD_LABELS: Record<TimePeriod, string> = {
     overall: 'Overall',
@@ -22,7 +23,17 @@ interface LeaderboardProps {
 
 interface LeaderboardTableProps {
     scores: Score[]
+    standings: StandingsCache
     loading: boolean
+}
+
+type StandingsCache = Record<string, ScoreStanding | null>
+
+const standingKey = (score: Score) => `${score.attempts}:${score.timeSeconds}`
+
+const formatTopPercent = (percentile: number) => {
+    const top = (1 - percentile) * 100
+    return `Top ${top < 1 ? top.toFixed(1) : Math.ceil(top)}%`
 }
 
 const PODIUM_STYLES = [
@@ -94,7 +105,11 @@ const PodiumIcon = ({ rank }: { rank: number }) => (
     </svg>
 )
 
-const LeaderboardTable = ({ scores, loading }: LeaderboardTableProps) => {
+const LeaderboardTable = ({
+    scores,
+    standings,
+    loading,
+}: LeaderboardTableProps) => {
     if (loading) {
         return (
             <div
@@ -139,6 +154,12 @@ const LeaderboardTable = ({ scores, loading }: LeaderboardTableProps) => {
                         scope="col"
                         className="hidden w-20 pb-2 text-center sm:table-cell"
                     >
+                        IQ
+                    </th>
+                    <th
+                        scope="col"
+                        className="hidden w-20 pb-2 text-center sm:table-cell"
+                    >
                         Guesses
                     </th>
                     <th
@@ -159,6 +180,9 @@ const LeaderboardTable = ({ scores, loading }: LeaderboardTableProps) => {
                 {Array.from({ length: 10 }).map((_, index) => {
                     const score = scores[index]
                     const podium = score ? PODIUM_STYLES[index] : undefined
+                    const standing = score
+                        ? standings[standingKey(score)]
+                        : null
                     return (
                         <tr
                             key={index}
@@ -193,6 +217,15 @@ const LeaderboardTable = ({ scores, loading }: LeaderboardTableProps) => {
                                         <span aria-hidden="true"> · </span>
                                         <span className="sr-only">Time: </span>
                                         {formatTime(score.timeSeconds)}
+                                        {standing && (
+                                            <>
+                                                <span aria-hidden="true">
+                                                    {' '}
+                                                    ·{' '}
+                                                </span>
+                                                IQ {standing.iq}
+                                            </>
+                                        )}
                                     </span>
                                 )}
                             </td>
@@ -206,6 +239,16 @@ const LeaderboardTable = ({ scores, loading }: LeaderboardTableProps) => {
                                             Completed:{' '}
                                         </span>
                                         {score.completedAt.toLocaleDateString()}
+                                    </span>
+                                )}
+                            </td>
+                            <td className="hidden border-b border-game-line/20 py-2 text-center tabular-nums sm:table-cell">
+                                <span className="block font-semibold text-game-text">
+                                    {standing ? standing.iq : '—'}
+                                </span>
+                                {standing && (
+                                    <span className="block text-[10px] text-game-muted">
+                                        {formatTopPercent(standing.percentile)}
                                     </span>
                                 )}
                             </td>
@@ -244,15 +287,40 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
     const [scoresCache, setScoresCache] = useState<ScoresCache>(EMPTY_CACHE)
     const [loading, setLoading] = useState(true)
     const [timePeriod, setTimePeriod] = useState<TimePeriod>('overall')
+    const [standings, setStandings] = useState<StandingsCache>({})
 
     useEffect(() => {
         if (isOpen) {
             loadAllScores()
         } else {
             setScoresCache(EMPTY_CACHE)
+            setStandings({})
             setTimePeriod('overall')
         }
     }, [isOpen])
+
+    // Only fetch standings for the visible period, since each one costs
+    // several count queries.
+    useEffect(() => {
+        const missing = scoresCache[timePeriod].filter(
+            (score) => !(standingKey(score) in standings),
+        )
+        if (missing.length === 0) return
+
+        Promise.all(
+            missing.map(async (score) => ({
+                key: standingKey(score),
+                standing: await getScoreStanding(score, true),
+            })),
+        ).then((results) => {
+            setStandings((previous) => ({
+                ...previous,
+                ...Object.fromEntries(
+                    results.map(({ key, standing }) => [key, standing]),
+                ),
+            }))
+        })
+    }, [scoresCache, timePeriod, standings])
 
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
@@ -359,6 +427,7 @@ const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
                 >
                     <LeaderboardTable
                         scores={scoresCache[timePeriod]}
+                        standings={standings}
                         loading={loading}
                     />
                 </div>
