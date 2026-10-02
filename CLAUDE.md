@@ -49,7 +49,7 @@ Two-tier system for keyboard color indication:
 
 ### Leaderboard (`src/services/leaderboard.ts`)
 - Firebase Firestore collection: `leaderboard`
-- Single ranking by combined score: `score = SCORE_CEILING - (timeSeconds + attempts * SECONDS_PER_GUESS)` (higher is better) via `getTopScores`
+- Single ranking by combined score: `score = round(SCORE_SCALE / (timeSeconds + attempts * SECONDS_PER_GUESS))` (higher is better, always positive) via `getTopScores`
 - Score computation lives in `computeScore`; scores are sorted client-side from a batch of the 100 fastest (or 100 most recent for time-filtered periods)
 - Only wins trigger the save-score prompt
 
