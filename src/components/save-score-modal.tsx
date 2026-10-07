@@ -39,26 +39,30 @@ export const SaveScoreModal = ({
     const attempts = gameState.guesses.length
     const isWin = isOpen && gameState.gameStatus === 'won' && timeSeconds > 0
     const isLoss = isOpen && gameState.gameStatus === 'lost'
+    const hasResult = (isWin || isLoss) && timeSeconds > 0
     const solvedCount = gameState.solvedBoards.size
+    const unsolvedBoards = gameState.targetWords.length - solvedCount
     const lossComment = useMemo(
         () => (isLoss ? getLossComment(solvedCount) : ''),
         [isLoss, solvedCount],
     )
 
     useEffect(() => {
-        if (!isWin) return
+        if (!hasResult) return
 
         let isCurrent = true
         setStanding(null)
-        getScoreStanding({ attempts, timeSeconds }).then((result) => {
-            if (!isCurrent) return
-            setStanding(result)
-            setIqComment(result ? getIqComment(result.iq) : '')
-        })
+        getScoreStanding({ attempts, timeSeconds, unsolvedBoards }).then(
+            (result) => {
+                if (!isCurrent) return
+                setStanding(result)
+                setIqComment(result ? getIqComment(result.iq) : '')
+            },
+        )
         return () => {
             isCurrent = false
         }
-    }, [isWin, attempts, timeSeconds])
+    }, [hasResult, attempts, timeSeconds, unsolvedBoards])
 
     useEffect(() => {
         if (!shareMessage) return
@@ -90,7 +94,7 @@ export const SaveScoreModal = ({
     )
         return null
 
-    const score = computeScore({ attempts, timeSeconds })
+    const score = computeScore({ attempts, timeSeconds, unsolvedBoards })
     const minutes = Math.floor(timeSeconds / 60)
     const seconds = timeSeconds % 60
 
@@ -243,7 +247,7 @@ export const SaveScoreModal = ({
                         ))}
                     </div>
                 </div>
-                {isWin && (
+                {hasResult && (
                     <div className="grid grid-cols-3 gap-3 mb-4">
                         {[
                             { label: 'Score', value: score },
