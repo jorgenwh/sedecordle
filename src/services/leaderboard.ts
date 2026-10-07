@@ -10,7 +10,7 @@ import {
     where,
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { Score, ScoreStanding } from '../types/game'
+import { Score, ScoreInput, ScoreStanding } from '../types/game'
 
 const LEADERBOARD_COLLECTION = 'leaderboard'
 
@@ -18,6 +18,9 @@ const LEADERBOARD_COLLECTION = 'leaderboard'
 // saving one guess is worth 60 seconds. Dividing SCORE_SCALE by cost keeps the
 // score positive no matter how long a game takes.
 const SECONDS_PER_GUESS = 60
+// Each unsolved board adds 30 minutes, so a loss in 10 minutes still ranks
+// below a full solve in 30 minutes.
+const SECONDS_PER_UNSOLVED_BOARD = 30 * 60
 const SCORE_SCALE = 1_000_000
 
 export type TimePeriod = 'overall' | 'today' | 'week' | 'month' | 'year'
@@ -25,10 +28,12 @@ export type TimePeriod = 'overall' | 'today' | 'week' | 'month' | 'year'
 const MIN_ATTEMPTS = 16
 const MAX_ATTEMPTS = 21
 
-const computeCost = (score: Pick<Score, 'attempts' | 'timeSeconds'>) =>
-    score.timeSeconds + score.attempts * SECONDS_PER_GUESS
+const computeCost = (score: ScoreInput) =>
+    score.timeSeconds +
+    score.attempts * SECONDS_PER_GUESS +
+    (score.unsolvedBoards ?? 0) * SECONDS_PER_UNSOLVED_BOARD
 
-export const computeScore = (score: Pick<Score, 'attempts' | 'timeSeconds'>) =>
+export const computeScore = (score: ScoreInput) =>
     Math.round(SCORE_SCALE / computeCost(score))
 
 // Inverse of the standard normal CDF (Abramowitz & Stegun 26.2.23). Error is
@@ -46,7 +51,7 @@ const inverseNormal = (p: number) => {
 // on two fields, so we run one count per possible guess count. isSaved tells
 // whether the game itself is already part of the total.
 export const getScoreStanding = async (
-    score: Pick<Score, 'attempts' | 'timeSeconds'>,
+    score: ScoreInput,
     isSaved = false,
 ): Promise<ScoreStanding | null> => {
     try {

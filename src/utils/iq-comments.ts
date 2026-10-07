@@ -72,7 +72,7 @@ const IQ_COMMENT_BANDS: { min: number; comments: string[] }[] = [
     },
 ]
 
-// Lost games have no IQ, so their comments go by the number of solved boards.
+// Lost games get comments by the number of solved boards instead of by IQ.
 const LOSS_COMMENT_BANDS: { min: number; comments: string[] }[] = [
     {
         min: 0,

@@ -23,6 +23,11 @@ export interface Score {
     targetWords: string[]
 }
 
+// Saved scores are always wins, so unsolvedBoards is only set for lost games.
+export type ScoreInput = Pick<Score, 'attempts' | 'timeSeconds'> & {
+    unsolvedBoards?: number
+}
+
 export interface ScoreStanding {
     percentile: number
     iq: number
