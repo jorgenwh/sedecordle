@@ -174,6 +174,7 @@ const Game = ({
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [showSaveScore, setShowSaveScore] = useState(false)
     const [hasPromptedSave, setHasPromptedSave] = useState(false)
+    const [isSaveBusy, setIsSaveBusy] = useState(false)
     const {
         isLoading,
         restoredCompletedGame,
@@ -188,14 +189,6 @@ const Game = ({
         addLetter,
         clearFlash,
     } = useGame(mode)
-
-    const handleKeyPress = useKeyboardHandler(
-        gameState.gameStatus,
-        submitGuess,
-        deleteLastLetter,
-        addLetter,
-        !isLoading && !showNewGame && !showLeaderboard && !showSaveScore,
-    )
 
     useEffect(() => {
         initializeGame()
@@ -225,6 +218,17 @@ const Game = ({
         await initializeGame()
         setHasPromptedSave(false)
     }
+
+    const handleKeyPress = useKeyboardHandler(
+        gameState.gameStatus,
+        submitGuess,
+        deleteLastLetter,
+        addLetter,
+        !isLoading && !showNewGame && !showLeaderboard && !showSaveScore,
+        mode === 'free-play' && !isLoading && !isSaveBusy
+            ? startNewGame
+            : undefined,
+    )
 
     const handleNewGame = () => {
         if (
@@ -334,6 +338,7 @@ const Game = ({
                 mode={mode}
                 isOpen={showSaveScore}
                 onClose={() => setShowSaveScore(false)}
+                onBusyChange={setIsSaveBusy}
                 onSaveSuccess={() => {
                     setShowSaveScore(false)
                     setShowLeaderboard(true)

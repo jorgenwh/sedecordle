@@ -11,6 +11,7 @@ interface SaveScoreModalProps {
     mode: 'free-play' | 'daily'
     isOpen: boolean
     onClose: () => void
+    onBusyChange: (isBusy: boolean) => void
     onSaveSuccess: () => void
     gameState: GameState
 }
@@ -19,6 +20,7 @@ export const SaveScoreModal = ({
     mode,
     isOpen,
     onClose,
+    onBusyChange,
     onSaveSuccess,
     gameState,
 }: SaveScoreModalProps) => {
@@ -70,6 +72,10 @@ export const SaveScoreModal = ({
         const timeout = setTimeout(() => setShareMessage(''), 2400)
         return () => clearTimeout(timeout)
     }, [shareMessage, shareAnimationId])
+
+    useEffect(() => {
+        onBusyChange(isBusy)
+    }, [isBusy, onBusyChange])
 
     useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {

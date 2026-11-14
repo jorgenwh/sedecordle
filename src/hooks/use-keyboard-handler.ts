@@ -6,6 +6,7 @@ export const useKeyboardHandler = (
     onBackspace: () => void,
     onLetter: (letter: string) => void,
     enabled = true,
+    onNewGame?: () => void,
 ) => {
     const handleKeyPress = useCallback(
         (key: string) => {
@@ -36,6 +37,21 @@ export const useKeyboardHandler = (
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [handleKeyPress])
+
+    useEffect(() => {
+        if (!onNewGame) return
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key !== 'Enter' || !(e.ctrlKey || e.metaKey)) return
+
+            e.preventDefault()
+            e.stopPropagation()
+            if (!e.repeat) onNewGame()
+        }
+
+        window.addEventListener('keydown', handleKeyDown, true)
+        return () => window.removeEventListener('keydown', handleKeyDown, true)
+    }, [onNewGame])
 
     return handleKeyPress
 }

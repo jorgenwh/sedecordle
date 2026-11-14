@@ -94,6 +94,7 @@ export const GameStats = ({
                     {onNewGame && (
                         <button
                             onClick={onNewGame}
+                            title="New game (Ctrl+Enter)"
                             onKeyDown={(event) => event.stopPropagation()}
                             className={`flex h-10 items-center justify-center gap-2 rounded-lg border px-3 text-xs font-medium transition-colors ${
                                 gameState.gameStatus === 'playing'
